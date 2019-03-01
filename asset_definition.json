@@ -1,0 +1,20 @@
+assets:[{
+  "asset_name":"1x1 Stone Floor",
+  "asset_image":"floors/1x1_stone.png",
+  "class":"isometric",
+  "layer":"floor",
+  "tlc":{"x":10,"y":5},
+  "connections": ["NW","NE","SW","SE"],
+  "horizontally_flippable":1,
+  "vertically_flippable":1,
+  "tags":["stone"]
+}{
+  "asset_name":"1 long brick Floor",
+  "asset_image":"walls/1_brick.png",
+  "class":"isometric",
+  "tlc":{"x":18,"y":150},
+  "connections": ["NE","SW"],
+  "horizontally_flippable":1,
+  "vertically_flippable":0,
+  "tags":["wall","brick"]
+}]
