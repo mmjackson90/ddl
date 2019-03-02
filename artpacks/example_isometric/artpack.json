@@ -5,115 +5,39 @@
         "height":170,
         "width":294
     },
-    "assets": [
-        {
-            "name": "1x1 Floor exact",
-            "id": "floor_1x1_exact",
-            "image": "1x1_floor_exact.png",
-            "layer": "floor",
-            "top_left": {
-                "x": 0,
-                "y": 0
-            },
-            "connections": [
-                "NW",
-                "NE",
-                "SW",
-                "SE"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": true,
-            "tags": [
-                "test"
-            ]
-        },
-        {
-            "name": "1x1 Floor fuzzy",
-            "id": "floor_1x1_fuzzy",
-            "image": "1x1_floor_fuzzy.png",
-            "layer": "floor",
-            "top_left": {
-                "x": 5,
-                "y": 6
-            },
-            "connections": [
-                "NW",
-                "NE",
-                "SW",
-                "SE"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": true,
-            "tags": [
-                "test",
-                "glowy"
-            ]
-        },
-        {
-            "name": "1 long wall exact",
-            "id": "exact_wall_1",
-            "image": "1_wall_exact.png",
-            "top_left": {
-                "x": 18,
-                "y": 150
-            },
-            "connections": [
-                "NE",
-                "SW"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": false,
-            "tags": [
-                "wall",
-                "test"
-            ]
-        },
-        {
-            "name": "1 long wall fuzzy",
-            "id": "fuzzy_wall_1",
-            "image": "1_wall_fuzzy.png",
-            "top_left": {
-                "x": 18,
-                "y": 150
-            },
-            "connections": [
-                "NE",
-                "SW"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": false,
-            "tags": [
-                "wall",
-                "test",
-                "glowy"
-            ]
-        },
+    "blueprints": [
+
         {
             "name": "2x2 Floor exact",
             "id": "floor_2x2_exact",
             "layer": "floor",
+            "grid_type": "isometric",
             "top_left": {
                 "x": 0,
                 "y": 0
             },
             "sub_assets":[
                 {
-                    "asset_id":"floor_1x1_exact",
+                    "type":"image",
+                    "image_id":"floor_1x1_exact",
                     "x":0,
                     "y":0
                 },
                 {
-                    "asset_id":"floor_1x1_exact",
+                    "type":"image",
+                    "image_id":"floor_1x1_exact",
                     "x":1,
                     "y":0
                 },
                 {
-                    "asset_id":"floor_1x1_exact",
+                    "type":"image",
+                    "image_id":"floor_1x1_exact",
                     "x":0,
                     "y":1
                 },
                 {
-                    "asset_id":"floor_1x1_exact",
+                    "type":"image",
+                    "image_id":"floor_1x1_exact",
                     "x":1,
                     "y":1
                 }
