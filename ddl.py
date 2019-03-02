@@ -53,7 +53,8 @@ class Asset:
 
     def get_sub_assets(self, offset_x, offset_y, artpack):
         if self.image is not None:
-            return [(self.data["id"], offset_x, offset_y)]
+            #This should return a reference to the correct asset and x/y
+            return [(artpack.assets[self.data["id"]], offset_x, offset_y)]
         else:
             sub_assets=[]
             for sub_asset in self.data["sub_assets"]:
@@ -61,66 +62,44 @@ class Asset:
                     pixel_x, pixel_y = self.get_sub_asset_location_isometric(sub_asset["x"],sub_asset["y"])
                 else:
                     pixel_x, pixel_y = self.get_sub_asset_location_classic(sub_asset["x"],sub_asset["y"])
-                sub_assets=sub_assets+artpack.assets[sub_asset["asset_id"]].get_sub_assets(pixel_x,pixel_y,artpack)
+                sub_assets=sub_assets+artpack.assets[sub_asset["asset_id"]].get_sub_assets(pixel_x+offset_x,pixel_y+offset_y,artpack)
             return sub_assets
 
 
 
-class Map:
-    def __init__(self, grid_definition, width=10, height=10):
-        self.grid_width = width
-        self.grid_height = height
-        self.grid_square_pixel_width=grid_definition["width"]
-        self.grid_square_pixel_height=grid_definition["height"]
-        self.image_pixel_width = self.calculate_image_pixel_width()
-        self.image_pixel_height = self.calculate_image_pixel_height()
+class Renderer:
+    def __init__(self, width=1000, height=1000, sub_assets=[]):
+        self.image_pixel_width = width
+        self.image_pixel_height = height
+        self.sub_assets=sub_assets
+        self.centre_line=round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)
-
-    def calculate_image_pixel_width(self, width):
-        return self.grid_width * self.grid_square_pixel_width
-
-    def calculate_image_pixel_height(self, height):
-        return self.grid_width * self.grid_square_pixel_height
 
     def initialise_image(self, width, height):
         self.image = Image.new('RGBA', (width, height),(255,0,0,0))
 
-    def add_to_image(self, asset, x, y, dryrun=True):
+    def add_sub_asset_list(self, sub_asset_list):
+        self.sub_assets=sub_asset_list+self.sub_assets
+
+    #This will need moving out to the asset factory, but for now leaving it here.
+    def add_asset(self, asset, x, y, artpack):
+        self.sub_assets=asset.get_sub_assets(x,y,artpack)+self.sub_assets
+
+    def add_to_image(self, asset, x, y):
         final_x=x-asset.data["top_left"]["x"]
         final_y=y-asset.data["top_left"]["y"]
-        if not dryrun:
-            self.image.paste(asset.image,(final_x,final_y),asset.image)
-        else:
-            return_image = self.image.copy()
-            return_image.paste(asset.image,(final_x,final_y),asset.image)
-            return_image.show()
+        self.image.paste(asset.image,(final_x,final_y),asset.image)
 
     def render(self):
+        for asset, x, y in self.sub_assets:
+            self.add_to_image(asset, x, y)
         self.image.show()
-
-
-class IsometricMap(Map):
-
-    def calculate_image_pixel_width(self):
-        return math.ceil((self.grid_width*self.grid_square_pixel_width)/2+(self.grid_width*self.grid_square_pixel_width)/2)
-
-    def calculate_image_pixel_height(self):
-        return math.ceil((self.grid_height*self.grid_square_pixel_height)/2+(self.grid_height*self.grid_square_pixel_height)/2)
-
-    def add_to_grid(self, asset, x, y, dryrun=True):
-        centre_line=math.ceil((self.image_pixel_width-self.grid_square_pixel_width)/2)
-        pixel_x=(y*math.ceil(self.grid_square_pixel_width/2))-(x*math.floor(self.grid_square_pixel_width/2))+centre_line
-        pixel_y=(x*math.ceil(self.grid_square_pixel_height/2))+(y*math.floor(self.grid_square_pixel_height/2))
-        self.add_to_image(asset, pixel_x, pixel_y, dryrun)
 
 
 artpack = ArtpackFactory.fromFile('asset_definition.json')
 floor = artpack.assets['floor_1x1_exact']
-map = IsometricMap(artpack.data['grid'])
-map.add_to_grid(floor,0,0,dryrun=False)
-map.add_to_grid(floor,0,1,dryrun=False)
-
-floor2=artpack.assets['floor_1x1_fuzzy']
-map.add_to_grid(floor2,0,2,dryrun=False)
-map.add_to_grid(floor2,1,1,dryrun=False)
-map.render()
+floor2 = artpack.assets['floor_1x1_fuzzy']
+floor3 = artpack.assets['floor_2x2_exact']
+renderer = Renderer()
+renderer.add_asset(floor3,500,0,artpack)
+renderer.render()
