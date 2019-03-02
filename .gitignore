@@ -1,4 +1,5 @@
 *.pyc
+__pycache__
 .DS_Store
 /artpacks/*
 !/artpacks/example_isometric/
