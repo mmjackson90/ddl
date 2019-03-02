@@ -65,7 +65,56 @@ class Asset:
                 sub_assets=sub_assets+artpack.assets[sub_asset["asset_id"]].get_sub_assets(pixel_x+offset_x,pixel_y+offset_y,artpack)
             return sub_assets
 
+class AssetFactory:
+    def __init__(self, artpack, grid_definition):
+        self.artpack=artpack
+        self.grid_definition=grid_definition
+        self.current_asset=False
+        self.id = None
+        self.layer = None
+        self.top_left = None
+        self.name = None
+        self.horizontally_flippable = None
+        self.vertically_flippable = None
+        self.tags = None
+        self.connections = None
+        self.sub_assets = None
 
+    def new_asset(self, id, layer, top_left = (0, 0), name='',
+    horizontally_flippable=True, vertically_flippable=True,
+    tags=[],connections=[], sub_assets=[]):
+        if self.current_asset:
+            raise Exception('This factory is currently building another asset. Please finalise that asset before starting a new one.')
+        self.current_asset=True
+        self.id = id
+        self.layer = layer
+        self.top_left = top_left
+        self.name = name
+        self.horizontally_flippable = horizontally_flippable
+        self.vertically_flippable = vertically_flippable
+        self.tags = tags
+        self.connections = connections
+        self.sub_assets = sub_assets
+
+    def add_asset(self, asset_id, x, y):
+        if asset_id not in self.artpack.assets.keys():
+            raise Exception('This asset ID doesnt exist in this artpack.')
+        sub_asset = {"asset_id": asset_id, "x": x, "y": y}
+        self.sub_assets=self.sub_assets+[sub_asset]
+
+    def spy_asset(self):
+        data = {
+            "name": self.name,
+            "id": self.id,
+            "layer": self.layer,
+            "top_left": self.top_left,
+            "sub_assets":self.sub_assets,
+            "connections": self.connections,
+            "horizontally_flippable": self.horizontally_flippable,
+            "vertically_flippable": self.vertically_flippable,
+            "tags": self.tags
+        }
+        return Asset(data,self.grid_definition)
 
 class Renderer:
     def __init__(self, width=1000, height=1000, sub_assets=[]):
@@ -103,3 +152,13 @@ floor3 = artpack.assets['floor_2x2_exact']
 renderer = Renderer()
 renderer.add_asset(floor3,500,0,artpack)
 renderer.render()
+
+
+assetfac=AssetFactory(artpack,artpack.data["grid"])
+assetfac.new_asset('floor_1x2_exact','floor')
+assetfac.add_asset("floor_1x1_exact",0,0)
+assetfac.add_asset("floor_1x1_exact",0,1)
+floor4=assetfac.spy_asset()
+
+renderer2 = Renderer(sub_assets=floor4.get_sub_assets(500,0,artpack))
+renderer2.render()
