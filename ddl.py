@@ -18,15 +18,53 @@ class Artpack:
         self.assets = {}
 
         for asset in self.data['assets']:
-            self.assets[asset['id']] = Asset(asset)
+            self.assets[asset['id']] = Asset(asset, self.data['grid'])
 
 class Asset:
-    def __init__(self, data):
+    def __init__(self, data, artpack_grid):
         self.data = data
-        self.image = Image.open(self.data["image"])
+        if "image" in self.data.keys():
+            self.image = Image.open(self.data["image"])
+        else:
+            self.image = None
+        if "grid" in self.data.keys():
+            grid_definition = self.data["grid"]
+        else:
+            grid_definition = artpack_grid
+        self.grid_type=grid_definition["type"]
+        self.grid_square_pixel_width=grid_definition["width"]
+        self.grid_square_pixel_height=grid_definition["height"]
+
+        if self.image is None and "sub_assets" not in self.data.keys():
+            raise Exception('Asset {} has no image or sub assets.',self.data["name"])
 
     def show(self):
         self.image.show()
+
+    def get_sub_asset_location_isometric(self,x,y):
+            pixel_x=(y*math.ceil(self.grid_square_pixel_width/2))-(x*math.floor(self.grid_square_pixel_width/2))
+            pixel_y=(x*math.ceil(self.grid_square_pixel_height/2))+(y*math.floor(self.grid_square_pixel_height/2))
+            return (pixel_x, pixel_y)
+
+    def get_sub_asset_location_classic(self,x,y):
+            pixel_x=x*self.grid_square_pixel_width
+            pixel_y=y*self.grid_square_pixel_height
+            return (pixel_x, pixel_y)
+
+    def get_sub_assets(self, offset_x, offset_y, artpack):
+        if self.image is not None:
+            return [(self.data["id"], offset_x, offset_y)]
+        else:
+            sub_assets=[]
+            for sub_asset in self.data["sub_assets"]:
+                if self.grid_type=="isometric":
+                    pixel_x, pixel_y = self.get_sub_asset_location_isometric(sub_asset["x"],sub_asset["y"])
+                else:
+                    pixel_x, pixel_y = self.get_sub_asset_location_classic(sub_asset["x"],sub_asset["y"])
+                sub_assets=sub_assets+artpack.assets[sub_asset["asset_id"]].get_sub_assets(pixel_x,pixel_y,artpack)
+            return sub_assets
+
+
 
 class Map:
     def __init__(self, grid_definition, width=10, height=10):

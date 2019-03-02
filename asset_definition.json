@@ -87,6 +87,49 @@
                 "test",
                 "glowy"
             ]
+        },
+        {
+            "name": "2x2 Floor exact",
+            "id": "floor_2x2_exact",
+            "layer": "floor",
+            "top_left": {
+                "x": 0,
+                "y": 0
+            },
+            "sub_assets":[
+                {
+                    "asset_id":"floor_1x1_exact",
+                    "x":0,
+                    "y":0
+                },
+                {
+                    "asset_id":"floor_1x1_exact",
+                    "x":1,
+                    "y":0
+                },
+                {
+                    "asset_id":"floor_1x1_exact",
+                    "x":0,
+                    "y":1
+                },
+                {
+                    "asset_id":"floor_1x1_exact",
+                    "x":1,
+                    "y":1
+                }
+            ],
+
+            "connections-TODO (How we do this?)": [
+                "NW",
+                "NE",
+                "SW",
+                "SE"
+            ],
+            "horizontally_flippable": true,
+            "vertically_flippable": true,
+            "tags": [
+                "test"
+            ]
         }
     ]
 }
