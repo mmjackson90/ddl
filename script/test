@@ -12,4 +12,4 @@ cd "$(dirname "$0")/.."
 
 echo "==> Running tests…"
 
-python3 tests/test.py
+python test.py

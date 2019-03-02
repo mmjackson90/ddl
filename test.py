@@ -2,9 +2,6 @@ from PIL import Image
 import json
 import math
 
-import sys
-sys.path.append('../')
-
 from ddl import ArtpackFactory, AssetFactory, Renderer
 
 artpack = ArtpackFactory.load('example_isometric')
