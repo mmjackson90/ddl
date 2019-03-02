@@ -5,16 +5,11 @@ import math
 import sys
 sys.path.append('../')
 
-from ddl.ddl import ArtpackFactory, AssetFactory, Renderer
+from ddl import ArtpackFactory, AssetFactory, Renderer
 
 artpack = ArtpackFactory.load('example_isometric')
-floor = artpack.assets['floor_1x1_exact']
-floor2 = artpack.assets['floor_1x1_fuzzy']
-floor3 = artpack.assets['floor_2x2_exact']
-renderer = Renderer()
-renderer.add_asset(floor3,500,0,artpack)
-renderer.render()
-
+test = Renderer(sub_assets=artpack.blueprints['floor_2x2_exact'].get_sub_assets(500,0,artpack,294,170))
+test.render()
 
 assetfac=AssetFactory(artpack,artpack.data["grid"])
 assetfac.new_asset('floor_1x2_exact','floor')
