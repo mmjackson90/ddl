@@ -5,32 +5,37 @@ import math
 class ArtpackFactory:
 
     @staticmethod
-    def fromFile(file):
-        with open(file) as f:
+    def load(name):
+        with open('artpacks/' + name + '/artpack.json') as f:
             data = json.load(f)
-            return Artpack(data)
+            return Artpack(name, data)
 
 
 class Artpack:
-    def __init__(self, data):
+    def __init__(self, name, data):
 
         self.data = data
         self.assets = {}
 
+        self.artpack = {
+            'name': name,
+            'grid': data['grid']
+        }
+
         for asset in self.data['assets']:
-            self.assets[asset['id']] = Asset(asset, self.data['grid'])
+            self.assets[asset['id']] = Asset(asset, self.artpack)
 
 class Asset:
-    def __init__(self, data, artpack_grid):
+    def __init__(self, data, artpack):
         self.data = data
         if "image" in self.data.keys():
-            self.image = Image.open(self.data["image"])
+            self.image = Image.open('artpacks/' + artpack['name'] + '/art/' + self.data["image"])
         else:
             self.image = None
         if "grid" in self.data.keys():
             grid_definition = self.data["grid"]
         else:
-            grid_definition = artpack_grid
+            grid_definition = artpack['grid']
         self.grid_type=grid_definition["type"]
         self.grid_square_pixel_width=grid_definition["width"]
         self.grid_square_pixel_height=grid_definition["height"]
@@ -114,7 +119,7 @@ class AssetFactory:
             "vertically_flippable": self.vertically_flippable,
             "tags": self.tags
         }
-        return Asset(data,self.grid_definition)
+        return Asset(data,self.artpack.artpack)
 
 class Renderer:
     def __init__(self, width=1000, height=1000, sub_assets=[]):
@@ -143,22 +148,3 @@ class Renderer:
         for asset, x, y in self.sub_assets:
             self.add_to_image(asset, x, y)
         self.image.show()
-
-
-artpack = ArtpackFactory.fromFile('asset_definition.json')
-floor = artpack.assets['floor_1x1_exact']
-floor2 = artpack.assets['floor_1x1_fuzzy']
-floor3 = artpack.assets['floor_2x2_exact']
-renderer = Renderer()
-renderer.add_asset(floor3,500,0,artpack)
-renderer.render()
-
-
-assetfac=AssetFactory(artpack,artpack.data["grid"])
-assetfac.new_asset('floor_1x2_exact','floor')
-assetfac.add_asset("floor_1x1_exact",0,0)
-assetfac.add_asset("floor_1x1_exact",0,1)
-floor4=assetfac.spy_asset()
-
-renderer2 = Renderer(sub_assets=floor4.get_sub_assets(500,0,artpack))
-renderer2.render()

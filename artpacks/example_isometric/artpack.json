@@ -1,5 +1,5 @@
 {
-    "name": "Test Art Pack A",
+    "name": "Example Isometric Artpack",
     "grid":{
         "type": "isometric",
         "height":170,
@@ -9,7 +9,7 @@
         {
             "name": "1x1 Floor exact",
             "id": "floor_1x1_exact",
-            "image": "test_images/1x1_floor_exact.png",
+            "image": "1x1_floor_exact.png",
             "layer": "floor",
             "top_left": {
                 "x": 0,
@@ -30,7 +30,7 @@
         {
             "name": "1x1 Floor fuzzy",
             "id": "floor_1x1_fuzzy",
-            "image": "test_images/1x1_floor_fuzzy.png",
+            "image": "1x1_floor_fuzzy.png",
             "layer": "floor",
             "top_left": {
                 "x": 5,
@@ -52,7 +52,7 @@
         {
             "name": "1 long wall exact",
             "id": "exact_wall_1",
-            "image": "test_images/1_wall_exact.png",
+            "image": "1_wall_exact.png",
             "top_left": {
                 "x": 18,
                 "y": 150
@@ -71,7 +71,7 @@
         {
             "name": "1 long wall fuzzy",
             "id": "fuzzy_wall_1",
-            "image": "test_images/1_wall_fuzzy.png",
+            "image": "1_wall_fuzzy.png",
             "top_left": {
                 "x": 18,
                 "y": 150
