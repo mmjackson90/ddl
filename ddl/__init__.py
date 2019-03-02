@@ -29,7 +29,7 @@ class Artpack:
             self.images[image['id']] = Image_asset(image, artpack_name=name)
 
         for blueprint in self.artpack['blueprints']:
-            self.blueprints[image['id']] = Blueprint(blueprint)
+            self.blueprints[blueprint['id']] = Blueprint(blueprint)
 
 
 class Image_asset:
@@ -57,7 +57,9 @@ class Blueprint:
             pixel_y=y*grid_square_pixel_height
             return (pixel_x, pixel_y)
 
-    def get_sub_assets(self, offset_x, offset_y, artpack, grid_square_pixel_width, grid_square_pixel_height):
+    def get_sub_assets(self, offset_x, offset_y, artpack):
+        grid_square_pixel_width=artpack.artpack['grid']['width']
+        grid_square_pixel_height=artpack.artpack['grid']['height']
         image_location_list=[]
         for sub_asset in self.data["sub_assets"]:
             if self.data['grid_type']=="isometric":
@@ -69,6 +71,82 @@ class Blueprint:
             else:
                 image_location_list=image_location_list+artpack.blueprints[sub_asset["blueprint_id"]].get_sub_assets(pixel_x+offset_x,pixel_y+offset_y,artpack)
         return image_location_list
+
+class BlueprintFactory:
+    def __init__(self, artpack, grid_type):
+        self.artpack=artpack
+        self.grid_type=grid_type
+        self.current_asset=False
+        self.id = None
+        self.layer = None
+        self.top_left = None
+        self.name = None
+        self.horizontally_flippable = None
+        self.vertically_flippable = None
+        self.tags = None
+        self.connections = None
+        self.sub_assets = None
+
+    def new_blueprint(self, id, layer, top_left = (0, 0), name='',
+    horizontally_flippable=True, vertically_flippable=True,
+    tags=[],connections=[], sub_assets=[]):
+        if self.current_asset:
+            raise Exception('This factory is currently building another asset. Please finalise that asset before starting a new one.')
+        self.current_asset=True
+        self.id = id
+        self.layer = layer
+        self.top_left = top_left
+        self.name = name
+        self.horizontally_flippable = horizontally_flippable
+        self.vertically_flippable = vertically_flippable
+        self.tags = tags
+        self.connections = connections
+        self.sub_assets = sub_assets
+
+    def add_image(self, image_id, x, y):
+        if image_id not in self.artpack.images.keys():
+            raise Exception('This image ID doesnt exist in this artpack.')
+        sub_asset = {"type":"image", "image_id": image_id, "x": x, "y": y}
+        self.sub_assets=self.sub_assets+[sub_asset]
+
+    def add_blueprint(self, blueprint_id, x, y):
+        if blueprint_id not in self.artpack.blueprints.keys():
+            raise Exception('This blueprint ID doesnt exist in this artpack.')
+        sub_asset = {"type":"blueprint", "blueprint_id": blueprint_id, "x": x, "y": y}
+        self.sub_assets=self.sub_assets+[sub_asset]
+
+    def get_blueprint(self):
+        data = {
+            "name": self.name,
+            "id": self.id,
+            "layer": self.layer,
+            "grid_type":self.grid_type,
+            "top_left": self.top_left,
+            "sub_assets":self.sub_assets,
+            "connections": self.connections,
+            "horizontally_flippable": self.horizontally_flippable,
+            "vertically_flippable": self.vertically_flippable,
+            "tags": self.tags
+        }
+        return Blueprint(data)
+
+    def clear_blueprint(self):
+        self.current_asset=False
+        self.id = None
+        self.layer = None
+        self.top_left = None
+        self.name = None
+        self.horizontally_flippable = None
+        self.vertically_flippable = None
+        self.tags = None
+        self.connections = None
+        self.sub_assets = None
+
+    def pull_blueprint(self):
+        image_list=self.get_blueprint()
+        self.clear_blueprint()
+        return image_list
+
 
 class Renderer:
     def __init__(self, width=1000, height=1000, sub_assets=[]):
