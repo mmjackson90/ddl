@@ -48,11 +48,13 @@ class Map:
         self.image = Image.new('RGBA', (width, height),(255,0,0,0))
 
     def add_to_image(self, asset, x, y, dryrun=True):
+        final_x=x-asset.data["top_left"]["x"]
+        final_y=y-asset.data["top_left"]["y"]
         if not dryrun:
-            self.image.paste(asset.image,(x,y),asset.image)
+            self.image.paste(asset.image,(final_x,final_y),asset.image)
         else:
             return_image = self.image.copy()
-            return_image.paste(asset.image,(x,y),asset.image)
+            return_image.paste(asset.image,(final_x,final_y),asset.image)
             return_image.show()
 
     def render(self):
@@ -75,8 +77,12 @@ class IsometricMap(Map):
 
 
 artpack = ArtpackFactory.fromFile('asset_definition.json')
-floor = artpack.assets['stone_floor_1x1']
+floor = artpack.assets['floor_1x1_exact']
 map = IsometricMap(artpack.data['grid'])
 map.add_to_grid(floor,0,0,dryrun=False)
 map.add_to_grid(floor,0,1,dryrun=False)
+
+floor2=artpack.assets['floor_1x1_fuzzy']
+map.add_to_grid(floor2,0,2,dryrun=False)
+map.add_to_grid(floor2,1,1,dryrun=False)
 map.render()
