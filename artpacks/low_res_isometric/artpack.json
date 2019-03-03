@@ -1,0 +1,57 @@
+{
+    "name": "Example Isometric Artpack",
+    "grid":{
+        "type": "isometric",
+        "height":84,
+        "width":147
+    },
+    "blueprints": [{
+        "name": "2x2 Floor low_res",
+        "id": "floor_2x2_low_res",
+        "layer": "floor",
+        "grid_type": "isometric",
+        "top_left": {
+            "x": 0,
+            "y": 0
+        },
+        "sub_assets":[
+            {
+                "type":"image",
+                "image_id":"floor_1x1_low_res",
+                "x":0,
+                "y":0
+            },
+            {
+                "type":"image",
+                "image_id":"floor_1x1_low_res",
+                "x":1,
+                "y":0
+            },
+            {
+                "type":"image",
+                "image_id":"floor_1x1_low_res",
+                "x":0,
+                "y":1
+            },
+            {
+                "type":"image",
+                "image_id":"floor_1x1_low_res",
+                "x":1,
+                "y":1
+            }
+        ],
+
+        "connections-TODO (How we do this?)": [
+            "NW",
+            "NE",
+            "SW",
+            "SE"
+        ],
+        "horizontally_flippable": true,
+        "vertically_flippable": true,
+        "tags": [
+            "test"
+        ]
+        }
+    ]
+}
