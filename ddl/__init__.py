@@ -6,7 +6,7 @@ class ArtpackFactory:
 
     @staticmethod
     def load(name):
-        with open('assetpacks/' + name + '/artpack.json') as artpack_file, open('assetpacks/' + name + '/imagepack.json') as imagepack_file:
+        with open('assetpacks/' + name + '/blueprints.json') as artpack_file, open('assetpacks/' + name + '/images.json') as imagepack_file:
             artpack = json.load(artpack_file)
             imagepack = json.load(imagepack_file)
             return Artpack(name, imagepack, artpack)
