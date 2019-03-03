@@ -1,12 +1,15 @@
-**Dungeon Definition Language
+# Dungeon Description Language
 
-DDL is a suite of tools and definitions designed to make designing and illustrating full on D&D encounter maps much simpler. It consists of four rough parts:
+DDL is a suite of tools and definitions designed to make designing and illustrating full on D&D encounter maps much simpler. It is built of several parts which can either function independently, or as a full stack:
 
-1: The dungeon definition: This is only the bits the GM cares about. Important rooms etc. It can be used to create the spatial definition.
+## The Dungeon Definition
 
-2: The spatial definition: This is computed from the above and describes the exact layout of the dungeon. It can be used to create the asset definition, given suitable assets.
+A standard for declaring the layout of a dungeon in terms of things the Dungeon Master actually cares about.
 
-3: The asset definition: This is made up of multiple assets, which may be made of assets, which are themselves images. This organises the spatial definition into a series of layers and images that can be pulled out into actual pretty pictures.
+## The Architect
 
-*Implementation
-The tooling will be written (initially) in python. The definitions themselves will be json (see json-schema). Image handling done using pillow.
+The architect takes a dungeon definition, and can convert it into a geometrically valid layout.
+
+## The Artist
+
+Takes a layout, decides which pieces of artwork to use to render it either top-down or isometrically, and then outputs the result.
