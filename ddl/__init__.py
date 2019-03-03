@@ -34,7 +34,7 @@ class Artpack:
 
         scale_x=desired_grid['width']/self.artpack['grid']['width']
         scale_y=desired_grid['height']/self.artpack['grid']['height']
-        for name, image in self.images.items():
+        for image in self.images.values():
             #Time to abuse python's referencing methods
             image.scale(scale_x,scale_y)
         self.artpack['grid']['width']=desired_grid['width']
@@ -82,7 +82,7 @@ class BlueprintFactory:
 
     def new_blueprint(self, id, layer, top_left = (0, 0), name='',
     horizontally_flippable=True, vertically_flippable=True,
-    tags=[],connections=[], sub_assets=[]):
+    tags=None,connections=[], sub_assets=[]):
         if self.current_asset:
             raise Exception('This factory is currently building another blueprint. Please finalise that asset before starting a new one.')
         self.current_asset=True
@@ -171,10 +171,13 @@ class Positioner:
 
 
 class Renderer:
-    def __init__(self, width=1000, height=1000, image_pixel_list=[]):
+    def __init__(self, width=1000, height=1000, image_pixel_list=None):
         self.image_pixel_width = width
         self.image_pixel_height = height
-        self.image_pixel_list=image_pixel_list
+        if image_pixel_list is None:
+            self.image_pixel_list=[]
+        else
+            self.image_pixel_list=image_pixel_list
         self.centre_line=round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)
 
