@@ -6,7 +6,7 @@ class ArtpackFactory:
 
     @staticmethod
     def load(name):
-        with open('artpacks/' + name + '/artpack.json') as artpack_file, open('artpacks/' + name + '/imagepack.json') as imagepack_file:
+        with open('assetpacks/' + name + '/artpack.json') as artpack_file, open('assetpacks/' + name + '/imagepack.json') as imagepack_file:
             artpack = json.load(artpack_file)
             imagepack = json.load(imagepack_file)
             return Artpack(name, imagepack, artpack)
@@ -45,7 +45,7 @@ class Image_asset:
     def __init__(self, data, artpack_name):
         self.artpack_name=artpack_name
         self.data = data
-        self.image = Image.open('artpacks/' + artpack_name + '/art/' + self.data["image"])
+        self.image = Image.open('assetpacks/' + artpack_name + '/art/' + self.data["image"])
 
     def scale(self, scale_x, scale_y):
         final_image_width=round(self.image.width*scale_x)
