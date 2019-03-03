@@ -12,6 +12,8 @@ echo "==> Validating examples…"
 
 jsonschema -i assetpacks/example_isometric/pack.json schemas/pack.json
 
+jsonschema -i assetpacks/low_res_isometric/pack.json schemas/pack.json
+
 echo "==> Running test builds…"
 
 python test.py
