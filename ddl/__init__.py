@@ -176,7 +176,7 @@ class Renderer:
         self.image_pixel_height = height
         if image_pixel_list is None:
             self.image_pixel_list=[]
-        else
+        else:
             self.image_pixel_list=image_pixel_list
         self.centre_line=round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)
