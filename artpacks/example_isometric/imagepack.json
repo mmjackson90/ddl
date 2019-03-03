@@ -8,14 +8,6 @@
             "x": 0,
             "y": 0
         },
-        "bottom_right": {
-            "x": 294,
-            "y": 170
-        },
-        "grid_size": {
-            "x":1,
-            "y":1
-        },
         "horizontally_flippable": true,
         "vertically_flippable": true,
         "tags": [
@@ -30,14 +22,6 @@
         "top_left": {
             "x": 5,
             "y": 6
-        },
-        "bottom_right": {
-            "x": 299,
-            "y": 176
-        },
-        "grid_size": {
-            "x":1,
-            "y":1
         },
         "horizontally_flippable": true,
         "vertically_flippable": true,
@@ -54,14 +38,6 @@
             "x": -147,
             "y": 130
         },
-        "bottom_right": {
-            "x": 294,
-            "y": 320
-        },
-        "grid_size": {
-            "x":1,
-            "y":1
-        },
         "horizontally_flippable": true,
         "vertically_flippable": false,
         "tags": [
@@ -76,10 +52,6 @@
         "top_left": {
             "x": 18,
             "y": 150
-        },
-        "bottom_right": {
-            "x": 312,
-            "y": 320
         },
         "horizontally_flippable": true,
         "vertically_flippable": false,

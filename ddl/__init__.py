@@ -30,12 +30,29 @@ class Artpack:
         for blueprint in artpack['blueprints']:
             self.blueprints[blueprint['id']] = Blueprint(blueprint, artpack_name=name)
 
+    def resize_images(self,desired_grid):
+
+        scale_x=desired_grid['width']/self.artpack['grid']['width']
+        scale_y=desired_grid['height']/self.artpack['grid']['height']
+        for name, image in self.images.items():
+            #Time to abuse python's referencing methods
+            image.scale(scale_x,scale_y)
+        self.artpack['grid']['width']=desired_grid['width']
+        self.artpack['grid']['height']=desired_grid['height']
+
 
 class Image_asset:
     def __init__(self, data, artpack_name):
         self.artpack_name=artpack_name
         self.data = data
         self.image = Image.open('artpacks/' + artpack_name + '/art/' + self.data["image"])
+
+    def scale(self, scale_x, scale_y):
+        final_image_width=round(self.image.width*scale_x)
+        final_image_height=round(self.image.height*scale_y)
+        self.image=self.image.resize((final_image_width,final_image_height))
+        self.data['top_left']['x']= round(self.data['top_left']['x']*scale_x)
+        self.data['top_left']['y']= round(self.data['top_left']['y']*scale_y)
 
     def show(self):
         self.image.show()
@@ -133,14 +150,14 @@ class Positioner:
             self.get_location_in_pixels = self.get_locations_classic
 
     def get_locations_isometric(self,x,y,grid_square_pixel_width,grid_square_pixel_height):
-            pixel_x=(y*math.ceil(grid_square_pixel_width/2))-(x*math.floor(grid_square_pixel_width/2))
-            pixel_y=(x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(grid_square_pixel_height/2))
-            return (pixel_x, pixel_y)
+        pixel_x=(y*math.ceil(grid_square_pixel_width/2))-(x*math.floor(grid_square_pixel_width/2))
+        pixel_y=(x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(grid_square_pixel_height/2))
+        return (pixel_x, pixel_y)
 
     def get_locations_classic(self,x,y,grid_square_pixel_width,grid_square_pixel_height):
-            pixel_x=x*grid_square_pixel_width
-            pixel_y=y*grid_square_pixel_height
-            return (pixel_x, pixel_y)
+        pixel_x=x*grid_square_pixel_width
+        pixel_y=y*grid_square_pixel_height
+        return (pixel_x, pixel_y)
 
     def get_image_pixel_list(self, pixel_offset_x, pixel_offset_y, image_location_list):
         #Worry about performance later.
