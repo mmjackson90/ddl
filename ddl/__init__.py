@@ -75,9 +75,9 @@ class Blueprint:
         return image_location_list
 
 class BlueprintFactory:
-    def __init__(self, artpack, grid_type):
+    def __init__(self, artpack, projection):
         self.artpack=artpack
-        self.grid_type=grid_type
+        self.projection=projection
         self.clear_blueprint()
 
     def new_blueprint(self, id, layer, top_left = (0, 0), name='',
@@ -113,7 +113,7 @@ class BlueprintFactory:
             "name": self.name,
             "id": self.id,
             "layer": self.layer,
-            "grid_type":self.grid_type,
+            "projection":self.projection,
             "top_left": self.top_left,
             "sub_assets":self.sub_assets,
             "connections": self.connections,
