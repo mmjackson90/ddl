@@ -1,7 +1,3 @@
-from PIL import Image
-import json
-import math
-
 from ddl import ArtpackFactory, BlueprintFactory, Renderer, Positioner
 
 artpack = ArtpackFactory.load('example_isometric')
