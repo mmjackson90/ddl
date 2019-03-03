@@ -11,8 +11,10 @@ cd "$(dirname "$0")/.."
 echo "==> Validating examples…"
 
 jsonschema -i assetpacks/example_isometric/pack.json schemas/pack.json
+jsonschema -i assetpacks/example_isometric/images.json schemas/images.json
 
 jsonschema -i assetpacks/low_res_isometric/pack.json schemas/pack.json
+jsonschema -i assetpacks/low_res_isometric/images.json schemas/images.json
 
 echo "==> Running test builds…"
 
