@@ -82,7 +82,7 @@ class BlueprintFactory:
 
     def new_blueprint(self, id, layer, top_left = (0, 0), name='',
     horizontally_flippable=True, vertically_flippable=True,
-    tags=None,connections=[], sub_assets=[]):
+    tags=None,connections=None, sub_assets=None):
         if self.current_asset:
             raise Exception('This factory is currently building another blueprint. Please finalise that asset before starting a new one.')
         self.current_asset=True
@@ -92,9 +92,9 @@ class BlueprintFactory:
         self.name = name
         self.horizontally_flippable = horizontally_flippable
         self.vertically_flippable = vertically_flippable
-        self.tags = tags
-        self.connections = connections
-        self.sub_assets = sub_assets
+        self.tags = [] if tags is None else tags
+        self.connections = [] if connections is None else connections
+        self.sub_assets = [] if sub_assets is None else sub_assets
 
     def add_image(self, image_id, x, y):
         if image_id not in self.artpack.images.keys():
@@ -174,10 +174,7 @@ class Renderer:
     def __init__(self, width=1000, height=1000, image_pixel_list=None):
         self.image_pixel_width = width
         self.image_pixel_height = height
-        if image_pixel_list is None:
-            self.image_pixel_list=[]
-        else:
-            self.image_pixel_list=image_pixel_list
+        self.image_pixel_list=[] if image_pixel_list is None else image_pixel_list
         self.centre_line=round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)
 
