@@ -12,9 +12,11 @@ echo "==> Validating examples…"
 
 jsonschema -i assetpacks/example_isometric/pack.json schemas/pack.json
 jsonschema -i assetpacks/example_isometric/images.json schemas/images.json
+jsonschema -i assetpacks/example_isometric/blueprints.json schemas/blueprints.json
 
 jsonschema -i assetpacks/low_res_isometric/pack.json schemas/pack.json
 jsonschema -i assetpacks/low_res_isometric/images.json schemas/images.json
+jsonschema -i assetpacks/low_res_isometric/blueprints.json schemas/blueprints.json
 
 echo "==> Running test builds…"
 
