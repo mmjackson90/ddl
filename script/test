@@ -10,6 +10,10 @@ cd "$(dirname "$0")/.."
 
 [ -z "$DEBUG" ] || set -x
 
-echo "==> Running tests…"
+echo "==> Validating examples…"
+
+jsonschema -i assetpacks/example_isometric/pack.json schemas/pack.json
+
+echo "==> Running test builds…"
 
 python test.py
