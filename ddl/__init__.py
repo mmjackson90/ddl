@@ -147,17 +147,16 @@ class Positioner:
         image_pixel_list=[]
         for image, x, y in image_location_list:
             pixel_x, pixel_y=self.get_location_in_pixels(x,y,self.grid_definition['width'],self.grid_definition['height'])
-            pixel_x=pixel_x-image.data['top_left']['x']+pixel_offset_x
-            pixel_y=pixel_y-image.data['top_left']['y']+pixel_offset_y
+            pixel_x=pixel_x+pixel_offset_x
+            pixel_y=pixel_y+pixel_offset_y
             image_pixel_list=image_pixel_list+[(image,pixel_x,pixel_y)]
         return image_pixel_list
 
 
 class Renderer:
-    def __init__(self, grid_type= 'isometric', width=1000, height=1000, image_pixel_list=[]):
+    def __init__(self, width=1000, height=1000, image_pixel_list=[]):
         self.image_pixel_width = width
         self.image_pixel_height = height
-        self.grid_type = grid_type
         self.image_pixel_list=image_pixel_list
         self.centre_line=round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)

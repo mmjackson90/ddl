@@ -8,6 +8,10 @@
             "x": 0,
             "y": 0
         },
+        "bottom_right": {
+            "x": 294,
+            "y": 170
+        },
         "grid_size": {
             "x":1,
             "y":1
@@ -27,6 +31,10 @@
             "x": 5,
             "y": 6
         },
+        "bottom_right": {
+            "x": 299,
+            "y": 176
+        },
         "grid_size": {
             "x":1,
             "y":1
@@ -43,8 +51,12 @@
         "id": "exact_wall_1",
         "image": "1_wall_exact.png",
         "top_left": {
-            "x": 18,
-            "y": 150
+            "x": -147,
+            "y": 130
+        },
+        "bottom_right": {
+            "x": 294,
+            "y": 320
         },
         "grid_size": {
             "x":1,
@@ -65,9 +77,9 @@
             "x": 18,
             "y": 150
         },
-        "grid_size": {
-            "x":1,
-            "y":1
+        "bottom_right": {
+            "x": 312,
+            "y": 320
         },
         "horizontally_flippable": true,
         "vertically_flippable": false,
