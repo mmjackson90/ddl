@@ -5,3 +5,6 @@ __pycache__
 !/artpacks/example_isometric/
 !/artpacks/example_isometric/*
 !/artpacks/example_isometric/**/*
+!/artpacks/low_res_isometric/
+!/artpacks/low_res_isometric/*
+!/artpacks/low_res_isometric/**/*

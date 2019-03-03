@@ -1,0 +1,18 @@
+{"name": "Example Isometric Artpack",
+  "images": [
+    {
+        "name": "1x1 Floor low_res",
+        "id": "floor_1x1_low_res",
+        "image": "1x1_floor_low_res.png",
+        "top_left": {
+            "x": 0,
+            "y": 0
+        },
+        "horizontally_flippable": true,
+        "vertically_flippable": true,
+        "tags": [
+            "test"
+        ]
+    }
+  ]
+}
