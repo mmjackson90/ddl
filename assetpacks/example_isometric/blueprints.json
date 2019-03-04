@@ -1,5 +1,4 @@
 {
-    "name": "Example Isometric Artpack",
     "grid":{
         "type": "isometric",
         "height":170,
@@ -11,7 +10,7 @@
             "name": "2x2 Floor exact",
             "id": "floor_2x2_exact",
             "layer": "floor",
-            "grid_type": "isometric",
+            "projection": "isometric",
             "top_left": {
                 "x": 0,
                 "y": 0
