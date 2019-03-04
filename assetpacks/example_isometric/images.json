@@ -3,11 +3,7 @@
         {
             "name": "1x1 Floor exact",
             "id": "floor_1x1_exact",
-            "image": "1x1_floor_exact.png",
-            "top_left": {
-                "x": 0,
-                "y": 0
-            }
+            "image": "1x1_floor_exact.png"
         },
         {
             "name": "1x1 Floor fuzzy",
