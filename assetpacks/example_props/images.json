@@ -1,0 +1,13 @@
+{
+    "images": [
+        {
+            "name": "Little box",
+            "id": "little_box",
+            "image": "little_box.png",
+            "top_left": {
+                "x": 0,
+                "y": 15
+            }
+        }
+    ]
+}

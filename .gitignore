@@ -8,3 +8,6 @@ __pycache__
 !/assetpacks/low_res_isometric/
 !/assetpacks/low_res_isometric/*
 !/assetpacks/low_res_isometric/**/*
+!/assetpacks/example_props/
+!/assetpacks/example_props/*
+!/assetpacks/example_props/**/*

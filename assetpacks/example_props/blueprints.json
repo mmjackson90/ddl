@@ -1,40 +1,52 @@
 {
     "grid":{
         "type": "isometric",
-        "height":170,
-        "width":294
+        "height":17,
+        "width":29
     },
     "blueprints": [
 
         {
-            "name": "2x2 Floor exact",
-            "id": "floor_2x2_exact",
+            "name": "Lots of boxes",
+            "id": "many_boxes",
             "layer": "floor",
             "projection": "isometric",
             "sub_assets":[
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"little_box",
                     "x":0,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
-                    "x":1,
+                    "image_id":"little_box",
+                    "x":9,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"little_box",
                     "x":0,
-                    "y":1
+                    "y":9
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
-                    "x":1,
-                    "y":1
+                    "image_id":"little_box",
+                    "x":9,
+                    "y":9
+                },
+                {
+                    "type":"image",
+                    "image_id":"little_box",
+                    "x":4,
+                    "y":4
+                },
+                {
+                    "type":"image",
+                    "image_id":"little_box",
+                    "x":5,
+                    "y":5
                 }
             ],
 
