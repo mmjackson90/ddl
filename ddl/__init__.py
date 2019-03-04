@@ -7,8 +7,11 @@ class ArtpackFactory:
 
     @staticmethod
     def load(name):
-        with open('artpacks/' + name + '/artpack.json') as artpack_file,
-        open('artpacks/' + name + '/imagepack.json') as imagepack_file:
+        with open(
+                'artpacks/' + name + '/artpack.json'
+                  ) as artpack_file, open(
+                  'artpacks/' + name + '/imagepack.json'
+                  ) as imagepack_file:
             artpack = json.load(artpack_file)
             imagepack = json.load(imagepack_file)
             return Artpack(name, imagepack, artpack)
@@ -81,11 +84,14 @@ class Blueprint:
                     sub_asset["y"]+offset_y
                 )]
             else:
-                image_location_list = image_location_list+
-                artpack.blueprints[sub_asset["blueprint_id"]]
-                .get_image_location_list(sub_asset["x"]+offset_x,
-                                         sub_asset["y"]+offset_y,
-                                         artpack)
+                sub_blueprint = artpack.blueprints[sub_asset["blueprint_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                new_ill = sub_blueprint.get_image_location_list(
+                                                          sub_offset_x,
+                                                          sub_offset_y,
+                                                          artpack)
+                image_location_list = image_location_list+new_ill
         return image_location_list
 
 
@@ -193,10 +199,11 @@ class Positioner:
         # Worry about performance later.
         image_pixel_list = []
         for image, x, y in image_location_list:
-            pixel_x, pixel_y = self
-            .get_location_in_pixels(x, y,
-                                    self.grid_definition['width'],
-                                    self.grid_definition['height'])
+            grid_width = self.grid_definition['width']
+            grid_height = self.grid_definition['height']
+            pixel_x, pixel_y = self.get_location_in_pixels(x, y,
+                                                           grid_width,
+                                                           grid_height)
             pixel_x = pixel_x+pixel_offset_x
             pixel_y = pixel_y+pixel_offset_y
             image_pixel_list = image_pixel_list+[(image, pixel_x, pixel_y)]
@@ -207,8 +214,10 @@ class Renderer:
     def __init__(self, width=1000, height=1000, image_pixel_list=None):
         self.image_pixel_width = width
         self.image_pixel_height = height
-        self.image_pixel_list = [] if image_pixel_list is None
-        else image_pixel_list
+        if image_pixel_list is None:
+            self.image_pixel_list = []
+        else:
+            self.image_pixel_list = image_pixel_list
         self.centre_line = round(width/2)
         self.initialise_image(self.image_pixel_width, self.image_pixel_height)
 
