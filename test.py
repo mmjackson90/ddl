@@ -59,7 +59,7 @@ renderer5 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
     500, 500, wall.get_image_location_list(0, 0, assetpack)))
 renderer5.render()
 
-# Will alter all of low_res_assetpack's images to be the same size as assetpack's
+# Will alter all of low_res_assetpacks images to be the same size as assetpacks
 low_res_assetpack = AssetpackFactory.load('low_res_isometric')
 low_res_assetpack.resize_images(assetpack.grid)
 low_res_floor = low_res_assetpack.components['floor_2x2_low_res']
