@@ -77,16 +77,16 @@ renderer6.render()
 # Adds in tiny boxes using a native grid (1 square =1/10th the big grid)
 # Then rescales the assetpack and adds in the same component on the big grid
 # much more accurately.
-prop_artpack = ArtpackFactory.load('example_props')
-boxes = prop_artpack.blueprints['many_boxes']
-image_location_list7 = boxes.get_image_location_list(0, 0, prop_artpack)
-positioner2 = Positioner(prop_artpack.artpack['grid'])
+prop_assetpack = AssetpackFactory.load('example_props')
+boxes = prop_assetpack.components['many_boxes']
+image_location_list7 = boxes.get_image_location_list(0, 0, prop_assetpack)
+positioner2 = Positioner(prop_assetpack.grid)
 image_pixel_list7 = positioner2.get_image_pixel_list(632, 0,
                                                      image_location_list7)
 
 
-prop_artpack.rescale_components(artpack.artpack['grid'])
-image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_artpack)
+prop_assetpack.rescale_components(assetpack.grid)
+image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
 
 image_pixel_list7_1 = positioner.get_image_pixel_list(632, 0,
                                                       image_location_list7_1)

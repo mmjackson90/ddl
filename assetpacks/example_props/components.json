@@ -4,8 +4,7 @@
         "height":17,
         "width":29
     },
-    "blueprints": [
-
+    "components": [
         {
             "name": "Lots of boxes",
             "id": "many_boxes",

@@ -50,7 +50,7 @@ class Assetpack:
         size_ratio_y = desired_grid['height']/self.grid['height']
         for image in self.images.values():
             # Time to abuse python's referencing methods
-            image.scale(size_ratio_x, size_ratio_y)
+            image.resize(size_ratio_x, size_ratio_y)
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
@@ -245,7 +245,7 @@ class Positioner:
             grid_square_pixel_width/2))
         pixel_y = (x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(
             grid_square_pixel_height/2))
-        return (pixel_x, pixel_y)
+        return (round(pixel_x), round(pixel_y))
 
     @staticmethod
     def get_locations_classic(x, y,
@@ -254,7 +254,7 @@ class Positioner:
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
         pixel_x = x*grid_square_pixel_width
         pixel_y = y*grid_square_pixel_height
-        return (pixel_x, pixel_y)
+        return (round(pixel_x), round(pixel_y))
 
     def get_image_pixel_list(self,
                              pixel_offset_x,
