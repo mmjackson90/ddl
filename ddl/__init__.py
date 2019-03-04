@@ -7,6 +7,7 @@ import json
 import math
 
 
+<<<<<<< HEAD
 class ArtpackFactory:
     """A factory for creating AssetPacks"""
     @staticmethod
@@ -19,18 +20,40 @@ class ArtpackFactory:
                 'assetpacks/' + name + '/images.json'
                 ) as imagepack_file:
             artpack = json.load(artpack_file)
+=======
+class AssetpackFactory:
+    """A factory for creating AssetPacks"""
+    @staticmethod
+    def load(name):
+        """Loads AssetPacks from their component and Image packs,
+         given an appropriate name"""
+        with open(
+                'assetpacks/' + name + '/components.json'
+                ) as component_file, open(
+                'assetpacks/' + name + '/images.json'
+                ) as imagepack_file:
+            components_and_grid = json.load(component_file)
+>>>>>>> various_renames
             imagepack = json.load(imagepack_file)
-            return Artpack(name, imagepack, artpack)
+            return Assetpack(name, imagepack, components_and_grid)
 
 
+<<<<<<< HEAD
 class Artpack:
     """Really an Assetpack. This class records all information needed to
      position and render the various images located in an artpack.
      Please see the artpack and imagepack schema for more info"""
     def __init__(self, name, imagepack, artpack):
+=======
+class Assetpack:
+    """This class records all information needed to
+     position and render the various images located in an assetpack.
+     Please see the assetpack and imagepack schema for more info"""
+    def __init__(self, name, imagepack, components_and_grid):
+>>>>>>> various_renames
 
-        self.imagepack = imagepack
         self.images = {}
+<<<<<<< HEAD
         self.blueprints = {}
 
         self.artpack = {
@@ -67,11 +90,37 @@ class Artpack:
             blueprint.rescale(scale_ratio_x, scale_ratio_y)
         self.artpack['grid']['width'] = desired_grid['width']
         self.artpack['grid']['height'] = desired_grid['height']
+=======
+        self.components = {}
+        self.name = name
+        self.grid = components_and_grid['grid']
+
+        for image in imagepack['images']:
+            self.images[image['id']] = Image_asset(image, assetpack_name=name)
+
+        for component in components_and_grid['components']:
+            self.components[component['id']] = Component(component,
+                                                         assetpack_name=name)
+
+    def resize_images(self, desired_grid):
+        """Accepts a desired grid size definition and uses it to rescale all
+         images in the assetpack to match up the grids.
+         Actually scales images at the moment, but could just change scale
+         factors"""
+        scale_x = desired_grid['width']/self.grid['width']
+        scale_y = desired_grid['height']/self.grid['height']
+        for image in self.images.values():
+            # Time to abuse python's referencing methods
+            image.scale(scale_x, scale_y)
+        self.grid['width'] = desired_grid['width']
+        self.grid['height'] = desired_grid['height']
+>>>>>>> various_renames
 
 
 class Image_asset:
     """A representation of an actual image file and the pixel offsets required
      to put it in the correct location."""
+<<<<<<< HEAD
     def __init__(self, data, artpack_name):
         self.artpack_name = artpack_name
         self.data = data
@@ -88,12 +137,36 @@ class Image_asset:
                                            size_ratio_x)
         self.data['top_left']['y'] = round(self.data['top_left']['y'] *
                                            size_ratio_y)
+=======
+    def __init__(self, data, assetpack_name):
+        self.assetpack_name = assetpack_name
+        self.data = data
+        self.name = data["name"]
+        self.id = data["id"]
+        if "top_left" in data.keys():
+            self.top_left = data["top_left"]
+        else:
+            self.top_left = {"x": 0, "y": 0}
+
+        self.image = Image.open('assetpacks/' + assetpack_name + '/art/' +
+                                data["image"])
+
+    def scale(self, scale_x, scale_y):
+        """Alters the image and it's top_left pixel offsets by some x and y
+         scale factors"""
+        final_image_width = round(self.image.width*scale_x)
+        final_image_height = round(self.image.height*scale_y)
+        self.image = self.image.resize((final_image_width, final_image_height))
+        self.top_left['x'] = round(self.top_left['x']*scale_x)
+        self.top_left['y'] = round(self.top_left['y']*scale_y)
+>>>>>>> various_renames
 
     def show(self):
         """Show the image."""
         self.image.show()
 
 
+<<<<<<< HEAD
 class Blueprint:
     """Soon to be called component: This is a space saving measure that records
      multiple blueprints and components and their respective positions within
@@ -117,10 +190,36 @@ class Blueprint:
             if sub_asset["type"] == "image":
                 image_location_list = image_location_list+[(
                     artpack.images[sub_asset["image_id"]],
+=======
+class Component:
+    """This is a space saving measure that records
+     multiple image_assets and components (collectively known as assets)
+     and their respective positions within the Asset Pack's grid."""
+    def __init__(self, data, assetpack_name):
+        self.data = data
+        # The assetpack this component is a part of
+        self.assetpack_name = assetpack_name
+        if "sub_assets" in data.keys():
+            self.sub_assets = data["sub_assets"]
+        else:
+            raise Exception('Component {} has no sub assets.',
+                            self.data["name"])
+
+    def get_image_location_list(self, offset_x, offset_y, assetpack):
+        """Recursively moves down a component, finally returning a list of
+         images and their offsets, given some already known pixel offset
+         values."""
+        image_location_list = []
+        for sub_asset in self.sub_assets:
+            if sub_asset["type"] == "image":
+                image_location_list = image_location_list+[(
+                    assetpack.images[sub_asset["image_id"]],
+>>>>>>> various_renames
                     sub_asset["x"]+offset_x,
                     sub_asset["y"]+offset_y
                 )]
             else:
+<<<<<<< HEAD
                 sub_blueprint = artpack.blueprints[sub_asset["blueprint_id"]]
                 sub_offset_x = sub_asset["x"]+offset_x
                 sub_offset_y = sub_asset["y"]+offset_y
@@ -158,6 +257,38 @@ class BlueprintFactory:
  blueprint. Please finalise that asset before starting a new one.''')
         self.current_asset = True
         self.id = id
+=======
+                sub_component = assetpack.components[sub_asset["component_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                new_ill = sub_component.get_image_location_list(
+                                                          sub_offset_x,
+                                                          sub_offset_y,
+                                                          assetpack)
+                image_location_list = image_location_list+new_ill
+        return image_location_list
+
+
+class ComponentFactory:
+    """A class to help build componentss in-console.
+    Needs to know an assetpack that it's using and co-ordinate information."""
+    def __init__(self, assetpack, projection):
+        self.assetpack = assetpack
+        self.projection = projection
+        self.clear_component()
+
+    def new_component(self, component_id, layer, top_left=(0, 0), name='',
+                      horizontally_flippable=True, vertically_flippable=True,
+                      tags=None, connections=None, sub_assets=None):
+        """Initialises a new, empty component. All component parameters can
+         be set using this method, so it's possible to 'copy' another component
+        . Cannot be used twice if another component is under construction."""
+        if self.current_component:
+            raise Exception('''This factory is currently building another
+ component. Please finalise that asset before starting a new one.''')
+        self.current_component = True
+        self.id = component_id
+>>>>>>> various_renames
         self.layer = layer
         self.top_left = top_left
         self.name = name
@@ -168,6 +299,7 @@ class BlueprintFactory:
         self.sub_assets = [] if sub_assets is None else sub_assets
 
     def add_image(self, image_id, x, y):
+<<<<<<< HEAD
         """Adds a specific image asset to the blueprint at grid co-ordinates
          x and y."""
         if image_id not in self.artpack.images.keys():
@@ -182,12 +314,33 @@ class BlueprintFactory:
             raise Exception('This blueprint ID doesnt exist in this artpack.')
         sub_asset = {"type": "blueprint",
                      "blueprint_id": blueprint_id,
+=======
+        """Adds a specific image asset to the component at grid co-ordinates
+         x and y."""
+        if image_id not in self.assetpack.images.keys():
+            raise Exception('This image ID doesnt exist in this assetpack.')
+        sub_asset = {"type": "image", "image_id": image_id, "x": x, "y": y}
+        self.sub_assets = self.sub_assets+[sub_asset]
+
+    def add_component(self, component_id, x, y):
+        """Adds a specific component to the component at grid co-ordinates
+         x and y."""
+        if component_id not in self.assetpack.components.keys():
+            raise Exception('This component ID isn\'t in this assetpack.')
+        sub_asset = {"type": "component",
+                     "component_id": component_id,
+>>>>>>> various_renames
                      "x": x,
                      "y": y}
         self.sub_assets = self.sub_assets+[sub_asset]
 
+<<<<<<< HEAD
     def get_blueprint(self):
         """Creates and returns the blueprint without clearing the factory."""
+=======
+    def get_component(self):
+        """Creates and returns the component without clearing the factory."""
+>>>>>>> various_renames
         data = {
             "name": self.name,
             "id": self.id,
@@ -200,11 +353,19 @@ class BlueprintFactory:
             "vertically_flippable": self.vertically_flippable,
             "tags": self.tags
         }
+<<<<<<< HEAD
         return Blueprint(data, self.artpack.artpack['name'])
 
     def clear_blueprint(self):
         """Clears the factory to begin building a new blueprint."""
         self.current_asset = False
+=======
+        return Component(data, self.assetpack.name)
+
+    def clear_component(self):
+        """Clears the factory to begin building a new component."""
+        self.current_component = False
+>>>>>>> various_renames
         self.id = None
         self.layer = None
         self.top_left = None
@@ -215,10 +376,17 @@ class BlueprintFactory:
         self.connections = None
         self.sub_assets = None
 
+<<<<<<< HEAD
     def pull_blueprint(self):
         """Creates and returns the blueprint and clears the factory"""
         image_list = self.get_blueprint()
         self.clear_blueprint()
+=======
+    def pull_component(self):
+        """Creates and returns the component and clears the factory"""
+        image_list = self.get_component()
+        self.clear_component()
+>>>>>>> various_renames
         return image_list
 
 
@@ -244,6 +412,7 @@ class Positioner:
             grid_square_pixel_width/2))
         pixel_y = (x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(
             grid_square_pixel_height/2))
+<<<<<<< HEAD
         return (round(pixel_x), round(pixel_y))
 
     @staticmethod
@@ -255,6 +424,19 @@ class Positioner:
         pixel_y = y*grid_square_pixel_height
         return (round(pixel_x), round(pixel_y))
 
+=======
+        return (pixel_x, pixel_y)
+
+    @staticmethod
+    def get_locations_classic(x, y,
+                              grid_square_pixel_width,
+                              grid_square_pixel_height):
+        """Changes grid co-ordinates to pixels for a classic cartesian grid"""
+        pixel_x = x*grid_square_pixel_width
+        pixel_y = y*grid_square_pixel_height
+        return (pixel_x, pixel_y)
+
+>>>>>>> various_renames
     def get_image_pixel_list(self,
                              pixel_offset_x,
                              pixel_offset_y,
@@ -296,6 +478,7 @@ class Renderer:
          be rendered"""
         self.image_pixel_list = image_pixel_list+self.image_pixel_list
 
+<<<<<<< HEAD
     def add_to_image(self, asset, x, y):
         """Adds all images to the final picture, taking into account their
          top-left corner offsets"""
@@ -307,4 +490,18 @@ class Renderer:
         """Add all images in the list to the final image and show it."""
         for asset, x, y in self.image_pixel_list:
             self.add_to_image(asset, x, y)
+=======
+    def add_to_image(self, sub_image, x, y):
+        """Adds all images to the final picture, taking into account their
+         top-left corner offsets"""
+        final_x = x-sub_image.top_left["x"]
+        final_y = y-sub_image.top_left["y"]
+        # second image.image call is alpha mask.
+        self.image.paste(sub_image.image, (final_x, final_y), sub_image.image)
+
+    def render(self):
+        """Add all images in the list to the final image and show it."""
+        for sub_image, x, y in self.image_pixel_list:
+            self.add_to_image(sub_image, x, y)
+>>>>>>> various_renames
         self.image.show()

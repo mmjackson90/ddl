@@ -4,7 +4,7 @@
         "height":84,
         "width":147
     },
-    "blueprints": [{
+    "components": [{
         "name": "2x2 Floor low_res",
         "id": "floor_2x2_low_res",
         "layer": "floor",
