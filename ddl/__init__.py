@@ -131,7 +131,7 @@ class ComponentFactory:
         self.projection = projection
         self.clear_component()
 
-    def new_component(self, id, layer, top_left=(0, 0), name='',
+    def new_component(self, component_id, layer, top_left=(0, 0), name='',
                       horizontally_flippable=True, vertically_flippable=True,
                       tags=None, connections=None, sub_assets=None):
         """Initialises a new, empty component. All component parameters can
@@ -141,7 +141,7 @@ class ComponentFactory:
             raise Exception('''This factory is currently building another
  component. Please finalise that asset before starting a new one.''')
         self.current_component = True
-        self.id = id
+        self.id = component_id
         self.layer = layer
         self.top_left = top_left
         self.name = name
