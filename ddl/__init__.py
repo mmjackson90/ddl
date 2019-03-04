@@ -216,7 +216,7 @@ class Positioner:
         else:
             self.get_location_in_pixels = self.get_locations_classic
 
-    def get_locations_isometric(x, y,
+    def get_locations_isometric(self, x, y,
                                 grid_square_pixel_width,
                                 grid_square_pixel_height):
         """Changes grid co-ordinates to pixels for an isometric grid"""
@@ -226,7 +226,7 @@ class Positioner:
             grid_square_pixel_height/2))
         return (pixel_x, pixel_y)
 
-    def get_locations_classic(x, y,
+    def get_locations_classic(self, x, y,
                               grid_square_pixel_width,
                               grid_square_pixel_height):
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
