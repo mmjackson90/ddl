@@ -1,3 +1,6 @@
+"""Runs tests to ensure the code runs through.
+ Coverage unknown, no unit tests yet. Prints pretty pictures though."""
+
 from ddl import ArtpackFactory, BlueprintFactory, Renderer, Positioner
 
 artpack = ArtpackFactory.load('example_isometric')
