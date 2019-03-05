@@ -1,7 +1,8 @@
 """Runs tests to ensure the code runs through.
  Coverage unknown, no unit tests yet. Prints pretty pictures though."""
 
-from ddl import AssetpackFactory, ComponentFactory, Renderer, Positioner
+from ddl import AssetpackFactory, ComponentFactory, Positioner
+from ddl.renderer import Renderer
 
 assetpack = AssetpackFactory.load('example_isometric')
 positioner = Positioner(assetpack.grid)
