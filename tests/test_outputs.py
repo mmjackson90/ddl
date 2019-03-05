@@ -4,96 +4,96 @@
 from ddl import AssetpackFactory, ComponentFactory, Positioner
 from ddl.renderer import Renderer
 
-assetpack = AssetpackFactory.load('example_isometric')
-positioner = Positioner(assetpack.grid)
-floor1 = assetpack.components['floor_2x2_exact']
-image_location_list = floor1.get_image_location_list(0, 0, assetpack)
-renderer = Renderer(image_pixel_list=positioner
-                    .get_image_pixel_list(0, 0, image_location_list))
-renderer.output('screen')
+ASSETPACK = AssetpackFactory.load('example_isometric')
+POSITIONER = Positioner(ASSETPACK.grid)
+FLOOR1 = ASSETPACK.components['floor_2x2_exact']
+IMAGE_LOCATION_LIST = FLOOR1.get_image_location_list(0, 0, ASSETPACK)
+RENDERER = Renderer(image_pixel_list=POSITIONER
+                    .get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST))
+RENDERER.output('screen')
 
-component_fac = ComponentFactory(assetpack, "isometric")
-component_fac.new_component('floor_1x2_exact', 'floor')
-component_fac.add_image("floor_1x1_exact", 0, 0)
-component_fac.add_image("floor_1x1_exact", 0, 1)
-floor4 = component_fac.pull_component()
+COMPONENT_FACTORY = ComponentFactory(ASSETPACK, "isometric")
+COMPONENT_FACTORY.new_component('floor_1x2_exact', 'floor')
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 1)
+FLOOR4 = COMPONENT_FACTORY.pull_component()
 
-component_fac.new_component('twiddle_1', 'floor')
-component_fac.add_component("floor_2x2_exact", 0, 0)
-component_fac.add_image("floor_1x1_exact", 2, 1)
-component_fac.add_image("floor_1x1_exact", 2, 2)
-component_fac.add_image("floor_1x1_exact", 2, 3)
-component_fac.add_component("floor_2x2_exact", 3, 3)
-floor5 = component_fac.pull_component()
-
-
-image_location_list2 = floor4.get_image_location_list(0, 0, assetpack)
-image_pixel_list2 = positioner.get_image_pixel_list(0, 0, image_location_list2)
-renderer2 = Renderer(image_pixel_list=image_pixel_list2)
-renderer2.output('screen')
+COMPONENT_FACTORY.new_component('twiddle_1', 'floor')
+COMPONENT_FACTORY.add_component("floor_2x2_exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 1)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 2)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 3)
+COMPONENT_FACTORY.add_component("floor_2x2_exact", 3, 3)
+FLOOR5 = COMPONENT_FACTORY.pull_component()
 
 
-image_location_list3 = floor5.get_image_location_list(0, 0, assetpack)
-image_pixel_list3 = positioner.get_image_pixel_list(0, 0,
-                                                    image_location_list3)
-renderer3 = Renderer(image_pixel_list=image_pixel_list3)
-renderer3.output('screen')
+IMAGE_LOCATION_LIST2 = FLOOR4.get_image_location_list(0, 0, ASSETPACK)
+IMAGE_PIXEL_LIST2 = POSITIONER.get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST2)
+RENDERER2 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST2)
+RENDERER2.output('screen')
 
-component_fac.new_component('fuzzy', 'floor')
-component_fac.add_image("floor_1x1_exact", 0, 0)
-component_fac.add_image("floor_1x1_fuzzy", 0, 1)
-component_fac.add_image("floor_1x1_fuzzy", 1, 0)
-component_fac.add_image("floor_1x1_exact", 1, 1)
-fuzzy = component_fac.pull_component()
 
-renderer4 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
-    0, 0, fuzzy.get_image_location_list(0, 0, assetpack)))
-renderer4.output('screen')
+IMAGE_LOCATION_LIST3 = FLOOR5.get_image_location_list(0, 0, ASSETPACK)
+IMAGE_PIXEL_LIST3 = POSITIONER.get_image_pixel_list(0, 0,
+                                                    IMAGE_LOCATION_LIST3)
+RENDERER3 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST3)
+RENDERER3.output('screen')
 
-component_fac.new_component('wall', 'wall')
-component_fac.add_image("floor_1x1_exact", 0, 0)
-component_fac.add_image("exact_wall_1", 0, 0)
-wall = component_fac.pull_component()
+COMPONENT_FACTORY.new_component('fuzzy', 'floor')
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 0, 1)
+COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 1, 0)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 1, 1)
+FUZZY = COMPONENT_FACTORY.pull_component()
 
-renderer5 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
-    0, 0, wall.get_image_location_list(0, 0, assetpack)))
-renderer5.output('screen')
+RENDERER4 = Renderer(image_pixel_list=POSITIONER.get_image_pixel_list(
+    0, 0, FUZZY.get_image_location_list(0, 0, ASSETPACK)))
+RENDERER4.output('screen')
+
+COMPONENT_FACTORY.new_component('wall', 'wall')
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
+COMPONENT_FACTORY.add_image("exact_wall_1", 0, 0)
+WALL = COMPONENT_FACTORY.pull_component()
+
+RENDERER5 = Renderer(image_pixel_list=POSITIONER.get_image_pixel_list(
+    0, 0, WALL.get_image_location_list(0, 0, ASSETPACK)))
+RENDERER5.output('screen')
 
 # Will alter all of low_res_assetpacks images to be the same size as assetpacks
-low_res_assetpack = AssetpackFactory.load('low_res_isometric')
-low_res_assetpack.resize_images(assetpack.grid)
-low_res_floor = low_res_assetpack.components['floor_2x2_low_res']
-image_location_list6 = low_res_floor.get_image_location_list(1, 1,
-                                                             low_res_assetpack)
-image_pixel_list_6 = positioner.get_image_pixel_list(0, 0,
-                                                     image_location_list6)
+LOW_RES_ASSETPACK = AssetpackFactory.load('low_res_isometric')
+LOW_RES_ASSETPACK.resize_images(ASSETPACK.grid)
+LOW_RES_FLOOR = LOW_RES_ASSETPACK.components['floor_2x2_low_res']
+IMAGE_LOCATION_LIST6 = LOW_RES_FLOOR.get_image_location_list(1, 1,
+                                                             LOW_RES_ASSETPACK)
+IMAGE_PIXEL_LIST6 = POSITIONER.get_image_pixel_list(0, 0,
+                                                    IMAGE_LOCATION_LIST6)
 # toto: Why is this backwards?
-renderer6 = Renderer(image_pixel_list=image_pixel_list_6)
-renderer6.add_image_pixel_list(
-    image_pixel_list=positioner
-    .get_image_pixel_list(0, 0, image_location_list))
-renderer6.output('screen')
+RENDERER6 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST6)
+RENDERER6.add_image_pixel_list(
+    image_pixel_list=POSITIONER
+    .get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST))
+RENDERER6.output('screen')
 
 # Adds in tiny boxes using a native grid (1 square =1/10th the big grid)
 # Then rescales the assetpack and adds in the same component on the big grid
 # much more accurately.
-prop_assetpack = AssetpackFactory.load('example_props')
-boxes = prop_assetpack.components['many_boxes']
-image_location_list7 = boxes.get_image_location_list(0, 0, prop_assetpack)
-positioner2 = Positioner(prop_assetpack.grid)
-image_pixel_list7 = positioner2.get_image_pixel_list(0, 0,
-                                                     image_location_list7)
+PROP_ASSETPACK = AssetpackFactory.load('example_props')
+BOXES = PROP_ASSETPACK.components['many_boxes']
+IMAGE_LOCATION_LIST7 = BOXES.get_image_location_list(0, 0, PROP_ASSETPACK)
+POSITIONER2 = Positioner(PROP_ASSETPACK.grid)
+IMAGE_PIXEL_LIST7 = POSITIONER2.get_image_pixel_list(0, 0,
+                                                     IMAGE_LOCATION_LIST7)
 
 
-prop_assetpack.rescale_pack(assetpack.grid)
-image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
+PROP_ASSETPACK.rescale_pack(ASSETPACK.grid)
+IMAGE_LOCATION_LIST7_1 = BOXES.get_image_location_list(0, 1, PROP_ASSETPACK)
 
-image_pixel_list7_1 = positioner.get_image_pixel_list(0, 0,
-                                                      image_location_list7_1)
+IMAGE_PIXEL_LIST7_1 = POSITIONER.get_image_pixel_list(0, 0,
+                                                      IMAGE_LOCATION_LIST7_1)
 # todo: Why is this backwards?
-renderer7 = Renderer(image_pixel_list=image_pixel_list7_1)
-renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7)
-renderer7.add_image_pixel_list(
-    image_pixel_list=positioner
-    .get_image_pixel_list(0, 0, image_location_list))
-renderer7.output('screen')
+RENDERER7 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST7_1)
+RENDERER7.add_image_pixel_list(image_pixel_list=IMAGE_PIXEL_LIST7)
+RENDERER7.add_image_pixel_list(
+    image_pixel_list=POSITIONER
+    .get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST))
+RENDERER7.output('screen')
