@@ -46,11 +46,21 @@ class Assetpack:
          images in the assetpack to match up the grids.
          Actually scales images at the moment, but could just change scale
          factors"""
-        scale_x = desired_grid['width']/self.grid['width']
-        scale_y = desired_grid['height']/self.grid['height']
+        size_ratio_x = desired_grid['width']/self.grid['width']
+        size_ratio_y = desired_grid['height']/self.grid['height']
         for image in self.images.values():
             # Time to abuse python's referencing methods
-            image.scale(scale_x, scale_y)
+            image.resize(size_ratio_x, size_ratio_y)
+        self.grid['width'] = desired_grid['width']
+        self.grid['height'] = desired_grid['height']
+
+    def rescale_components(self, desired_grid):
+        """Accepts a desired grid size definition and uses it to rescale all
+        co-ordinates used in blueprints."""
+        scale_ratio_x = self.grid['width']/desired_grid['width']
+        scale_ratio_y = self.grid['height']/desired_grid['height']
+        for component in self.components.values():
+            component.rescale(scale_ratio_x, scale_ratio_y)
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
@@ -71,14 +81,14 @@ class Image_asset:
         self.image = Image.open('assetpacks/' + assetpack_name + '/art/' +
                                 data["image"])
 
-    def scale(self, scale_x, scale_y):
+    def resize(self, size_ratio_x, size_ratio_y):
         """Alters the image and it's top_left pixel offsets by some x and y
          scale factors"""
-        final_image_width = round(self.image.width*scale_x)
-        final_image_height = round(self.image.height*scale_y)
+        final_image_width = round(self.image.width*size_ratio_x)
+        final_image_height = round(self.image.height*size_ratio_y)
         self.image = self.image.resize((final_image_width, final_image_height))
-        self.top_left['x'] = round(self.top_left['x']*scale_x)
-        self.top_left['y'] = round(self.top_left['y']*scale_y)
+        self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
+        self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
 
     def show(self):
         """Show the image."""
@@ -121,6 +131,13 @@ class Component:
                                                           assetpack)
                 image_location_list = image_location_list+new_ill
         return image_location_list
+
+    def rescale(self, scale_ratio_x, scale_ratio_y):
+        """Alters all the co-ordinates in a blueprint to match a new
+         co-ordinate system."""
+        for sub_asset in self.data["sub_assets"]:
+            sub_asset["x"] = sub_asset["x"] * scale_ratio_x
+            sub_asset["y"] = sub_asset["y"] * scale_ratio_y
 
 
 class ComponentFactory:
@@ -228,7 +245,7 @@ class Positioner:
             grid_square_pixel_width/2))
         pixel_y = (x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(
             grid_square_pixel_height/2))
-        return (pixel_x, pixel_y)
+        return (round(pixel_x), round(pixel_y))
 
     @staticmethod
     def get_locations_classic(x, y,
@@ -237,7 +254,7 @@ class Positioner:
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
         pixel_x = x*grid_square_pixel_width
         pixel_y = y*grid_square_pixel_height
-        return (pixel_x, pixel_y)
+        return (round(pixel_x), round(pixel_y))
 
     def get_image_pixel_list(self,
                              grid_offset_x,

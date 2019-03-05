@@ -9,10 +9,6 @@
         "id": "floor_2x2_low_res",
         "layer": "floor",
         "projection": "isometric",
-        "top_left": {
-            "x": 0,
-            "y": 0
-        },
         "sub_assets":[
             {
                 "type":"image",
