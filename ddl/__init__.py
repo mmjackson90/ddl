@@ -54,13 +54,22 @@ class Assetpack:
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
-    def rescale_components(self, desired_grid):
+    def rescale_pack(self, desired_grid):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
         scale_ratio_x = self.grid['width']/desired_grid['width']
         scale_ratio_y = self.grid['height']/desired_grid['height']
         for component in self.components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
+        if self.grid['type'] == 'isometric':
+            if self.grid['width'] < desired_grid['width']:
+                half_grid_x = -desired_grid['width']/2
+            elif self.grid['width'] > desired_grid['width']:
+                half_grid_x = +desired_grid['width']/2
+            else:
+                half_grid_x = 0
+            for image in self.images.values():
+                image.rescale(half_grid_x)
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
@@ -89,6 +98,11 @@ class Image_asset:
         self.image = self.image.resize((final_image_width, final_image_height))
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
+
+    def rescale(self, half_grid_x):
+        """Alters the image top_left offsets to account for isometric grid"""
+        self.top_left['x'] = round(self.top_left['x']+half_grid_x +
+                                   self.image.width/2)
 
     def show(self):
         """Show the image."""
@@ -257,16 +271,21 @@ class Positioner:
         return (round(pixel_x), round(pixel_y))
 
     def get_image_pixel_list(self,
-                             pixel_offset_x,
-                             pixel_offset_y,
+                             grid_offset_x,
+                             grid_offset_y,
                              image_location_list):
         """Goes through a list of images and grid co-ordinates and returns a
          list of images and pixel co-ordinates."""
         # Worry about performance later.
+        grid_width = self.grid_definition['width']
+        grid_height = self.grid_definition['height']
+        pixel_offsets = self.get_location_in_pixels(grid_offset_x,
+                                                    grid_offset_y,
+                                                    grid_width,
+                                                    grid_height)
+        pixel_offset_x, pixel_offset_y = pixel_offsets
         image_pixel_list = []
         for image, x, y in image_location_list:
-            grid_width = self.grid_definition['width']
-            grid_height = self.grid_definition['height']
             pixel_x, pixel_y = self.get_location_in_pixels(x, y,
                                                            grid_width,
                                                            grid_height)
@@ -278,15 +297,14 @@ class Positioner:
 
 class Renderer:
     """This class renders lists of images and their pixel locations."""
-    def __init__(self, width=1000, height=1000, image_pixel_list=None):
-        self.image_pixel_width = width
-        self.image_pixel_height = height
-        if image_pixel_list is None:
-            self.image_pixel_list = []
-        else:
-            self.image_pixel_list = image_pixel_list
-        self.centre_line = round(width/2)
-        self.initialise_image(self.image_pixel_width, self.image_pixel_height)
+    def __init__(self, image_pixel_list=None):
+        self.min_x = 0
+        self.min_y = 0
+        self.max_x = 0
+        self.max_y = 0
+        self.image_pixel_list = []
+        if image_pixel_list is not None:
+            self.add_image_pixel_list(image_pixel_list)
 
     def initialise_image(self, width, height):
         """Set up a clean image"""
@@ -295,6 +313,14 @@ class Renderer:
     def add_image_pixel_list(self, image_pixel_list):
         """Add some images at some series of offsets to the list of images to
          be rendered"""
+        for sub_image, x, y in image_pixel_list:
+            min_x, min_y, max_x, max_y = \
+                self.get_image_pixel_boundaries(sub_image, x, y)
+            self.min_x = min(min_x, self.min_x)
+            self.min_y = min(min_y, self.min_y)
+            self.max_x = max(max_x, self.max_x)
+            self.max_y = max(max_y, self.max_y)
+
         self.image_pixel_list = image_pixel_list+self.image_pixel_list
 
     def add_to_image(self, sub_image, x, y):
@@ -305,8 +331,19 @@ class Renderer:
         # second image.image call is alpha mask.
         self.image.paste(sub_image.image, (final_x, final_y), sub_image.image)
 
+    @staticmethod
+    def get_image_pixel_boundaries(sub_image, x, y):
+        min_x = x-sub_image.top_left["x"]
+        min_y = y-sub_image.top_left["y"]
+        max_x = min_x+sub_image.image.width
+        max_y = min_y+sub_image.image.height
+        return (min_x, min_y, max_x, max_y)
+
     def render(self):
         """Add all images in the list to the final image and show it."""
+        image_pixel_width = self.max_x - self.min_x + 20
+        image_pixel_height = self.max_y - self.min_y + 20
+        self.initialise_image(image_pixel_width, image_pixel_height)
         for sub_image, x, y in self.image_pixel_list:
-            self.add_to_image(sub_image, x, y)
+            self.add_to_image(sub_image, x-self.min_x+10, y-self.min_y+10)
         self.image.show()

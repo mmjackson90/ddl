@@ -8,7 +8,7 @@ positioner = Positioner(assetpack.grid)
 floor1 = assetpack.components['floor_2x2_exact']
 image_location_list = floor1.get_image_location_list(0, 0, assetpack)
 renderer = Renderer(image_pixel_list=positioner
-                    .get_image_pixel_list(500, 0, image_location_list))
+                    .get_image_pixel_list(0, 0, image_location_list))
 renderer.render()
 
 component_fac = ComponentFactory(assetpack, "isometric")
@@ -25,16 +25,15 @@ component_fac.add_image("floor_1x1_exact", 2, 3)
 component_fac.add_component("floor_2x2_exact", 3, 3)
 floor5 = component_fac.pull_component()
 
-print(floor5.get_image_location_list(1, 1, assetpack))
+
 image_location_list2 = floor4.get_image_location_list(0, 0, assetpack)
-image_pixel_list2 = positioner.get_image_pixel_list(500, 0,
-                                                    image_location_list2)
+image_pixel_list2 = positioner.get_image_pixel_list(0, 0, image_location_list2)
 renderer2 = Renderer(image_pixel_list=image_pixel_list2)
 renderer2.render()
 
 
 image_location_list3 = floor5.get_image_location_list(0, 0, assetpack)
-image_pixel_list3 = positioner.get_image_pixel_list(500, 0,
+image_pixel_list3 = positioner.get_image_pixel_list(0, 0,
                                                     image_location_list3)
 renderer3 = Renderer(image_pixel_list=image_pixel_list3)
 renderer3.render()
@@ -47,7 +46,7 @@ component_fac.add_image("floor_1x1_exact", 1, 1)
 fuzzy = component_fac.pull_component()
 
 renderer4 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
-    500, 500, fuzzy.get_image_location_list(0, 0, assetpack)))
+    0, 0, fuzzy.get_image_location_list(0, 0, assetpack)))
 renderer4.render()
 
 component_fac.new_component('wall', 'wall')
@@ -56,7 +55,7 @@ component_fac.add_image("exact_wall_1", 0, 0)
 wall = component_fac.pull_component()
 
 renderer5 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
-    500, 500, wall.get_image_location_list(0, 0, assetpack)))
+    0, 0, wall.get_image_location_list(0, 0, assetpack)))
 renderer5.render()
 
 # Will alter all of low_res_assetpacks images to be the same size as assetpacks
@@ -65,13 +64,13 @@ low_res_assetpack.resize_images(assetpack.grid)
 low_res_floor = low_res_assetpack.components['floor_2x2_low_res']
 image_location_list6 = low_res_floor.get_image_location_list(1, 1,
                                                              low_res_assetpack)
-image_pixel_list_6 = positioner.get_image_pixel_list(500, 0,
+image_pixel_list_6 = positioner.get_image_pixel_list(0, 0,
                                                      image_location_list6)
 # toto: Why is this backwards?
 renderer6 = Renderer(image_pixel_list=image_pixel_list_6)
 renderer6.add_image_pixel_list(
     image_pixel_list=positioner
-    .get_image_pixel_list(500, 0, image_location_list))
+    .get_image_pixel_list(0, 0, image_location_list))
 renderer6.render()
 
 # Adds in tiny boxes using a native grid (1 square =1/10th the big grid)
@@ -81,19 +80,19 @@ prop_assetpack = AssetpackFactory.load('example_props')
 boxes = prop_assetpack.components['many_boxes']
 image_location_list7 = boxes.get_image_location_list(0, 0, prop_assetpack)
 positioner2 = Positioner(prop_assetpack.grid)
-image_pixel_list7 = positioner2.get_image_pixel_list(632, 0,
+image_pixel_list7 = positioner2.get_image_pixel_list(0, 0,
                                                      image_location_list7)
 
 
-prop_assetpack.rescale_components(assetpack.grid)
+prop_assetpack.rescale_pack(assetpack.grid)
 image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
 
-image_pixel_list7_1 = positioner.get_image_pixel_list(632, 0,
+image_pixel_list7_1 = positioner.get_image_pixel_list(0, 0,
                                                       image_location_list7_1)
 # todo: Why is this backwards?
 renderer7 = Renderer(image_pixel_list=image_pixel_list7_1)
 renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7)
 renderer7.add_image_pixel_list(
     image_pixel_list=positioner
-    .get_image_pixel_list(500, 0, image_location_list))
+    .get_image_pixel_list(0, 0, image_location_list))
 renderer7.render()
