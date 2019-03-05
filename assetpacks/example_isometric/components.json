@@ -4,8 +4,7 @@
         "height":170,
         "width":294
     },
-    "blueprints": [
-
+    "components": [
         {
             "name": "2x2 Floor exact",
             "id": "floor_2x2_exact",
