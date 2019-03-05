@@ -38,7 +38,7 @@ class Assetpack:
         self.grid = components_and_grid['grid']
 
         for image in imagepack['images']:
-            self.images[image['id']] = Image_asset(image, assetpack_name=name)
+            self.images[image['id']] = ImageAsset(image, assetpack_name=name)
 
         for component in components_and_grid['components']:
             self.components[component['id']] = Component(component,
@@ -77,14 +77,14 @@ class Assetpack:
         self.grid['height'] = desired_grid['height']
 
 
-class Image_asset:
+class ImageAsset:
     """A representation of an actual image file and the pixel offsets required
      to put it in the correct location."""
     def __init__(self, data, assetpack_name):
         self.assetpack_name = assetpack_name
         self.data = data
         self.name = data["name"]
-        self.id = data["id"]
+        self.image_id = data["id"]
         if "top_left" in data.keys():
             self.top_left = data["top_left"]
         else:
@@ -175,7 +175,7 @@ class ComponentFactory:
             raise Exception('''This factory is currently building another
  component. Please finalise that asset before starting a new one.''')
         self.current_component = True
-        self.id = component_id
+        self.component_id = component_id
         self.layer = layer
         self.top_left = top_left
         self.name = name
@@ -185,30 +185,33 @@ class ComponentFactory:
         self.connections = [] if connections is None else connections
         self.sub_assets = [] if sub_assets is None else sub_assets
 
-    def add_image(self, image_id, x, y):
+    def add_image(self, image_id, x_coordinate, y_coordinate):
         """Adds a specific image asset to the component at grid co-ordinates
          x and y."""
         if image_id not in self.assetpack.images.keys():
             raise Exception('This image ID doesnt exist in this assetpack.')
-        sub_asset = {"type": "image", "image_id": image_id, "x": x, "y": y}
+        sub_asset = {"type": "image",
+                     "image_id": image_id,
+                     "x": x_coordinate,
+                     "y": y_coordinate}
         self.sub_assets = self.sub_assets+[sub_asset]
 
-    def add_component(self, component_id, x, y):
+    def add_component(self, component_id, x_coordinate, y_coordinate):
         """Adds a specific component to the component at grid co-ordinates
          x and y."""
         if component_id not in self.assetpack.components.keys():
             raise Exception('This component ID isn\'t in this assetpack.')
         sub_asset = {"type": "component",
                      "component_id": component_id,
-                     "x": x,
-                     "y": y}
+                     "x": x_coordinate,
+                     "y": y_coordinate}
         self.sub_assets = self.sub_assets+[sub_asset]
 
     def get_component(self):
         """Creates and returns the component without clearing the factory."""
         data = {
             "name": self.name,
-            "id": self.id,
+            "id": self.component_id,
             "layer": self.layer,
             "projection": self.projection,
             "top_left": self.top_left,
@@ -254,23 +257,23 @@ class Positioner:
             self.get_location_in_pixels = self.get_locations_classic
 
     @staticmethod
-    def get_locations_isometric(x, y,
+    def get_locations_isometric(x_coordinate, y_coordinate,
                                 grid_square_pixel_width,
                                 grid_square_pixel_height):
         """Changes grid co-ordinates to pixels for an isometric grid"""
-        pixel_x = (y*math.ceil(grid_square_pixel_width/2))-(x*math.floor(
-            grid_square_pixel_width/2))
-        pixel_y = (x*math.ceil(grid_square_pixel_height/2))+(y*math.floor(
-            grid_square_pixel_height/2))
+        pixel_x = (y_coordinate*math.ceil(grid_square_pixel_width/2)) -\
+                  (x_coordinate * math.floor(grid_square_pixel_width/2))
+        pixel_y = (x_coordinate*math.ceil(grid_square_pixel_height/2)) +\
+                  (y_coordinate*math.floor(grid_square_pixel_height/2))
         return (round(pixel_x), round(pixel_y))
 
     @staticmethod
-    def get_locations_classic(x, y,
+    def get_locations_classic(x_coordinate, y_coordinate,
                               grid_square_pixel_width,
                               grid_square_pixel_height):
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
-        pixel_x = x*grid_square_pixel_width
-        pixel_y = y*grid_square_pixel_height
+        pixel_x = x_coordinate*grid_square_pixel_width
+        pixel_y = y_coordinate*grid_square_pixel_height
         return (round(pixel_x), round(pixel_y))
 
     def get_image_pixel_list(self,
@@ -288,8 +291,9 @@ class Positioner:
                                                     grid_height)
         pixel_offset_x, pixel_offset_y = pixel_offsets
         image_pixel_list = []
-        for image, x, y in image_location_list:
-            pixel_x, pixel_y = self.get_location_in_pixels(x, y,
+        for image, x_coordinate, y_coordinate in image_location_list:
+            pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
+                                                           y_coordinate,
                                                            grid_width,
                                                            grid_height)
             pixel_x = pixel_x+pixel_offset_x
