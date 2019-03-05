@@ -302,8 +302,8 @@ class Renderer:
 
     @staticmethod
     def get_image_pixel_boundaries(sub_image, x, y):
-        min_x = x-sub_image.data["top_left"]["x"]
-        min_y = y-sub_image.data["top_left"]["y"]
+        min_x = x-sub_image.top_left["x"]
+        min_y = y-sub_image.top_left["y"]
         max_x = min_x+sub_image.image.width
         max_y = min_y+sub_image.image.height
         return (min_x, min_y, max_x, max_y)
