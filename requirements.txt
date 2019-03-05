@@ -1,2 +1,4 @@
 pillow
 jsonschema
+pytest
+pytest-cov<2.6

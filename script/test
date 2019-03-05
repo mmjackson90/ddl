@@ -18,6 +18,6 @@ jsonschema -i assetpacks/low_res_isometric/pack.json schemas/pack.json
 jsonschema -i assetpacks/low_res_isometric/images.json schemas/images.json
 jsonschema -i assetpacks/low_res_isometric/components.json schemas/components.json
 
-echo "==> Running test builds…"
+echo "==> Running test suite…"
 
-python test.py
+python -m pytest --cov=ddl
