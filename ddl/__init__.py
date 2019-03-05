@@ -166,6 +166,22 @@ class ComponentFactory:
         self.projection = projection
         self.clear_component()
 
+    def change_assetpack(self, assetpack):
+        """Checks a new assetpack can be used to build this component, then
+         switches assetpack. Mostly used for A/B testing how components
+         render"""
+        for sub_asset in self.sub_assets:
+            if sub_asset["type"] == "image":
+                if sub_asset["image_id"] not in assetpack.images.keys():
+                    raise Exception('Assetpack missing image %s',
+                                    sub_asset["image_id"])
+            if sub_asset["type"] == "component":
+                if sub_asset["component_id"] not in\
+                 assetpack.components.keys():
+                    raise Exception('Assetpack missing component %s',
+                                    sub_asset["component_id"])
+        self.assetpack = assetpack
+
     def new_component(self, component_id, layer, top_left=(0, 0), name='',
                       horizontally_flippable=True, vertically_flippable=True,
                       tags=None, connections=None, sub_assets=None):
