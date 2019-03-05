@@ -4,6 +4,9 @@ Tests Assetpacks
 
 from ddl import AssetpackFactory, Assetpack
 
-def test_assetpackfactory_creates_assetpack():
+
+def test_factory_creates_assetpack():
+    """ Ensure the AssetpackFactory returns an Assetpack. """
     assetpack = AssetpackFactory.load('example_isometric')
-    assert type(assetpack) is Assetpack
+    if not isinstance(assetpack, Assetpack):
+        raise AssertionError()
