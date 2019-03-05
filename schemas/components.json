@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/schema#",
-    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/blueprints.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/components.json",
     "type": "object"
 }
