@@ -30,6 +30,8 @@ COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 1)
 COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 2)
 COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 3)
 COMPONENT_FACTORY.add_component("floor_2x2_exact", 3, 3)
+COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 4, 4)
+COMPONENT_FACTORY.remove_last_sub_asset()
 COMPONENT_FACTORY.output_component()
 COMPONENT_FACTORY.clear_component()
 

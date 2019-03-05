@@ -208,6 +208,10 @@ class ComponentFactory:
                      "y": y_coordinate}
         self.sub_assets = self.sub_assets+[sub_asset]
 
+    def remove_last_sub_asset(self):
+        """Removes the last sub asset (and therefore all it's sub assets)."""
+        self.sub_assets.pop()
+
     def get_component(self):
         """Creates and returns the component without clearing the factory."""
         data = {
