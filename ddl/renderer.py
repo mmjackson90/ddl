@@ -5,6 +5,9 @@ Handle assembling an output image, any chrome, and displaying/saving
 accordingly.
 """
 
+import random
+import string
+
 from PIL import Image
 
 
@@ -52,11 +55,31 @@ class Renderer:
         max_y = min_y+sub_image.image.height
         return (min_x, min_y, max_x, max_y)
 
-    def render(self):
-        """Add all images in the list to the final image and show it."""
+    def assemble(self):
+        """Initialise and populate the final image"""
         image_pixel_width = self.max_x - self.min_x + 20
         image_pixel_height = self.max_y - self.min_y + 20
         self.initialise_image(image_pixel_width, image_pixel_height)
         for sub_image, x, y in self.image_pixel_list:
             self.add_to_image(sub_image, x-self.min_x+10, y-self.min_y+10)
-        self.image.show()
+
+    def output(self, destination, filename=None):
+        """Actually put the image somewhere"""
+
+        self.assemble()
+
+        if destination == 'screen':
+            self.image.show()
+        elif destination == 'file':
+            if not filename:
+                filename = ''.join([random.SystemRandom()
+                                   .choice(string.ascii_lowercase)
+                                   for n in range(8)])
+            self.image.save('output/' + filename + ".png", "PNG")
+        elif destination == 'dryrun':
+            # This doesn't actually do anything, but is handy for testing there
+            # are no material errors.
+            return
+        else:
+            raise ValueError("Invalid output destination '{}'"
+                             .format(destination))

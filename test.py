@@ -10,7 +10,7 @@ floor1 = assetpack.components['floor_2x2_exact']
 image_location_list = floor1.get_image_location_list(0, 0, assetpack)
 renderer = Renderer(image_pixel_list=positioner
                     .get_image_pixel_list(0, 0, image_location_list))
-renderer.render()
+renderer.output('screen')
 
 component_fac = ComponentFactory(assetpack, "isometric")
 component_fac.new_component('floor_1x2_exact', 'floor')
@@ -30,14 +30,14 @@ floor5 = component_fac.pull_component()
 image_location_list2 = floor4.get_image_location_list(0, 0, assetpack)
 image_pixel_list2 = positioner.get_image_pixel_list(0, 0, image_location_list2)
 renderer2 = Renderer(image_pixel_list=image_pixel_list2)
-renderer2.render()
+renderer2.output('screen')
 
 
 image_location_list3 = floor5.get_image_location_list(0, 0, assetpack)
 image_pixel_list3 = positioner.get_image_pixel_list(0, 0,
                                                     image_location_list3)
 renderer3 = Renderer(image_pixel_list=image_pixel_list3)
-renderer3.render()
+renderer3.output('screen')
 
 component_fac.new_component('fuzzy', 'floor')
 component_fac.add_image("floor_1x1_exact", 0, 0)
@@ -48,7 +48,7 @@ fuzzy = component_fac.pull_component()
 
 renderer4 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
     0, 0, fuzzy.get_image_location_list(0, 0, assetpack)))
-renderer4.render()
+renderer4.output('screen')
 
 component_fac.new_component('wall', 'wall')
 component_fac.add_image("floor_1x1_exact", 0, 0)
@@ -57,7 +57,7 @@ wall = component_fac.pull_component()
 
 renderer5 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
     0, 0, wall.get_image_location_list(0, 0, assetpack)))
-renderer5.render()
+renderer5.output('screen')
 
 # Will alter all of low_res_assetpacks images to be the same size as assetpacks
 low_res_assetpack = AssetpackFactory.load('low_res_isometric')
@@ -72,7 +72,7 @@ renderer6 = Renderer(image_pixel_list=image_pixel_list_6)
 renderer6.add_image_pixel_list(
     image_pixel_list=positioner
     .get_image_pixel_list(0, 0, image_location_list))
-renderer6.render()
+renderer6.output('screen')
 
 # Adds in tiny boxes using a native grid (1 square =1/10th the big grid)
 # Then rescales the assetpack and adds in the same component on the big grid
@@ -96,4 +96,4 @@ renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7)
 renderer7.add_image_pixel_list(
     image_pixel_list=positioner
     .get_image_pixel_list(0, 0, image_location_list))
-renderer7.render()
+renderer7.output('screen')
