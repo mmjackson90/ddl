@@ -84,7 +84,7 @@ image_pixel_list7 = positioner2.get_image_pixel_list(0, 0,
                                                      image_location_list7)
 
 
-prop_assetpack.rescale_components(assetpack.grid)
+prop_assetpack.rescale_pack(assetpack.grid)
 image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
 
 image_pixel_list7_1 = positioner.get_image_pixel_list(0, 0,

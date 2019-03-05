@@ -54,13 +54,22 @@ class Assetpack:
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
-    def rescale_components(self, desired_grid):
+    def rescale_pack(self, desired_grid):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
         scale_ratio_x = self.grid['width']/desired_grid['width']
         scale_ratio_y = self.grid['height']/desired_grid['height']
         for component in self.components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
+        if self.grid['type'] == 'isometric':
+            if self.grid['width'] < desired_grid['width']:
+                half_grid_x = -desired_grid['width']/2
+            elif self.grid['width'] > desired_grid['width']:
+                half_grid_x = +desired_grid['width']/2
+            else:
+                half_grid_x = 0
+            for image in self.images.values():
+                image.rescale(half_grid_x)
         self.grid['width'] = desired_grid['width']
         self.grid['height'] = desired_grid['height']
 
@@ -89,6 +98,11 @@ class Image_asset:
         self.image = self.image.resize((final_image_width, final_image_height))
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
+
+    def rescale(self, half_grid_x):
+        """Alters the image top_left offsets to account for isometric grid"""
+        self.top_left['x'] = round(self.top_left['x']+half_grid_x +
+                                   self.image.width/2)
 
     def show(self):
         """Show the image."""
