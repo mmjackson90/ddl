@@ -8,7 +8,7 @@ positioner = Positioner(assetpack.grid)
 floor1 = assetpack.components['floor_2x2_exact']
 image_location_list = floor1.get_image_location_list(0, 0, assetpack)
 renderer = Renderer(image_pixel_list=positioner
-                    .get_image_pixel_list(-1, 1, image_location_list))
+                    .get_image_pixel_list(0, 0, image_location_list))
 renderer.render()
 
 component_fac = ComponentFactory(assetpack, "isometric")
@@ -55,7 +55,7 @@ component_fac.add_image("exact_wall_1", 0, 0)
 wall = component_fac.pull_component()
 
 renderer5 = Renderer(image_pixel_list=positioner.get_image_pixel_list(
-    0, 0, wall.get_image_location_list(0, -1, assetpack)))
+    0, 0, wall.get_image_location_list(0, 0, assetpack)))
 renderer5.render()
 
 # Will alter all of low_res_assetpacks images to be the same size as assetpacks
