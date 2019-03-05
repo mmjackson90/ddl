@@ -80,19 +80,19 @@ prop_assetpack = AssetpackFactory.load('example_props')
 boxes = prop_assetpack.components['many_boxes']
 image_location_list7 = boxes.get_image_location_list(0, 0, prop_assetpack)
 positioner2 = Positioner(prop_assetpack.grid)
-image_pixel_list7 = positioner2.get_image_pixel_list(632, 0,
+image_pixel_list7 = positioner2.get_image_pixel_list(0, 0,
                                                      image_location_list7)
 
 
 prop_assetpack.rescale_components(assetpack.grid)
 image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
 
-image_pixel_list7_1 = positioner.get_image_pixel_list(632, 0,
+image_pixel_list7_1 = positioner.get_image_pixel_list(0, 0,
                                                       image_location_list7_1)
 # todo: Why is this backwards?
 renderer7 = Renderer(image_pixel_list=image_pixel_list7_1)
 renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7)
 renderer7.add_image_pixel_list(
     image_pixel_list=positioner
-    .get_image_pixel_list(500, 0, image_location_list))
+    .get_image_pixel_list(0, 0, image_location_list))
 renderer7.render()
