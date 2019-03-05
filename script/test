@@ -20,4 +20,4 @@ jsonschema -i assetpacks/low_res_isometric/components.json schemas/components.js
 
 echo "==> Running test suite…"
 
-python -m pytest
+python -m pytest --cov=ddl

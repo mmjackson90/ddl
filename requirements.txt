@@ -1,3 +1,4 @@
 pillow
 jsonschema
 pytest
+pytest-cov
