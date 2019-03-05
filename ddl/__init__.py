@@ -182,7 +182,7 @@ class ComponentFactory:
                                     sub_asset["component_id"])
         self.assetpack = assetpack
 
-    def new_component(self, component_id, layer, top_left=(0, 0), name='',
+    def new_component(self, component_id, layer, name='',
                       horizontally_flippable=True, vertically_flippable=True,
                       tags=None, connections=None, sub_assets=None):
         """Initialises a new, empty component. All component parameters can
@@ -194,7 +194,6 @@ class ComponentFactory:
         self.current_component = True
         self.component_id = component_id
         self.layer = layer
-        self.top_left = top_left
         self.name = name
         self.horizontally_flippable = horizontally_flippable
         self.vertically_flippable = vertically_flippable
@@ -228,28 +227,33 @@ class ComponentFactory:
         """Removes the last sub asset (and therefore all it's sub assets)."""
         self.sub_assets.pop()
 
-    def get_component(self):
-        """Creates and returns the component without clearing the factory."""
-        data = {
+    def get_component_data(self):
+        """Creates the component data to either return or print."""
+        return {
             "name": self.name,
             "id": self.component_id,
             "layer": self.layer,
             "projection": self.projection,
-            "top_left": self.top_left,
             "sub_assets": self.sub_assets,
             "connections": self.connections,
             "horizontally_flippable": self.horizontally_flippable,
             "vertically_flippable": self.vertically_flippable,
             "tags": self.tags
         }
-        return Component(data, self.assetpack.name)
+
+    def get_component(self):
+        """Creates and returns the component without clearing the factory."""
+        return Component(self.get_component_data(), self.assetpack.name)
+
+    def print_component(self):
+        """Prints the component in json without clearing the factory."""
+        print(json.dumps(self.get_component_data(), indent=4))
 
     def clear_component(self):
         """Clears the factory to begin building a new component."""
         self.current_component = False
         self.id = None
         self.layer = None
-        self.top_left = None
         self.name = None
         self.horizontally_flippable = None
         self.vertically_flippable = None

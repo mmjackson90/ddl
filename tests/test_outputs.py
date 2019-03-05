@@ -40,6 +40,7 @@ COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
 COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 0, 1)
 COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 1, 0)
 COMPONENT_FACTORY.add_image("floor_1x1_exact", 1, 1)
+COMPONENT_FACTORY.print_component()
 FUZZY = COMPONENT_FACTORY.pull_component()
 
 RENDERER4 = Renderer(image_pixel_list=POSITIONER.get_image_pixel_list(
