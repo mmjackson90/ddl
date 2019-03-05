@@ -268,10 +268,9 @@ class Renderer:
         self.min_y = 0
         self.max_x = 0
         self.max_y = 0
-        if image_pixel_list is None:
-            self.image_pixel_list = []
-        else:
-            self.image_pixel_list = image_pixel_list
+        self.image_pixel_list = []
+        if image_pixel_list is not None:
+            self.add_image_pixel_list(image_pixel_list)
 
     def initialise_image(self, width, height):
         """Set up a clean image"""
@@ -301,8 +300,8 @@ class Renderer:
     def get_image_pixel_boundaries(asset, x, y):
         min_x = x-asset.data["top_left"]["x"]
         min_y = y-asset.data["top_left"]["y"]
-        max_x = x-asset.data["top_left"]["x"]+asset.image.width
-        max_y = y-asset.data["top_left"]["y"]+asset.image.height
+        max_x = min_x+asset.image.width
+        max_y = min_y+asset.image.height
         return (min_x, min_y, max_x, max_y)
 
     def render(self):
@@ -311,5 +310,5 @@ class Renderer:
         image_pixel_height = self.max_y - self.min_y + 20
         self.initialise_image(image_pixel_width, image_pixel_height)
         for asset, x, y in self.image_pixel_list:
-            self.add_to_image(asset, x+self.min_x, y+self.min_y)
+            self.add_to_image(asset, x-self.min_x+10, y-self.min_y+10)
         self.image.show()
