@@ -237,16 +237,21 @@ class Positioner:
         return (pixel_x, pixel_y)
 
     def get_image_pixel_list(self,
-                             pixel_offset_x,
-                             pixel_offset_y,
+                             grid_offset_x,
+                             grid_offset_y,
                              image_location_list):
         """Goes through a list of images and grid co-ordinates and returns a
          list of images and pixel co-ordinates."""
         # Worry about performance later.
+        grid_width = self.grid_definition['width']
+        grid_height = self.grid_definition['height']
+        pixel_offsets = self.get_location_in_pixels(grid_offset_x,
+                                                    grid_offset_y,
+                                                    grid_width,
+                                                    grid_height)
+        pixel_offset_x, pixel_offset_y = pixel_offsets
         image_pixel_list = []
         for image, x, y in image_location_list:
-            grid_width = self.grid_definition['width']
-            grid_height = self.grid_definition['height']
             pixel_x, pixel_y = self.get_location_in_pixels(x, y,
                                                            grid_width,
                                                            grid_height)
