@@ -18,26 +18,20 @@ COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
 COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 1)
 FLOOR4 = COMPONENT_FACTORY.pull_component()
 
-COMPONENT_FACTORY.new_component('twiddle_1', 'floor')
-COMPONENT_FACTORY.add_component("floor_2x2_exact", 0, 0)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 1)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 2)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 3)
-COMPONENT_FACTORY.add_component("floor_2x2_exact", 3, 3)
-FLOOR5 = COMPONENT_FACTORY.pull_component()
-
-
 IMAGE_LOCATION_LIST2 = FLOOR4.get_image_location_list(0, 0, ASSETPACK)
 IMAGE_PIXEL_LIST2 = POSITIONER.get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST2)
 RENDERER2 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST2)
 RENDERER2.output('screen')
 
 
-IMAGE_LOCATION_LIST3 = FLOOR5.get_image_location_list(0, 0, ASSETPACK)
-IMAGE_PIXEL_LIST3 = POSITIONER.get_image_pixel_list(0, 0,
-                                                    IMAGE_LOCATION_LIST3)
-RENDERER3 = Renderer(image_pixel_list=IMAGE_PIXEL_LIST3)
-RENDERER3.output('screen')
+COMPONENT_FACTORY.new_component('twiddle_1', 'floor')
+COMPONENT_FACTORY.add_component("floor_2x2_exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 1)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 2)
+COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 3)
+COMPONENT_FACTORY.add_component("floor_2x2_exact", 3, 3)
+COMPONENT_FACTORY.output_component()
+COMPONENT_FACTORY.clear_component()
 
 COMPONENT_FACTORY.new_component('fuzzy', 'floor')
 COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)

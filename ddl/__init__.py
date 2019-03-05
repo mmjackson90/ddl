@@ -8,6 +8,7 @@ Thus far this is only really the Artist code.
 from PIL import Image
 import json
 import math
+from ddl.renderer import Renderer
 
 
 class AssetpackFactory:
@@ -241,6 +242,17 @@ class ComponentFactory:
         image_list = self.get_component()
         self.clear_component()
         return image_list
+
+    def output_component(self, destination='screen', filename=None):
+        """Sets up a locator and a renderer and renders the current component.
+         Can take many shortcuts as it knows it's own assetpack/grid.
+         Defaults to screen output, but can throw to file if needed."""
+        positioner = Positioner(self.assetpack.grid)
+        image_location_list = self.get_component()\
+                                  .get_image_location_list(0, 0,
+                                                           self.assetpack)
+        image_list = positioner.get_image_pixel_list(0, 0, image_location_list)
+        Renderer(image_list).output(destination, filename)
 
 
 class Positioner:
