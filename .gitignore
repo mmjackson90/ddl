@@ -1,6 +1,3 @@
-*.pyc
-__pycache__
-.DS_Store
 /assetpacks/*
 !/assetpacks/example_isometric/
 !/assetpacks/example_isometric/*
@@ -8,3 +5,9 @@ __pycache__
 !/assetpacks/low_res_isometric/
 !/assetpacks/low_res_isometric/*
 !/assetpacks/low_res_isometric/**/*
+!/assetpacks/example_props/
+!/assetpacks/example_props/*
+!/assetpacks/example_props/**/*
+*.pyc
+__pycache__
+.DS_Store
