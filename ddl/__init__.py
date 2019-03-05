@@ -263,15 +263,15 @@ class Positioner:
 
 class Renderer:
     """This class renders lists of images and their pixel locations."""
-    def __init__(self, width=1000, height=1000, image_pixel_list=None):
-        self.image_pixel_width = width
-        self.image_pixel_height = height
+    def __init__(self, image_pixel_list=None):
+        self.min_x = 0
+        self.min_y = 0
+        self.max_x = 0
+        self.max_y = 0
         if image_pixel_list is None:
             self.image_pixel_list = []
         else:
             self.image_pixel_list = image_pixel_list
-        self.centre_line = round(width/2)
-        self.initialise_image(self.image_pixel_width, self.image_pixel_height)
 
     def initialise_image(self, width, height):
         """Set up a clean image"""
@@ -280,6 +280,14 @@ class Renderer:
     def add_image_pixel_list(self, image_pixel_list):
         """Add some images at some series of offsets to the list of images to
          be rendered"""
+        for asset, x, y in image_pixel_list:
+            min_x, min_y, max_x, max_y = self.get_image_pixel_boundaries(asset,
+                                                                         x, y)
+            self.min_x = min(min_x, self.min_x)
+            self.min_y = min(min_y, self.min_y)
+            self.max_x = max(max_x, self.max_x)
+            self.max_y = max(max_y, self.max_y)
+
         self.image_pixel_list = image_pixel_list+self.image_pixel_list
 
     def add_to_image(self, asset, x, y):
@@ -289,8 +297,19 @@ class Renderer:
         final_y = y-asset.data["top_left"]["y"]
         self.image.paste(asset.image, (final_x, final_y), asset.image)
 
+    @staticmethod
+    def get_image_pixel_boundaries(asset, x, y):
+        min_x = x-asset.data["top_left"]["x"]
+        min_y = y-asset.data["top_left"]["y"]
+        max_x = x-asset.data["top_left"]["x"]+asset.image.width
+        max_y = y-asset.data["top_left"]["y"]+asset.image.height
+        return (min_x, min_y, max_x, max_y)
+
     def render(self):
         """Add all images in the list to the final image and show it."""
+        image_pixel_width = self.max_x - self.min_x + 20
+        image_pixel_height = self.max_y - self.min_y + 20
+        self.initialise_image(image_pixel_width, image_pixel_height)
         for asset, x, y in self.image_pixel_list:
-            self.add_to_image(asset, x, y)
+            self.add_to_image(asset, x+self.min_x, y+self.min_y)
         self.image.show()
