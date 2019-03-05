@@ -10,4 +10,5 @@ script:
   - script/test
 
 after_success:
+  - coverage xml
   - python-codacy-coverage -r coverage.xml
