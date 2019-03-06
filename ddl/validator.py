@@ -1,7 +1,7 @@
 """
 Validator
 
-Test files against the DDL schemas.
+Test files against the DDL.
 """
 
 import json
@@ -10,14 +10,22 @@ from jsonschema import validate
 
 
 class Validator:
+    """
+    Validator
+
+    Methods for ensuring files meet DDL requirements.
+    """
 
     @staticmethod
-    def validateFile(file, schema):
+    def validate_file(file, schema):
+        """
+        Load a file and then validate it against the given schema.
+        """
 
-        with open(file) as jsonFile,\
-                open('schemas/' + schema + '.json') as schemaFile:
+        with open(file) as json_file,\
+                open('schemas/' + schema + '.json') as schema_file:
 
-            fileJson = json.load(jsonFile)
-            schemaJson = json.load(schemaFile)
+            file_json = json.load(json_file)
+            schema_json = json.load(schema_file)
 
-            validate(fileJson, schemaJson)
+            validate(file_json, schema_json)
