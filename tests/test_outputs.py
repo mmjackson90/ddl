@@ -6,16 +6,16 @@ from ddl.renderer import Renderer
 
 ASSETPACK = AssetpackFactory.load('example_isometric')
 POSITIONER = Positioner(ASSETPACK.grid)
-FLOOR1 = ASSETPACK.components['floor_2x2_exact']
+FLOOR1 = ASSETPACK.components['floor-2x2-exact']
 IMAGE_LOCATION_LIST = FLOOR1.get_image_location_list(0, 0, ASSETPACK)
 RENDERER = Renderer(image_pixel_list=POSITIONER
                     .get_image_pixel_list(0, 0, IMAGE_LOCATION_LIST))
 RENDERER.output('screen')
 
 COMPONENT_FACTORY = ComponentFactory(ASSETPACK, "isometric")
-COMPONENT_FACTORY.new_component('floor_1x2_exact', 'floor')
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 1)
+COMPONENT_FACTORY.new_component('floor-1x2-exact', 'floor')
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 0, 1)
 FLOOR4 = COMPONENT_FACTORY.pull_component()
 
 IMAGE_LOCATION_LIST2 = FLOOR4.get_image_location_list(0, 0, ASSETPACK)
@@ -25,21 +25,21 @@ RENDERER2.output('screen')
 
 
 COMPONENT_FACTORY.new_component('twiddle_1', 'floor')
-COMPONENT_FACTORY.add_component("floor_2x2_exact", 0, 0)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 1)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 2)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 2, 3)
-COMPONENT_FACTORY.add_component("floor_2x2_exact", 3, 3)
-COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 4, 4)
-COMPONENT_FACTORY.remove_last_sub_asset()
+COMPONENT_FACTORY.add_component("floor-2x2-exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 2, 1)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 2, 2)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 2, 3)
+COMPONENT_FACTORY.add_component("floor-2x2-exact", 3, 3)
+COMPONENT_FACTORY.add_image("floor-1x1-fuzzy", 4, 4)
+COMPONENT_FACTORY.remove_last_part()
 COMPONENT_FACTORY.output_component()
 COMPONENT_FACTORY.clear_component()
 
 COMPONENT_FACTORY.new_component('fuzzy', 'floor')
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
-COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 0, 1)
-COMPONENT_FACTORY.add_image("floor_1x1_fuzzy", 1, 0)
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 1, 1)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 0, 0)
+COMPONENT_FACTORY.add_image("floor-1x1-fuzzy", 0, 1)
+COMPONENT_FACTORY.add_image("floor-1x1-fuzzy", 1, 0)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 1, 1)
 COMPONENT_FACTORY.print_component()
 FUZZY = COMPONENT_FACTORY.pull_component()
 
@@ -48,8 +48,8 @@ RENDERER4 = Renderer(image_pixel_list=POSITIONER.get_image_pixel_list(
 RENDERER4.output('screen')
 
 COMPONENT_FACTORY.new_component('wall', 'wall')
-COMPONENT_FACTORY.add_image("floor_1x1_exact", 0, 0)
-COMPONENT_FACTORY.add_image("exact_wall_1", 0, 0)
+COMPONENT_FACTORY.add_image("floor-1x1-exact", 0, 0)
+COMPONENT_FACTORY.add_image("exact-wall-1", 0, 0)
 WALL = COMPONENT_FACTORY.pull_component()
 
 RENDERER5 = Renderer(image_pixel_list=POSITIONER.get_image_pixel_list(
@@ -59,7 +59,7 @@ RENDERER5.output('screen')
 # Will alter all of low_res_assetpacks images to be the same size as assetpacks
 LOW_RES_ASSETPACK = AssetpackFactory.load('low_res_isometric')
 LOW_RES_ASSETPACK.resize_images(ASSETPACK.grid)
-LOW_RES_FLOOR = LOW_RES_ASSETPACK.components['floor_2x2_low_res']
+LOW_RES_FLOOR = LOW_RES_ASSETPACK.components['floor-2x2-low-res']
 IMAGE_LOCATION_LIST6 = LOW_RES_FLOOR.get_image_location_list(1, 1,
                                                              LOW_RES_ASSETPACK)
 IMAGE_PIXEL_LIST6 = POSITIONER.get_image_pixel_list(0, 0,
@@ -75,7 +75,7 @@ RENDERER6.output('screen')
 # Then rescales the assetpack and adds in the same component on the big grid
 # much more accurately.
 PROP_ASSETPACK = AssetpackFactory.load('example_props')
-BOXES = PROP_ASSETPACK.components['many_boxes']
+BOXES = PROP_ASSETPACK.components['many-boxes']
 IMAGE_LOCATION_LIST7 = BOXES.get_image_location_list(0, 0, PROP_ASSETPACK)
 POSITIONER2 = Positioner(PROP_ASSETPACK.grid)
 IMAGE_PIXEL_LIST7 = POSITIONER2.get_image_pixel_list(0, 0,

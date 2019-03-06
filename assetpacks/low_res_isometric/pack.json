@@ -1,6 +1,7 @@
 {
     "name": "Example Low-Resolution Isometric Asset Pack",
     "author": "The DDL Team",
+    "projection": "isometric",
     "tags": [
         "example"
     ]

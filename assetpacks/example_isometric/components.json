@@ -7,46 +7,35 @@
     "components": [
         {
             "name": "2x2 Floor exact",
-            "id": "floor_2x2_exact",
-            "layer": "floor",
-            "projection": "isometric",
-            "sub_assets":[
+            "id": "floor-2x2-exact",
+            "parts":[
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"floor-1x1-exact",
                     "x":0,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"floor-1x1-exact",
                     "x":1,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"floor-1x1-exact",
                     "x":0,
                     "y":1
                 },
                 {
                     "type":"image",
-                    "image_id":"floor_1x1_exact",
+                    "image_id":"floor-1x1-exact",
                     "x":1,
                     "y":1
                 }
             ],
-
-            "connections-TODO (How we do this?)": [
-                "NW",
-                "NE",
-                "SW",
-                "SE"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": true,
             "tags": [
-                "test"
+                "example"
             ]
         }
     ]

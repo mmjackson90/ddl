@@ -4,49 +4,39 @@
         "height":84,
         "width":147
     },
-    "components": [{
-        "name": "2x2 Floor low_res",
-        "id": "floor_2x2_low_res",
-        "layer": "floor",
-        "projection": "isometric",
-        "sub_assets":[
-            {
-                "type":"image",
-                "image_id":"floor_1x1_low_res",
-                "x":0,
-                "y":0
-            },
-            {
-                "type":"image",
-                "image_id":"floor_1x1_low_res",
-                "x":1,
-                "y":0
-            },
-            {
-                "type":"image",
-                "image_id":"floor_1x1_low_res",
-                "x":0,
-                "y":1
-            },
-            {
-                "type":"image",
-                "image_id":"floor_1x1_low_res",
-                "x":1,
-                "y":1
-            }
-        ],
-
-        "connections-TODO (How we do this?)": [
-            "NW",
-            "NE",
-            "SW",
-            "SE"
-        ],
-        "horizontally_flippable": true,
-        "vertically_flippable": true,
-        "tags": [
-            "test"
-        ]
+    "components": [
+        {
+            "name": "2x2 Floor low_res",
+            "id": "floor-2x2-low-res",
+            "parts": [
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-low-res",
+                    "x":0,
+                    "y":0
+                },
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-low-res",
+                    "x":1,
+                    "y":0
+                },
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-low-res",
+                    "x":0,
+                    "y":1
+                },
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-low-res",
+                    "x":1,
+                    "y":1
+                }
+            ],
+            "tags": [
+                "example"
+            ]
         }
     ]
 }

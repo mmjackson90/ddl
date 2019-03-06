@@ -2,7 +2,7 @@
     "images": [
         {
             "name": "Little box",
-            "id": "little_box",
+            "id": "little-box",
             "image": "little_box.png",
             "top_left": {
                 "x": 0,

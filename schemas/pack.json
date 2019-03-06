@@ -9,15 +9,26 @@
         "author": {
             "type": "string"
         },
+        "projection": {
+            "type": "string",
+            "description": "The projection system which should be used to render this assetpack.",
+            "enum": [
+                "topdown",
+                "isometric"
+            ]
+        },
         "tags": {
             "type": "array",
+            "description": "Tags which apply to all components within this pack.",
             "items": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
             }
         }
     },
     "required": [
-        "name"
+        "name",
+        "projection"
     ],
     "additionalProperties": false
 }
