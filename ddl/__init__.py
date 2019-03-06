@@ -8,6 +8,7 @@ Thus far this is only really the Artist code.
 from PIL import Image
 import json
 import math
+from ddl.renderer import Renderer
 
 
 class AssetpackFactory:
@@ -165,7 +166,23 @@ class ComponentFactory:
         self.projection = projection
         self.clear_component()
 
-    def new_component(self, component_id, layer, top_left=(0, 0), name='',
+    def change_assetpack(self, assetpack):
+        """Checks a new assetpack can be used to build this component, then
+         switches assetpack. Mostly used for A/B testing how components
+         render"""
+        for sub_asset in self.sub_assets:
+            if sub_asset["type"] == "image":
+                if sub_asset["image_id"] not in assetpack.images.keys():
+                    raise Exception('Assetpack missing image %s',
+                                    sub_asset["image_id"])
+            if sub_asset["type"] == "component":
+                if sub_asset["component_id"] not in\
+                 assetpack.components.keys():
+                    raise Exception('Assetpack missing component %s',
+                                    sub_asset["component_id"])
+        self.assetpack = assetpack
+
+    def new_component(self, component_id, layer, name='',
                       horizontally_flippable=True, vertically_flippable=True,
                       tags=None, connections=None, sub_assets=None):
         """Initialises a new, empty component. All component parameters can
@@ -177,7 +194,6 @@ class ComponentFactory:
         self.current_component = True
         self.component_id = component_id
         self.layer = layer
-        self.top_left = top_left
         self.name = name
         self.horizontally_flippable = horizontally_flippable
         self.vertically_flippable = vertically_flippable
@@ -207,28 +223,37 @@ class ComponentFactory:
                      "y": y_coordinate}
         self.sub_assets = self.sub_assets+[sub_asset]
 
-    def get_component(self):
-        """Creates and returns the component without clearing the factory."""
-        data = {
+    def remove_last_sub_asset(self):
+        """Removes the last sub asset (and therefore all it's sub assets)."""
+        self.sub_assets.pop()
+
+    def get_component_data(self):
+        """Creates the component data to either return or print."""
+        return {
             "name": self.name,
             "id": self.component_id,
             "layer": self.layer,
             "projection": self.projection,
-            "top_left": self.top_left,
             "sub_assets": self.sub_assets,
             "connections": self.connections,
             "horizontally_flippable": self.horizontally_flippable,
             "vertically_flippable": self.vertically_flippable,
             "tags": self.tags
         }
-        return Component(data, self.assetpack.name)
+
+    def get_component(self):
+        """Creates and returns the component without clearing the factory."""
+        return Component(self.get_component_data(), self.assetpack.name)
+
+    def print_component(self):
+        """Prints the component in json without clearing the factory."""
+        print(json.dumps(self.get_component_data(), indent=4))
 
     def clear_component(self):
         """Clears the factory to begin building a new component."""
         self.current_component = False
         self.id = None
         self.layer = None
-        self.top_left = None
         self.name = None
         self.horizontally_flippable = None
         self.vertically_flippable = None
@@ -241,6 +266,17 @@ class ComponentFactory:
         image_list = self.get_component()
         self.clear_component()
         return image_list
+
+    def output_component(self, destination='screen', filename=None):
+        """Sets up a locator and a renderer and renders the current component.
+         Can take many shortcuts as it knows it's own assetpack/grid.
+         Defaults to screen output, but can throw to file if needed."""
+        positioner = Positioner(self.assetpack.grid)
+        image_location_list = self.get_component()\
+                                  .get_image_location_list(0, 0,
+                                                           self.assetpack)
+        image_list = positioner.get_image_pixel_list(0, 0, image_location_list)
+        Renderer(image_list).output(destination, filename)
 
 
 class Positioner:
