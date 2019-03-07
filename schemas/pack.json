@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/schema#",
+    "$schema": "http://json-schema.org/draft-07/schema#",
     "$id": "https://easy-dungeon-company.github.io/ddl/schemas/pack.json",
     "type": "object",
     "properties": {
@@ -9,15 +9,26 @@
         "author": {
             "type": "string"
         },
+        "projection": {
+            "type": "string",
+            "description": "The projection system which should be used to render this assetpack.",
+            "enum": [
+                "topdown",
+                "isometric"
+            ]
+        },
         "tags": {
             "type": "array",
+            "description": "Tags which apply to all components within this pack.",
             "items": {
-                "type": "string"
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
             }
         }
     },
     "required": [
-        "name"
+        "name",
+        "projection"
     ],
     "additionalProperties": false
 }

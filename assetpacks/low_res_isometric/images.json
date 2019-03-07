@@ -2,7 +2,7 @@
     "images": [
     {
         "name": "1x1 Floor low_res",
-        "id": "floor_1x1_low_res",
+        "id": "floor-1x1-low-res",
         "image": "1x1_floor_low_res.png",
         "top_left": {
             "x": 0,

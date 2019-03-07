@@ -1,5 +1,47 @@
 {
-    "$schema": "http://json-schema.org/schema#",
-    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/blueprints.json",
-    "type": "object"
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/components.json",
+    "title": "DDL Assetpack Components",
+    "description": "The collection of components within an assetpack.",
+    "type": "object",
+    "properties": {
+        "components": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "description": "A friendly name for this component.",
+                        "type": "string"
+                    },
+                    "id": {
+                        "description": "A unique identifier for this component within the assetpack.",
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                    },
+                    "parts": {
+                        "description": "The individual parts which make up the component.",
+                        "type": "array"
+                    },
+                    "tags": {
+                        "description": "Tags which describe this component.",
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "pattern": "^[a-z0-9-]+$"
+                        }
+                    }
+                },
+                "required": [
+                    "id",
+                    "parts"
+                ],
+                "additionalProperties": false
+            }
+        },
+        "grid": {
+            "type": "object"
+        }
+    },
+    "additionalProperties": false
 }

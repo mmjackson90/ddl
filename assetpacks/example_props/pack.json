@@ -1,6 +1,7 @@
 {
-    "name": "Example Isometric Asset Pack",
+    "name": "Example Props Pack",
     "author": "The DDL Team",
+    "projection": "isometric",
     "tags": [
         "example"
     ]

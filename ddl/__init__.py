@@ -121,10 +121,10 @@ class Component:
         self.data = data
         # The assetpack this component is a part of
         self.assetpack_name = assetpack_name
-        if "sub_assets" in data.keys():
-            self.sub_assets = data["sub_assets"]
+        if "parts" in data.keys():
+            self.parts = data["parts"]
         else:
-            raise Exception('Component {} has no sub assets.',
+            raise Exception('Component {} has no parts.',
                             self.data["name"])
 
     def get_image_location_list(self, offset_x, offset_y, assetpack):
@@ -132,7 +132,7 @@ class Component:
          images and their offsets, given some already known pixel offset
          values."""
         image_location_list = []
-        for sub_asset in self.sub_assets:
+        for sub_asset in self.parts:
             if sub_asset["type"] == "image":
                 image_location_list = image_location_list+[(
                     assetpack.images[sub_asset["image_id"]],
@@ -153,7 +153,7 @@ class Component:
     def rescale(self, scale_ratio_x, scale_ratio_y):
         """Alters all the co-ordinates in a blueprint to match a new
          co-ordinate system."""
-        for sub_asset in self.data["sub_assets"]:
+        for sub_asset in self.data["parts"]:
             sub_asset["x"] = sub_asset["x"] * scale_ratio_x
             sub_asset["y"] = sub_asset["y"] * scale_ratio_y
 
@@ -184,7 +184,7 @@ class ComponentFactory:
 
     def new_component(self, component_id, layer, name='',
                       horizontally_flippable=True, vertically_flippable=True,
-                      tags=None, connections=None, sub_assets=None):
+                      tags=None, connections=None, parts=None):
         """Initialises a new, empty component. All component parameters can
          be set using this method, so it's possible to 'copy' another component
         . Cannot be used twice if another component is under construction."""
@@ -193,13 +193,12 @@ class ComponentFactory:
  component. Please finalise that asset before starting a new one.''')
         self.current_component = True
         self.component_id = component_id
-        self.layer = layer
         self.name = name
         self.horizontally_flippable = horizontally_flippable
         self.vertically_flippable = vertically_flippable
         self.tags = [] if tags is None else tags
         self.connections = [] if connections is None else connections
-        self.sub_assets = [] if sub_assets is None else sub_assets
+        self.parts = [] if parts is None else parts
 
     def add_image(self, image_id, x_coordinate, y_coordinate):
         """Adds a specific image asset to the component at grid co-ordinates
@@ -210,7 +209,7 @@ class ComponentFactory:
                      "image_id": image_id,
                      "x": x_coordinate,
                      "y": y_coordinate}
-        self.sub_assets = self.sub_assets+[sub_asset]
+        self.parts = self.parts+[sub_asset]
 
     def add_component(self, component_id, x_coordinate, y_coordinate):
         """Adds a specific component to the component at grid co-ordinates
@@ -221,20 +220,19 @@ class ComponentFactory:
                      "component_id": component_id,
                      "x": x_coordinate,
                      "y": y_coordinate}
-        self.sub_assets = self.sub_assets+[sub_asset]
+        self.parts = self.parts+[sub_asset]
 
-    def remove_last_sub_asset(self):
-        """Removes the last sub asset (and therefore all it's sub assets)."""
-        self.sub_assets.pop()
+    def remove_last_part(self):
+        """Removes the last part (and therefore all it's sub-parts)."""
+        self.parts.pop()
 
     def get_component_data(self):
         """Creates the component data to either return or print."""
         return {
             "name": self.name,
             "id": self.component_id,
-            "layer": self.layer,
             "projection": self.projection,
-            "sub_assets": self.sub_assets,
+            "parts": self.parts,
             "connections": self.connections,
             "horizontally_flippable": self.horizontally_flippable,
             "vertically_flippable": self.vertically_flippable,
@@ -253,13 +251,13 @@ class ComponentFactory:
         """Clears the factory to begin building a new component."""
         self.current_component = False
         self.id = None
-        self.layer = None
+        self.top_left = None
         self.name = None
         self.horizontally_flippable = None
         self.vertically_flippable = None
         self.tags = None
         self.connections = None
-        self.sub_assets = None
+        self.parts = None
 
     def pull_component(self):
         """Creates and returns the component and clears the factory"""

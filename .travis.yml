@@ -7,7 +7,7 @@ install:
   - pip install codacy-coverage
 
 script:
-  - script/test
+  - script/test --cov=ddl
 
 after_success:
   - coverage xml

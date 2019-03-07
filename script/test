@@ -8,16 +8,10 @@ cd "$(dirname "$0")/.."
 
 [ -z "$DEBUG" ] || set -x
 
-echo "==> Validating examples…"
-
-jsonschema -i assetpacks/example_isometric/pack.json schemas/pack.json
-jsonschema -i assetpacks/example_isometric/images.json schemas/images.json
-jsonschema -i assetpacks/example_isometric/components.json schemas/components.json
-
-jsonschema -i assetpacks/low_res_isometric/pack.json schemas/pack.json
-jsonschema -i assetpacks/low_res_isometric/images.json schemas/images.json
-jsonschema -i assetpacks/low_res_isometric/components.json schemas/components.json
-
 echo "==> Running test suite…"
 
-python -m pytest --cov=ddl
+if [ -n "$1" ]; then
+  python -m pytest "$1"
+else
+  python -m pytest
+fi

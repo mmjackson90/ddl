@@ -7,58 +7,47 @@
     "components": [
         {
             "name": "Lots of boxes",
-            "id": "many_boxes",
-            "layer": "floor",
-            "projection": "isometric",
-            "sub_assets":[
+            "id": "many-boxes",
+            "parts":[
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":0,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":9,
                     "y":0
                 },
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":0,
                     "y":9
                 },
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":9,
                     "y":9
                 },
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":4,
                     "y":4
                 },
                 {
                     "type":"image",
-                    "image_id":"little_box",
+                    "image_id":"little-box",
                     "x":5,
                     "y":5
                 }
             ],
-
-            "connections-TODO (How we do this?)": [
-                "NW",
-                "NE",
-                "SW",
-                "SE"
-            ],
-            "horizontally_flippable": true,
-            "vertically_flippable": true,
             "tags": [
-                "test"
+                "example"
             ]
         }
     ]
