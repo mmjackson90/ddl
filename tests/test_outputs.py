@@ -67,7 +67,7 @@ def test_old_tests():
 
     # Will alter all of low_res_assetpacks images to be the same size as assetpacks
     low_res_assetpack = AssetpackFactory.load('low_res_isometric')
-    low_res_assetpack.resize_images(assetpack.grid)
+    low_res_assetpack.resize_images(assetpack.projection)
     low_res_floor = low_res_assetpack.components['floor-2x2-low-res']
     image_location_list6 = low_res_floor.get_image_location_list(1, 1,
                                                                  low_res_assetpack)
@@ -90,8 +90,7 @@ def test_old_tests():
     image_pixel_list7 = positioner2.get_image_pixel_list(0, 0,
                                                          image_location_list7)
 
-
-    prop_assetpack.rescale_pack(assetpack.grid)
+    prop_assetpack.rescale_pack(assetpack.projection)
     image_location_list7_1 = boxes.get_image_location_list(0, 1, prop_assetpack)
 
     image_pixel_list7_1 = positioner.get_image_pixel_list(0, 0,

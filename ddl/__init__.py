@@ -11,6 +11,30 @@ import math
 from ddl.renderer import Renderer
 
 
+class Projection:
+    """A class for storing information on and handling all transformations
+     to/from another projection"""
+    def __init__(self, grid):
+        self.type = grid["type"]
+        self.height = grid["height"]
+        self.width = grid["width"]
+
+    def get_resize_ratios(self, desired_projection):
+        size_ratio_x = desired_projection.width/self.width
+        size_ratio_y = desired_projection.height/self.height
+        return (size_ratio_x, size_ratio_y)
+
+    def get_image_half_grid(self, desired_projection):
+        if self.type == 'isometric':
+            if self.width < desired_projection.width:
+                half_grid_x = -desired_projection.width/2
+            elif self.width > desired_projection.width:
+                half_grid_x = +desired_projection.width/2
+            else:
+                half_grid_x = 0
+        return (half_grid_x)
+
+
 class AssetpackFactory:
     """A factory for creating AssetPacks"""
     @staticmethod
@@ -37,6 +61,7 @@ class Assetpack:
         self.components = {}
         self.name = name
         self.grid = components_and_grid['grid']
+        self.projection = Projection(components_and_grid['grid'])
 
         for image in imagepack['images']:
             self.images[image['id']] = ImageAsset(image, assetpack_name=name)
@@ -45,37 +70,32 @@ class Assetpack:
             self.components[component['id']] = Component(component,
                                                          assetpack_name=name)
 
-    def resize_images(self, desired_grid):
+    def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
          images in the assetpack to match up the grids.
          Actually scales images at the moment, but could just change scale
          factors"""
-        size_ratio_x = desired_grid['width']/self.grid['width']
-        size_ratio_y = desired_grid['height']/self.grid['height']
+        size_ratio_x, size_ratio_y = self.projection.\
+            get_resize_ratios(desired_projection)
         for image in self.images.values():
             # Time to abuse python's referencing methods
             image.resize(size_ratio_x, size_ratio_y)
-        self.grid['width'] = desired_grid['width']
-        self.grid['height'] = desired_grid['height']
+        self.projection.width = desired_projection.width
+        self.projection.height = desired_projection.height
 
-    def rescale_pack(self, desired_grid):
+    def rescale_pack(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
-        scale_ratio_x = self.grid['width']/desired_grid['width']
-        scale_ratio_y = self.grid['height']/desired_grid['height']
+        size_ratio_x, size_ratio_y = self.projection.\
+            get_resize_ratios(desired_projection)
+        half_grid_x = self.projection.get_image_half_grid(desired_projection)
         for component in self.components.values():
-            component.rescale(scale_ratio_x, scale_ratio_y)
-        if self.grid['type'] == 'isometric':
-            if self.grid['width'] < desired_grid['width']:
-                half_grid_x = -desired_grid['width']/2
-            elif self.grid['width'] > desired_grid['width']:
-                half_grid_x = +desired_grid['width']/2
-            else:
-                half_grid_x = 0
+            component.rescale(1/size_ratio_x, 1/size_ratio_y)
+        if self.projection.type == "isometric":
             for image in self.images.values():
                 image.rescale(half_grid_x)
-        self.grid['width'] = desired_grid['width']
-        self.grid['height'] = desired_grid['height']
+        self.projection.width = desired_projection.width
+        self.projection.height = desired_projection.height
 
 
 class ImageAsset:
