@@ -10,3 +10,12 @@ def test_get_grid_ratios():
     projection1 = Projection('topdown', 10, 10)
     projection2 = Projection('topdown', 20, 30)
     assert projection1.get_grid_ratios(projection2) == (2, 3)
+
+
+def test_alter_grid_parameters():
+    """ Tests a projection returns the correct ratios"""
+    projection1 = Projection('topdown', 10, 10)
+    projection2 = Projection('topdown', 20, 30)
+    projection1.alter_grid_parameters(projection2)
+    assert projection1.width == 20
+    assert projection1.height == 30
