@@ -9,7 +9,7 @@ from PIL import Image
 import json
 import math
 from ddl.renderer import Renderer
-from ddl.projection import Projection, IsometricProjection, TopDownProjection
+from ddl.projection import IsometricProjection, TopDownProjection
 
 
 class AssetpackFactory:
@@ -93,9 +93,6 @@ class ImageAsset:
 
     def rescale(self, half_grid_x):
         """Alters the image top_left offsets to account for isometric grid"""
-        # TODO: This cannot be right.
-        # Running this operation multiple times will break the top_left.
-        # Work out why.
         self.top_left['x'] = round(self.top_left['x'] + half_grid_x)
 
     def show(self):

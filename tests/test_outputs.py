@@ -90,9 +90,12 @@ def test_old_tests():
     # Then rescales the assetpack and adds in the same component on the big
     # grid much more accurately.
 
-    component_factory.new_component('floor1', 'floor')
-    component_factory.add_image("floor-1x1-exact", 0, 0)
-    floor_1x1 = component_factory.pull_component()
+
+def test_non_scaled_rendering():
+    """Tests rescaling by mashing together a prop pack of one scale and
+    a floor pack of a different one."""
+    assetpack = AssetpackFactory.load('example_isometric')
+    floor_1x1 = assetpack.components['floor-1x1-exact']
     image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
                                                                assetpack)
     image_pixel_list7_3 = assetpack.projection.\
@@ -106,6 +109,21 @@ def test_old_tests():
     image_pixel_list7_2 = prop_assetpack.projection.\
         get_image_pixel_list(-4, 5, image_location_list7_2)
 
+    renderer7 = Renderer(image_pixel_list=image_pixel_list7_2)
+    renderer7.add_image_pixel_list(
+        image_pixel_list=assetpack.projection
+        .get_image_pixel_list(0, 0, image_location_list7_3))
+    renderer7.output('screen')
+
+
+def test_non_scaled_rendering():
+    """Tests rescaling by rescaling a prop pack to match the projection
+     of the floor pack."""
+    assetpack = AssetpackFactory.load('example_isometric')
+    floor_1x1 = assetpack.components['floor-1x1-exact']
+    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
+                                                               assetpack)
+
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_pack(assetpack.projection)
     boxes2 = prop_assetpack2.components['many-boxes']
@@ -114,12 +132,6 @@ def test_old_tests():
 
     image_pixel_list7_1 = prop_assetpack2.projection.\
         get_image_pixel_list(0, 0, image_location_list7_1)
-    # todo: Why is this backwards?
-    renderer7 = Renderer(image_pixel_list=image_pixel_list7_2)
-    renderer7.add_image_pixel_list(
-        image_pixel_list=assetpack.projection
-        .get_image_pixel_list(0, 0, image_location_list7_3))
-    renderer7.output('screen')
 
     renderer8 = Renderer(image_pixel_list=image_pixel_list7_1)
     renderer8.add_image_pixel_list(
