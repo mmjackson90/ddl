@@ -9,30 +9,7 @@ from PIL import Image
 import json
 import math
 from ddl.renderer import Renderer
-
-
-class Projection:
-    """A class for storing information on and handling all transformations
-     to/from another projection"""
-    def __init__(self, grid):
-        self.type = grid["type"]
-        self.height = grid["height"]
-        self.width = grid["width"]
-
-    def get_resize_ratios(self, desired_projection):
-        size_ratio_x = desired_projection.width/self.width
-        size_ratio_y = desired_projection.height/self.height
-        return (size_ratio_x, size_ratio_y)
-
-    def get_image_half_grid(self, desired_projection):
-        if self.type == 'isometric':
-            if self.width < desired_projection.width:
-                half_grid_x = -desired_projection.width/2
-            elif self.width > desired_projection.width:
-                half_grid_x = +desired_projection.width/2
-            else:
-                half_grid_x = 0
-        return (half_grid_x)
+from ddl.projection import Projection
 
 
 class AssetpackFactory:
@@ -75,27 +52,15 @@ class Assetpack:
          images in the assetpack to match up the grids.
          Actually scales images at the moment, but could just change scale
          factors"""
-        size_ratio_x, size_ratio_y = self.projection.\
-            get_resize_ratios(desired_projection)
-        for image in self.images.values():
-            # Time to abuse python's referencing methods
-            image.resize(size_ratio_x, size_ratio_y)
-        self.projection.width = desired_projection.width
-        self.projection.height = desired_projection.height
+        self.projection.resize_images(self.images, desired_projection)
+        self.projection.alter_grid_parameters(desired_projection)
 
     def rescale_pack(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
-        size_ratio_x, size_ratio_y = self.projection.\
-            get_resize_ratios(desired_projection)
-        half_grid_x = self.projection.get_image_half_grid(desired_projection)
-        for component in self.components.values():
-            component.rescale(1/size_ratio_x, 1/size_ratio_y)
-        if self.projection.type == "isometric":
-            for image in self.images.values():
-                image.rescale(half_grid_x)
-        self.projection.width = desired_projection.width
-        self.projection.height = desired_projection.height
+        self.projection.rescale_components(self.components, desired_projection)
+        self.projection.rescale_images(self.images, desired_projection)
+        self.projection.alter_grid_parameters(desired_projection)
 
 
 class ImageAsset:
@@ -125,6 +90,9 @@ class ImageAsset:
 
     def rescale(self, half_grid_x):
         """Alters the image top_left offsets to account for isometric grid"""
+        # TODO: This cannot be right.
+        # Running this operation multiple times will break the top_left.
+        # Work out why.
         self.top_left['x'] = round(self.top_left['x']+half_grid_x +
                                    self.image.width/2)
 
@@ -174,8 +142,8 @@ class Component:
         """Alters all the co-ordinates in a blueprint to match a new
          co-ordinate system."""
         for sub_asset in self.data["parts"]:
-            sub_asset["x"] = sub_asset["x"] * scale_ratio_x
-            sub_asset["y"] = sub_asset["y"] * scale_ratio_y
+            sub_asset["x"] = sub_asset["x"] / scale_ratio_x
+            sub_asset["y"] = sub_asset["y"] / scale_ratio_y
 
 
 class ComponentFactory:
