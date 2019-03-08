@@ -80,7 +80,7 @@ class IsometricProjection(Projection):
 class TopDownProjection(Projection):
     """A TopDown Projection subclass to overload how pixel offsets
      and get operations are treated."""
-    def get_location_in_pixels(x_coordinate, y_coordinate):
+    def get_location_in_pixels(self, x_coordinate, y_coordinate):
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
         pixel_x = x_coordinate*self.width
         pixel_y = y_coordinate*self.height

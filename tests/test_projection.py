@@ -24,3 +24,14 @@ def test_alter_grid_parameters():
 def test_isometric_get_pixels():
     projection = IsometricProjection(16, 10)
     assert projection.get_location_in_pixels(0, 0) == (0, 0)
+    assert projection.get_location_in_pixels(1, 0) == (-8, 5)
+    assert projection.get_location_in_pixels(1, 1) == (0, 10)
+    assert projection.get_location_in_pixels(1, -1) == (-16, 0)
+
+
+def test_topdown_get_pixels():
+    projection = TopDownProjection(16, 10)
+    assert projection.get_location_in_pixels(0, 0) == (0, 0)
+    assert projection.get_location_in_pixels(1, 0) == (16, 0)
+    assert projection.get_location_in_pixels(1, 1) == (16, 10)
+    assert projection.get_location_in_pixels(1, -1) == (16, -10)
