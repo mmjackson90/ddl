@@ -9,6 +9,7 @@ from PIL import Image
 import json
 import math
 from ddl.renderer import Renderer
+from ddl.projection import IsometricProjection, TopDownProjection
 
 
 class AssetpackFactory:
@@ -37,6 +38,10 @@ class Assetpack:
         self.components = {}
         self.name = name
         self.grid = components_and_grid['grid']
+        if self.grid['type'] == 'isometric':
+            self.projection = IsometricProjection(components_and_grid['grid'])
+        else:
+            self.projection = TopDownProjection(components_and_grid['grid'])
 
         for image in imagepack['images']:
             self.images[image['id']] = ImageAsset(image, assetpack_name=name)
@@ -45,37 +50,19 @@ class Assetpack:
             self.components[component['id']] = Component(component,
                                                          assetpack_name=name)
 
-    def resize_images(self, desired_grid):
+    def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
          images in the assetpack to match up the grids.
          Actually scales images at the moment, but could just change scale
          factors"""
-        size_ratio_x = desired_grid['width']/self.grid['width']
-        size_ratio_y = desired_grid['height']/self.grid['height']
-        for image in self.images.values():
-            # Time to abuse python's referencing methods
-            image.resize(size_ratio_x, size_ratio_y)
-        self.grid['width'] = desired_grid['width']
-        self.grid['height'] = desired_grid['height']
+        self.projection.resize_images(self.images, desired_projection)
+        self.projection.alter_grid_parameters(desired_projection)
 
-    def rescale_pack(self, desired_grid):
+    def rescale_components(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
-        scale_ratio_x = self.grid['width']/desired_grid['width']
-        scale_ratio_y = self.grid['height']/desired_grid['height']
-        for component in self.components.values():
-            component.rescale(scale_ratio_x, scale_ratio_y)
-        if self.grid['type'] == 'isometric':
-            if self.grid['width'] < desired_grid['width']:
-                half_grid_x = -desired_grid['width']/2
-            elif self.grid['width'] > desired_grid['width']:
-                half_grid_x = +desired_grid['width']/2
-            else:
-                half_grid_x = 0
-            for image in self.images.values():
-                image.rescale(half_grid_x)
-        self.grid['width'] = desired_grid['width']
-        self.grid['height'] = desired_grid['height']
+        self.projection.rescale_components(self.components, desired_projection)
+        self.projection.alter_grid_parameters(desired_projection)
 
 
 class ImageAsset:
@@ -105,8 +92,7 @@ class ImageAsset:
 
     def rescale(self, half_grid_x):
         """Alters the image top_left offsets to account for isometric grid"""
-        self.top_left['x'] = round(self.top_left['x']+half_grid_x +
-                                   self.image.width/2)
+        self.top_left['x'] = round(self.top_left['x'] + half_grid_x)
 
     def show(self):
         """Show the image."""
@@ -154,8 +140,8 @@ class Component:
         """Alters all the co-ordinates in a blueprint to match a new
          co-ordinate system."""
         for sub_asset in self.data["parts"]:
-            sub_asset["x"] = sub_asset["x"] * scale_ratio_x
-            sub_asset["y"] = sub_asset["y"] * scale_ratio_y
+            sub_asset["x"] = sub_asset["x"] / scale_ratio_x
+            sub_asset["y"] = sub_asset["y"] / scale_ratio_y
 
 
 class ComponentFactory:
@@ -269,68 +255,9 @@ class ComponentFactory:
         """Sets up a locator and a renderer and renders the current component.
          Can take many shortcuts as it knows it's own assetpack/grid.
          Defaults to screen output, but can throw to file if needed."""
-        positioner = Positioner(self.assetpack.grid)
         image_location_list = self.get_component()\
                                   .get_image_location_list(0, 0,
                                                            self.assetpack)
-        image_list = positioner.get_image_pixel_list(0, 0, image_location_list)
+        image_list = self.assetpack.projection.\
+            get_image_pixel_list(0, 0, image_location_list)
         Renderer(image_list).output(destination, filename)
-
-
-class Positioner:
-    """Responsible for getting a list of images and grid co-ordinates and
-     turning it into a list of images and pixel co-ordinates, given the grid
-     definition it is initialised with."""
-    def __init__(self, grid_definition):
-        self.grid_definition = grid_definition
-        # MONKEYPAAAAAAAAAAAAAAATCH!!! (I think it's neater here,
-        # given that we know the co-ordinate system.
-        if grid_definition['type'] == "isometric":
-            self.get_location_in_pixels = self.get_locations_isometric
-        else:
-            self.get_location_in_pixels = self.get_locations_classic
-
-    @staticmethod
-    def get_locations_isometric(x_coordinate, y_coordinate,
-                                grid_square_pixel_width,
-                                grid_square_pixel_height):
-        """Changes grid co-ordinates to pixels for an isometric grid"""
-        pixel_x = (y_coordinate*math.ceil(grid_square_pixel_width/2)) -\
-                  (x_coordinate * math.floor(grid_square_pixel_width/2))
-        pixel_y = (x_coordinate*math.ceil(grid_square_pixel_height/2)) +\
-                  (y_coordinate*math.floor(grid_square_pixel_height/2))
-        return (round(pixel_x), round(pixel_y))
-
-    @staticmethod
-    def get_locations_classic(x_coordinate, y_coordinate,
-                              grid_square_pixel_width,
-                              grid_square_pixel_height):
-        """Changes grid co-ordinates to pixels for a classic cartesian grid"""
-        pixel_x = x_coordinate*grid_square_pixel_width
-        pixel_y = y_coordinate*grid_square_pixel_height
-        return (round(pixel_x), round(pixel_y))
-
-    def get_image_pixel_list(self,
-                             grid_offset_x,
-                             grid_offset_y,
-                             image_location_list):
-        """Goes through a list of images and grid co-ordinates and returns a
-         list of images and pixel co-ordinates."""
-        # Worry about performance later.
-        grid_width = self.grid_definition['width']
-        grid_height = self.grid_definition['height']
-        pixel_offsets = self.get_location_in_pixels(grid_offset_x,
-                                                    grid_offset_y,
-                                                    grid_width,
-                                                    grid_height)
-        pixel_offset_x, pixel_offset_y = pixel_offsets
-        image_pixel_list = []
-        for image, x_coordinate, y_coordinate in image_location_list:
-            pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
-                                                           y_coordinate,
-                                                           grid_width,
-                                                           grid_height)
-            pixel_x = pixel_x+pixel_offset_x
-            pixel_y = pixel_y+pixel_offset_y
-            image_pixel_list = image_pixel_list+[(image, pixel_x, pixel_y)]
-        return image_pixel_list

@@ -5,6 +5,20 @@
         "width":294
     },
     "components": [
+        {   "name": "1x1 Floor Exact",
+            "id": "floor-1x1-exact",
+            "parts":[
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-exact",
+                    "x":0,
+                    "y":0
+                }
+            ],
+            "tags": [
+                "example"
+            ]
+        },
         {
             "name": "2x2 Floor exact",
             "id": "floor-2x2-exact",

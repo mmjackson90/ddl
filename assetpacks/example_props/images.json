@@ -5,7 +5,7 @@
             "id": "little-box",
             "image": "little_box.png",
             "top_left": {
-                "x": 0,
+                "x": 14,
                 "y": 15
             }
         }
