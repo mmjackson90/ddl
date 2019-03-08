@@ -12,8 +12,7 @@ import math
 class Projection:
     """A class for storing information on and handling all transformations
      to/from another projection"""
-    def __init__(self, type, width, height):
-        self.type = type
+    def __init__(self, width, height):
         self.height = height
         self.width = width
 

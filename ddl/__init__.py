@@ -39,12 +39,10 @@ class Assetpack:
         self.name = name
         self.grid = components_and_grid['grid']
         if self.grid['type'] == 'isometric':
-            self.projection = IsometricProjection(self.grid['type'],
-                                                  self.grid['width'],
+            self.projection = IsometricProjection(self.grid['width'],
                                                   self.grid['height'])
         else:
-            self.projection = TopDownProjection(self.grid['type'],
-                                                self.grid['width'],
+            self.projection = TopDownProjection(self.grid['width'],
                                                 self.grid['height'])
 
         for image in imagepack['images']:
