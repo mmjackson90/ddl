@@ -110,13 +110,11 @@ def test_non_scaled_rendering():
         get_image_pixel_list(-4, 5, image_location_list7_2)
 
     renderer7 = Renderer(image_pixel_list=image_pixel_list7_2)
-    renderer7.add_image_pixel_list(
-        image_pixel_list=assetpack.projection
-        .get_image_pixel_list(0, 0, image_location_list7_3))
+    renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7_3)
     renderer7.output('screen')
 
 
-def test_non_scaled_rendering():
+def test_scaled_rendering():
     """Tests rescaling by rescaling a prop pack to match the projection
      of the floor pack."""
     assetpack = AssetpackFactory.load('example_isometric')
@@ -124,6 +122,8 @@ def test_non_scaled_rendering():
     image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
                                                                assetpack)
 
+    image_pixel_list7_3 = assetpack.projection.\
+        get_image_pixel_list(0, 0, image_location_list7_3)
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_pack(assetpack.projection)
     boxes2 = prop_assetpack2.components['many-boxes']
@@ -134,7 +134,5 @@ def test_non_scaled_rendering():
         get_image_pixel_list(0, 0, image_location_list7_1)
 
     renderer8 = Renderer(image_pixel_list=image_pixel_list7_1)
-    renderer8.add_image_pixel_list(
-        image_pixel_list=assetpack.projection
-        .get_image_pixel_list(0, 0, image_location_list7_3))
+    renderer8.add_image_pixel_list(image_pixel_list7_3)
     renderer8.output('screen')

@@ -5,7 +5,7 @@ Currently comes in two flavours (that are combined ATM).
 Handles all co-ordinate transforms, image scaling operations and
 conversion of co-ordinates to pixel offsets.
 """
-from PIL import Image
+
 import math
 
 
@@ -91,6 +91,8 @@ class IsometricProjection(Projection):
 
 
 class TopDownProjection(Projection):
+    """A TopDown Projection subclass to overload how pixel offsets
+     and get operations are treated."""
     def get_location_in_pixels(x_coordinate, y_coordinate):
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
         pixel_x = x_coordinate*self.width
