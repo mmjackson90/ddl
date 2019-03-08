@@ -23,12 +23,7 @@ class Projection:
 
     def get_image_half_grid(self, desired_projection):
         if self.type == 'isometric':
-            if self.width < desired_projection.width:
-                half_grid_x = -desired_projection.width/2
-            elif self.width > desired_projection.width:
-                half_grid_x = +desired_projection.width/2
-            else:
-                half_grid_x = 0
+            half_grid_x = (self.width-desired_projection.width)/2
         return (half_grid_x)
 
     def alter_grid_parameters(self, desired_projection):

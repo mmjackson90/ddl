@@ -93,8 +93,7 @@ class ImageAsset:
         # TODO: This cannot be right.
         # Running this operation multiple times will break the top_left.
         # Work out why.
-        self.top_left['x'] = round(self.top_left['x']+half_grid_x +
-                                   self.image.width/2)
+        self.top_left['x'] = round(self.top_left['x'] + half_grid_x)
 
     def show(self):
         """Show the image."""
