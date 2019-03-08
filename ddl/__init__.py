@@ -58,11 +58,10 @@ class Assetpack:
         self.projection.resize_images(self.images, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)
 
-    def rescale_pack(self, desired_projection):
+    def rescale_components(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
         self.projection.rescale_components(self.components, desired_projection)
-        self.projection.rescale_images(self.images, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)
 
 

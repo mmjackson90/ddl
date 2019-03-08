@@ -77,18 +77,6 @@ class IsometricProjection(Projection):
                   (y_coordinate*math.floor(self.height/2))
         return (round(pixel_x), round(pixel_y))
 
-    def get_image_half_grid(self, desired_projection):
-        """Gets the offset required to make all images in the current
-        projection match the grid of the desired projection"""
-        half_grid_x = (self.width-desired_projection.width)/2
-        return (half_grid_x)
-
-    def rescale_images(self, images, desired_projection):
-        """Accepts a desired grid size definition and uses it to rescale all
-         images passed in as a dict."""
-        for image in images.values():
-            image.rescale(self.get_image_half_grid(desired_projection))
-
 
 class TopDownProjection(Projection):
     """A TopDown Projection subclass to overload how pixel offsets
@@ -98,8 +86,3 @@ class TopDownProjection(Projection):
         pixel_x = x_coordinate*self.width
         pixel_y = y_coordinate*self.height
         return (round(pixel_x), round(pixel_y))
-
-    def rescale_images(self, images, desired_projection):
-        """Accepts a desired grid size definition and does nothing with it,
-        This only exists because Isometric grids are complicated."""
-        pass

@@ -3,14 +3,18 @@
         {
             "name": "1x1 Floor exact",
             "id": "floor-1x1-exact",
-            "image": "1x1_floor_exact.png"
+            "image": "1x1_floor_exact.png",
+            "top_left": {
+                "x": 147,
+                "y": 0
+            }
         },
         {
             "name": "1x1 Floor fuzzy",
             "id": "floor-1x1-fuzzy",
             "image": "1x1_floor_fuzzy.png",
             "top_left": {
-                "x": 5,
+                "x": 152,
                 "y": 6
             }
         },
@@ -19,7 +23,7 @@
             "id": "exact-wall-1",
             "image": "1_wall_exact.png",
             "top_left": {
-                "x": -147,
+                "x": 0,
                 "y": 130
             }
         },
@@ -28,7 +32,7 @@
             "id": "fuzzy-wall-1",
             "image": "1_wall_fuzzy.png",
             "top_left": {
-                "x": 18,
+                "x": 0,
                 "y": 150
             }
         }

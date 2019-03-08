@@ -107,7 +107,7 @@ def test_non_scaled_rendering():
                                                            prop_assetpack)
     # Needs relocating to match the larger grid.
     image_pixel_list7_2 = prop_assetpack.projection.\
-        get_image_pixel_list(-4, 5, image_location_list7_2)
+        get_image_pixel_list(0, 0, image_location_list7_2)
 
     renderer7 = Renderer(image_pixel_list=image_pixel_list7_2)
     renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7_3)
@@ -125,7 +125,7 @@ def test_scaled_rendering():
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
     prop_assetpack2 = AssetpackFactory.load('example_props')
-    prop_assetpack2.rescale_pack(assetpack.projection)
+    prop_assetpack2.rescale_components(assetpack.projection)
     boxes2 = prop_assetpack2.components['many-boxes']
     image_location_list7_1 = boxes2.\
         get_image_location_list(0, 0, prop_assetpack2)
