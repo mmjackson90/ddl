@@ -92,10 +92,6 @@ class ImageAsset:
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
 
-    def rescale(self, half_grid_x):
-        """Alters the image top_left offsets to account for isometric grid"""
-        self.top_left['x'] = round(self.top_left['x'] + half_grid_x)
-
     def show(self):
         """Show the image."""
         self.image.show()
