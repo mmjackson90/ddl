@@ -6,6 +6,7 @@ Handles all co-ordinate transforms, image scaling operations and
 conversion of co-ordinates to pixel offsets.
 """
 from PIL import Image
+import math
 
 
 class Projection:
@@ -20,11 +21,6 @@ class Projection:
         size_ratio_x = desired_projection.width/self.width
         size_ratio_y = desired_projection.height/self.height
         return (size_ratio_x, size_ratio_y)
-
-    def get_image_half_grid(self, desired_projection):
-        if self.type == 'isometric':
-            half_grid_x = (self.width-desired_projection.width)/2
-        return (half_grid_x)
 
     def alter_grid_parameters(self, desired_projection):
         self.width = desired_projection.width
@@ -41,13 +37,55 @@ class Projection:
             # I hate that this still works.
             image.resize(size_ratio_x, size_ratio_y)
 
-    def rescale_images(self, images, desired_projection):
-        if self.type == "isometric":
-            half_grid_x = self.get_image_half_grid(desired_projection)
-            for image in images.values():
-                image.rescale(half_grid_x)
-
     def rescale_components(self, components, desired_projection):
         scale_ratio_x, scale_ratio_y = self.get_grid_ratios(desired_projection)
         for component in components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
+
+    def get_image_pixel_list(self,
+                             grid_offset_x,
+                             grid_offset_y,
+                             image_location_list):
+        """Goes through a list of images and grid co-ordinates and returns a
+         list of images and pixel co-ordinates."""
+        # Worry about performance later.
+        pixel_offsets = self.get_location_in_pixels(grid_offset_x,
+                                                    grid_offset_y)
+        pixel_offset_x, pixel_offset_y = pixel_offsets
+        image_pixel_list = []
+        for image, x_coordinate, y_coordinate in image_location_list:
+            pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
+                                                           y_coordinate)
+            pixel_x = pixel_x+pixel_offset_x
+            pixel_y = pixel_y+pixel_offset_y
+            image_pixel_list = image_pixel_list+[(image, pixel_x, pixel_y)]
+        return image_pixel_list
+
+
+class IsometricProjection(Projection):
+    def get_location_in_pixels(self, x_coordinate, y_coordinate):
+        """Changes grid co-ordinates to pixels for an isometric grid"""
+        pixel_x = (y_coordinate*math.ceil(self.width/2)) -\
+                  (x_coordinate * math.floor(self.width/2))
+        pixel_y = (x_coordinate*math.ceil(self.height/2)) +\
+                  (y_coordinate*math.floor(self.height/2))
+        return (round(pixel_x), round(pixel_y))
+
+    def get_image_half_grid(self, desired_projection):
+        half_grid_x = (self.width-desired_projection.width)/2
+        return (half_grid_x)
+
+    def rescale_images(self, images, desired_projection):
+        for image in images.values():
+            image.rescale(self.get_image_half_grid(desired_projection))
+
+
+class TopDownProjection(Projection):
+    def get_location_in_pixels(x_coordinate, y_coordinate):
+        """Changes grid co-ordinates to pixels for a classic cartesian grid"""
+        pixel_x = x_coordinate*self.width
+        pixel_y = y_coordinate*self.height
+        return (round(pixel_x), round(pixel_y))
+
+    def rescale_images(self, images, desired_projection):
+        pass
