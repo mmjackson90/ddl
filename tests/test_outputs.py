@@ -51,8 +51,11 @@ def test_old_tests():
     component_factory.print_component()
     fuzzy = component_factory.pull_component()
 
-    renderer4 = Renderer(image_pixel_list=assetpack.projection.get_image_pixel_list(
-        0, 0, fuzzy.get_image_location_list(0, 0, assetpack)))
+    renderer4 = Renderer(image_pixel_list=assetpack.projection.
+                         get_image_pixel_list(0, 0, fuzzy.
+                                              get_image_location_list(0, 0,
+                                                                      assetpack
+                                                                      )))
     renderer4.output('screen')
 
     component_factory.new_component('wall', 'wall')
@@ -60,8 +63,11 @@ def test_old_tests():
     component_factory.add_image("exact-wall-1", 0, 0)
     wall = component_factory.pull_component()
 
-    renderer5 = Renderer(image_pixel_list=assetpack.projection.get_image_pixel_list(
-        0, 0, wall.get_image_location_list(0, 0, assetpack)))
+    renderer5 = Renderer(image_pixel_list=assetpack.projection.
+                         get_image_pixel_list(0, 0, wall.
+                                              get_image_location_list(0, 0,
+                                                                      assetpack
+                                                                      )))
     renderer5.output('screen')
 
     # Will alter all of low_res_assetpacks images
@@ -87,15 +93,18 @@ def test_old_tests():
     component_factory.new_component('floor1', 'floor')
     component_factory.add_image("floor-1x1-exact", 0, 0)
     floor_1x1 = component_factory.pull_component()
-    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0, assetpack)
-    image_pixel_list7_3 = assetpack.projection.get_image_pixel_list(0, 0, image_location_list7_3)
+    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
+                                                               assetpack)
+    image_pixel_list7_3 = assetpack.projection.\
+        get_image_pixel_list(0, 0, image_location_list7_3)
 
     prop_assetpack = AssetpackFactory.load('example_props')
     boxes = prop_assetpack.components['many-boxes']
-    image_location_list7_2 = boxes.get_image_location_list(0, 0, prop_assetpack)
+    image_location_list7_2 = boxes.get_image_location_list(0, 0,
+                                                           prop_assetpack)
     # Needs relocating to match the larger grid.
-    image_pixel_list7_2 = prop_assetpack.projection.get_image_pixel_list(-4, 5,
-                                                         image_location_list7_2)
+    image_pixel_list7_2 = prop_assetpack.projection.\
+        get_image_pixel_list(-4, 5, image_location_list7_2)
 
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_pack(assetpack.projection)

@@ -18,17 +18,19 @@ class Projection:
         self.width = grid["width"]
 
     def get_grid_ratios(self, desired_projection):
+        """Get the width/height ratios to convert one projection to another"""
         size_ratio_x = desired_projection.width/self.width
         size_ratio_y = desired_projection.height/self.height
         return (size_ratio_x, size_ratio_y)
 
     def alter_grid_parameters(self, desired_projection):
+        """Alters this projection's width and height. Cannot alter type"""
         self.width = desired_projection.width
         self.height = desired_projection.height
 
     def resize_images(self, images, desired_projection):
-        """Accepts a desired grid size definition and uses it to rescale all
-         images in the assetpack to match up the grids.
+        """Accepts a desired grid size definition and uses it to resize all
+         images passed in as a dict.
          Actually scales images at the moment, but could just change scale
          factors"""
         size_ratio_x, size_ratio_y = self.get_grid_ratios(desired_projection)
@@ -38,6 +40,8 @@ class Projection:
             image.resize(size_ratio_x, size_ratio_y)
 
     def rescale_components(self, components, desired_projection):
+        """Accepts a desired grid size definition and uses it to rescale all
+         components passed in as a dict."""
         scale_ratio_x, scale_ratio_y = self.get_grid_ratios(desired_projection)
         for component in components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
@@ -63,6 +67,8 @@ class Projection:
 
 
 class IsometricProjection(Projection):
+    """An Isometric Projection subclass to overload how pixel offsets
+     and get operations are treated."""
     def get_location_in_pixels(self, x_coordinate, y_coordinate):
         """Changes grid co-ordinates to pixels for an isometric grid"""
         pixel_x = (y_coordinate*math.ceil(self.width/2)) -\
@@ -72,10 +78,14 @@ class IsometricProjection(Projection):
         return (round(pixel_x), round(pixel_y))
 
     def get_image_half_grid(self, desired_projection):
+        """Gets the offset required to make all images in the current
+        projection match the grid of the desired projection"""
         half_grid_x = (self.width-desired_projection.width)/2
         return (half_grid_x)
 
     def rescale_images(self, images, desired_projection):
+        """Accepts a desired grid size definition and uses it to rescale all
+         images passed in as a dict."""
         for image in images.values():
             image.rescale(self.get_image_half_grid(desired_projection))
 
@@ -88,4 +98,6 @@ class TopDownProjection(Projection):
         return (round(pixel_x), round(pixel_y))
 
     def rescale_images(self, images, desired_projection):
+        """Accepts a desired grid size definition and does nothing with it,
+        This only exists because Isometric grids are complicated."""
         pass

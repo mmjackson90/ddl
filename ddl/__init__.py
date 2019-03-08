@@ -262,5 +262,6 @@ class ComponentFactory:
         image_location_list = self.get_component()\
                                   .get_image_location_list(0, 0,
                                                            self.assetpack)
-        image_list = self.assetpack.projection.get_image_pixel_list(0, 0, image_location_list)
+        image_list = self.assetpack.projection.\
+            get_image_pixel_list(0, 0, image_location_list)
         Renderer(image_list).output(destination, filename)
