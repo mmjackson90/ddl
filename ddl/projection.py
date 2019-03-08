@@ -12,10 +12,10 @@ import math
 class Projection:
     """A class for storing information on and handling all transformations
      to/from another projection"""
-    def __init__(self, grid):
-        self.type = grid["type"]
-        self.height = grid["height"]
-        self.width = grid["width"]
+    def __init__(self, type, width, height):
+        self.type = type
+        self.height = height
+        self.width = width
 
     def get_grid_ratios(self, desired_projection):
         """Get the width/height ratios to convert one projection to another"""
