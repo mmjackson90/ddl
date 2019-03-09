@@ -3,8 +3,6 @@ Tests Projections
 """
 
 from ddl.projection import Projection, IsometricProjection, TopDownProjection
-# TODO: Mock the fuck out of these
-from ddl import ImageAsset, Component
 
 
 class FakeImageAsset:
@@ -12,10 +10,24 @@ class FakeImageAsset:
     def __init__(self):
         self.width = 1
         self.height = 1
+        self.top_left = {'x': 2, 'y': 3}
 
-    def resize(self, x, y):
-        self.height = self.height*x
-        self.width = self.width*y
+    def resize(self, scale_1, scale_2):
+        """ A fake resize function that just alters two internal parameters"""
+        self.height = self.height*scale_1
+        self.width = self.width*scale_2
+
+
+class FakeComponent:
+    """A fake Component"""
+    def __init__(self):
+        self.scale_1 = 1
+        self.scale_2 = 2
+
+    def rescale(self, scale_1, scale_2):
+        """ A fake resize function that just alters two internal parameters"""
+        self.scale_1 = self.scale_1/scale_1
+        self.scale_2 = self.scale_2/scale_2
 
 
 def test_get_grid_ratios():
@@ -50,61 +62,33 @@ def test_resize_images():
 
 def test_rescale_components():
     """Tests that a list of components rescales correctly"""
-    data = {
-        "name": "2x2 Floor exact",
-        "id": "floor-2x2-exact",
-        "parts": [
-            {
-                "type": "image",
-                "image_id": "floor-1x1-exact",
-                "x": 0,
-                "y": 0
-            },
-            {
-                "type": "image",
-                "image_id": "floor-1x1-exact",
-                "x": 1,
-                "y": 2
-            }
-        ],
-        "tags": [
-            "example"
-        ]
-    }
-
-    component = Component(data, "example_isometric")
+    component = FakeComponent()
     components = {"test": component}
     projection1 = Projection(1, 1)
     projection2 = Projection(5, 5)
     projection1.rescale_components(components, projection2)
-    if not component.data["parts"][0]["x"] == 0:
+    if not component.scale_1 == 1/5:
         raise AssertionError()
-    if not component.data["parts"][0]["y"] == 0:
-        raise AssertionError()
-    if not component.data["parts"][1]["x"] == 1/5:
-        raise AssertionError()
-    if not component.data["parts"][1]["y"] == 2/5:
+    if not component.scale_2 == 2/5:
         raise AssertionError()
 
 
 def test_get_image_pixel_list():
     """Goes through a list of images and grid co-ordinates and returns a
      list of images and pixel co-ordinates."""
-    image_data = {"name": "test",
-                  "id": "test",
-                  "top_left": {"x": 152, "y": 6},
-                  "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(image_data, "example_isometric")
+
+    image = FakeImageAsset()
     projection1 = TopDownProjection(10, 10)
     image_location_list = [(image, 0, 0), (image, 1, 2)]
     pixel_list = projection1.get_image_pixel_list(1, 3, image_location_list)
-    if not isinstance(pixel_list[0][0], ImageAsset):
+    # The image should not have been modified.
+    if pixel_list[0][0] is not image:
         raise AssertionError()
     if not pixel_list[0][1] == 10:
         raise AssertionError()
     if not pixel_list[0][2] == 30:
         raise AssertionError()
-    if not isinstance(pixel_list[1][0], ImageAsset):
+    if pixel_list[1][0] is not image:
         raise AssertionError()
     if not pixel_list[1][1] == 20:
         raise AssertionError()
