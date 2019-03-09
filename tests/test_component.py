@@ -68,6 +68,3 @@ def test_rescale_component():
         raise AssertionError()
     if not component.data["parts"][1]["y"] == 1:
         raise AssertionError()
-
-
-def test_get_location_list():
