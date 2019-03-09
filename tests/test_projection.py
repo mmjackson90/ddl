@@ -3,7 +3,19 @@ Tests Projections
 """
 
 from ddl.projection import Projection, IsometricProjection, TopDownProjection
+# TODO: Mock the fuck out of these
 from ddl import ImageAsset, Component
+
+
+class FakeImageAsset:
+    """A fake imageasset class"""
+    def __init__(self):
+        self.width = 1
+        self.height = 1
+
+    def resize(self, x, y):
+        self.height = self.height*x
+        self.width = self.width*y
 
 
 def test_get_grid_ratios():
@@ -24,19 +36,13 @@ def test_alter_grid_parameters():
 
 def test_resize_images():
     """Tests that a list of images resizes correctly"""
-    data = {"name": "test",
-            "id": "test",
-            "top_left": {"x": 152, "y": 6},
-            "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(data, "example_isometric")
+    image = FakeImageAsset()
     images = {"test": image}
-    projection1 = Projection(1, 1)
-    projection2 = Projection(5, 5)
+    projection1 = Projection(2, 2)
+    projection2 = Projection(5, 10)
     projection1.resize_images(images, projection2)
-    assert image.image.width == 1520
-    assert image.image.height == 1005
-    assert image.top_left['x'] == 760
-    assert image.top_left['y'] == 30
+    image.width = 2/5
+    image.height = 5
 
 
 def test_rescale_components():
