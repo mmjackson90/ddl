@@ -3,7 +3,12 @@ Tests Assetpacks
 """
 
 from ddl import AssetpackFactory, Assetpack
-from ddl.projection import Projection
+
+
+class FakeProjection:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
 
 def test_factory_creates_assetpack():
@@ -16,7 +21,7 @@ def test_factory_creates_assetpack():
 def test_assetpack_resize():
     """Test resizing an assetpack's images to match a new projection."""
     assetpack = AssetpackFactory.load('example_isometric')
-    projection2 = Projection(29, 17)
+    projection2 = FakeProjection(29, 17)
     assetpack.resize_images(projection2)
     assert assetpack.projection.width == 29
     assert assetpack.projection.height == 17
@@ -27,7 +32,7 @@ def test_assetpack_resize():
 def test_assetpack_resize():
     """Test rescaling an assetpack's components to match a new projection."""
     assetpack = AssetpackFactory.load('example_isometric')
-    projection2 = Projection(29, 17)
+    projection2 = FakeProjection(29, 17)
     assetpack.rescale_components(projection2)
     assert assetpack.projection.width == 29
     assert assetpack.projection.height == 17
