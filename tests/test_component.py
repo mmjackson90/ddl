@@ -6,6 +6,7 @@ from ddl import Component
 
 
 def test_component_init():
+    """Tests the initialisation of components"""
     data = {
         "name": "2x2 Floor exact",
         "id": "floor-2x2-exact",
@@ -37,6 +38,7 @@ def test_component_init():
 
 
 def test_rescale_component():
+    """Tests that components rescale correctly when asked"""
     data = {
         "name": "2x2 Floor exact",
         "id": "floor-2x2-exact",
