@@ -39,9 +39,11 @@ class Assetpack:
         self.name = name
         self.grid = components_and_grid['grid']
         if self.grid['type'] == 'isometric':
-            self.projection = IsometricProjection(components_and_grid['grid'])
+            self.projection = IsometricProjection(self.grid['width'],
+                                                  self.grid['height'])
         else:
-            self.projection = TopDownProjection(components_and_grid['grid'])
+            self.projection = TopDownProjection(self.grid['width'],
+                                                self.grid['height'])
 
         for image in imagepack['images']:
             self.images[image['id']] = ImageAsset(image, assetpack_name=name)
@@ -89,10 +91,6 @@ class ImageAsset:
         self.image = self.image.resize((final_image_width, final_image_height))
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
-
-    def rescale(self, half_grid_x):
-        """Alters the image top_left offsets to account for isometric grid"""
-        self.top_left['x'] = round(self.top_left['x'] + half_grid_x)
 
     def show(self):
         """Show the image."""

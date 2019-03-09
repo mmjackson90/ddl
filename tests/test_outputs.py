@@ -5,11 +5,10 @@ from ddl import AssetpackFactory, ComponentFactory
 from ddl.renderer import Renderer
 
 
-def test_old_tests():
+def test_smoke_render_component():
     """
-    Old Tests
-
-    Our old, rough and ready tests.
+    Smoke test loading and rendering a component with multiple
+    images that came from a definition.
     """
 
     assetpack = AssetpackFactory.load('example_isometric')
@@ -20,6 +19,12 @@ def test_old_tests():
                         .get_image_pixel_list(0, 0, image_location_list))
     renderer.output('screen')
 
+
+def test_smoke_design_component():
+    """
+    Smoke test creating a new component and then passing it to a renderer.
+    """
+    assetpack = AssetpackFactory.load('example_isometric')
     component_factory = ComponentFactory(assetpack, "isometric")
     component_factory.new_component('floor-1x2-exact', 'floor')
     component_factory.add_image("floor-1x1-exact", 0, 0)
@@ -32,6 +37,15 @@ def test_old_tests():
     renderer2 = Renderer(image_pixel_list=image_pixel_list2)
     renderer2.output('screen')
 
+
+def test_smoke_twiddly_fuzzy():
+    """
+    Smoke test creating a new component, removing a bit, and then using the
+    component factory's built in output method to render it, before testing the
+    clear component functionality and finally rendering out some fuzzy tiles.
+    """
+    assetpack = AssetpackFactory.load('example_isometric')
+    component_factory = ComponentFactory(assetpack, "isometric")
     component_factory.new_component('twiddle_1', 'floor')
     component_factory.add_component("floor-2x2-exact", 0, 0)
     component_factory.add_image("floor-1x1-exact", 2, 1)
@@ -48,7 +62,7 @@ def test_old_tests():
     component_factory.add_image("floor-1x1-fuzzy", 0, 1)
     component_factory.add_image("floor-1x1-fuzzy", 1, 0)
     component_factory.add_image("floor-1x1-exact", 1, 1)
-    component_factory.print_component()
+
     fuzzy = component_factory.pull_component()
 
     renderer4 = Renderer(image_pixel_list=assetpack.projection.
@@ -58,20 +72,33 @@ def test_old_tests():
                                                                       )))
     renderer4.output('screen')
 
-    component_factory.new_component('wall', 'wall')
-    component_factory.add_image("floor-1x1-exact", 0, 0)
-    component_factory.add_image("exact-wall-1", 0, 0)
-    wall = component_factory.pull_component()
+
+def test_smoke_wall():
+    """
+    Smoke test a wall/floor combo, just to check the offsets look good.
+    """
+    assetpack = AssetpackFactory.load('example_isometric')
+    floor_wall = assetpack.components['floor-wall-exact']
 
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
-                         get_image_pixel_list(0, 0, wall.
+                         get_image_pixel_list(0, 0, floor_wall.
                                               get_image_location_list(0, 0,
                                                                       assetpack
                                                                       )))
+
     renderer5.output('screen')
 
-    # Will alter all of low_res_assetpacks images
-    # to be the same size as assetpacks
+
+def test_smoke_low_res_resize():
+    """
+    Smoke test resizing a low resolution artpack to match a high resolution
+    artpack.
+    """
+
+    assetpack = AssetpackFactory.load('example_isometric')
+    floor1 = assetpack.components['floor-2x2-exact']
+    image_location_list = floor1.get_image_location_list(0, 0, assetpack)
+
     low_res_assetpack = AssetpackFactory.load('low_res_isometric')
     low_res_assetpack.resize_images(assetpack.projection)
     low_res_floor = low_res_assetpack.components['floor-2x2-low-res']
@@ -79,16 +106,12 @@ def test_old_tests():
         get_image_location_list(1, 1, low_res_assetpack)
     image_pixel_list6 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list6)
-    # toto: Why is this backwards?
+
     renderer6 = Renderer(image_pixel_list=image_pixel_list6)
     renderer6.add_image_pixel_list(
         image_pixel_list=assetpack.projection
         .get_image_pixel_list(0, 0, image_location_list))
     renderer6.output('screen')
-
-    # Adds in tiny boxes using a native grid (1 square =1/10th the big grid)
-    # Then rescales the assetpack and adds in the same component on the big
-    # grid much more accurately.
 
 
 def test_non_scaled_rendering():

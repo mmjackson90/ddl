@@ -12,10 +12,9 @@ import math
 class Projection:
     """A class for storing information on and handling all transformations
      to/from another projection"""
-    def __init__(self, grid):
-        self.type = grid["type"]
-        self.height = grid["height"]
-        self.width = grid["width"]
+    def __init__(self, width, height):
+        self.height = height
+        self.width = width
 
     def get_grid_ratios(self, desired_projection):
         """Get the width/height ratios to convert one projection to another"""
@@ -81,7 +80,7 @@ class IsometricProjection(Projection):
 class TopDownProjection(Projection):
     """A TopDown Projection subclass to overload how pixel offsets
      and get operations are treated."""
-    def get_location_in_pixels(x_coordinate, y_coordinate):
+    def get_location_in_pixels(self, x_coordinate, y_coordinate):
         """Changes grid co-ordinates to pixels for a classic cartesian grid"""
         pixel_x = x_coordinate*self.width
         pixel_y = y_coordinate*self.height

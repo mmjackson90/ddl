@@ -51,6 +51,27 @@
             "tags": [
                 "example"
             ]
+        },
+        {
+            "name": "floor-wall-exact",
+            "id": "floor-wall-exact",
+            "parts": [
+                {
+                    "type": "image",
+                    "image_id": "floor-1x1-exact",
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "type": "image",
+                    "image_id": "exact-wall-1",
+                    "x": 0,
+                    "y": 0
+                }
+            ],
+            "tags": [
+                "example"
+            ]
         }
     ]
 }
