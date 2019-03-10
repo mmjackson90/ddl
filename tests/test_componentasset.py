@@ -10,11 +10,13 @@ class FakeImageAsset:
     def __init__(self, image):
         self.image = image
 
-    def get_image_location_list(self, offset_x, offset_y, assetpack_name):
+    def get_image_location_list(self, offset_x, offset_y, *args):
+        """Fakes the get_image_location_list method for images"""
         return ([(self.image, offset_x, offset_y)])
 
 
 class FakeAssetPack():
+    """A fake asset pack class"""
     def __init__(self, assets):
         self.assets = assets
 
@@ -114,22 +116,22 @@ def test_simple_image_location_list():
               FakeImageAsset('imageOne')}
     fake_asset_pack = FakeAssetPack(assets)
     component = ComponentAsset(data, 'test_assetpack_name')
-    list = component.get_image_location_list(2, 3, fake_asset_pack)
-    if len(list) != 2:
+    ill = component.get_image_location_list(2, 3, fake_asset_pack)
+    if len(ill) != 2:
         raise AssertionError()
-    returned_image, x, y = list[0]
+    returned_image, offset_x, offset_y = ill[0]
     if not returned_image == 'imageOne':
         raise AssertionError()
-    if not x == 2:
+    if not offset_x == 2:
         raise AssertionError()
-    if not y == 3:
+    if not offset_y == 3:
         raise AssertionError()
-    returned_image, x, y = list[1]
+    returned_image, offset_x, offset_y = ill[1]
     if not returned_image == 'imageOne':
         raise AssertionError()
-    if not x == 4:
+    if not offset_x == 4:
         raise AssertionError()
-    if not y == 6:
+    if not offset_y == 6:
         raise AssertionError()
 
 
@@ -187,27 +189,27 @@ def test_nested_image_location_list():
               }
     fake_asset_pack = FakeAssetPack(assets)
     component_branch = ComponentAsset(data_branch, 'test_assetpack_name')
-    list = component_branch.get_image_location_list(5, 7, fake_asset_pack)
-    if len(list) != 3:
+    ill = component_branch.get_image_location_list(5, 7, fake_asset_pack)
+    if len(ill) != 3:
         raise AssertionError()
-    returned_image, x, y = list[0]
+    returned_image, offset_x, offset_y = ill[0]
     if not returned_image == 'imageOne':
         raise AssertionError()
-    if not x == 5:
+    if not offset_x == 5:
         raise AssertionError()
-    if not y == 7:
+    if not offset_y == 7:
         raise AssertionError()
-    returned_image, x, y = list[1]
+    returned_image, offset_x, offset_y = ill[1]
     if not returned_image == 'imageOne':
         raise AssertionError()
-    if not x == 7:
-        raise AssertionError(x)
-    if not y == 10:
-        raise AssertionError(y)
-    returned_image, x, y = list[2]
+    if not offset_x == 7:
+        raise AssertionError(offset_x)
+    if not offset_y == 10:
+        raise AssertionError(offset_y)
+    returned_image, offset_x, offset_y = ill[2]
     if not returned_image == 'imageOne':
         raise AssertionError()
-    if not x == 9:
-        raise AssertionError(x)
-    if not y == 13:
-        raise AssertionError(y)
+    if not offset_x == 9:
+        raise AssertionError(offset_x)
+    if not offset_y == 13:
+        raise AssertionError(offset_y)

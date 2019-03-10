@@ -75,13 +75,13 @@ def test_get_image_location_list():
             "top_left": {"x": 152, "y": 6},
             "image": "1x1_floor_fuzzy.png"}
     image = ImageAsset(data, "example_isometric")
-    list = image.get_image_location_list(2, 3, 'not_actually_an_asset_pack')
-    if len(list) != 1:
+    ill = image.get_image_location_list(2, 3, 'not_actually_an_asset_pack')
+    if len(ill) != 1:
         raise AssertionError()
-    returned_image, x, y = list[0]
+    returned_image, offset_x, offset_y = ill[0]
     if not returned_image == image:
         raise AssertionError()
-    if not x == 2:
+    if not offset_x == 2:
         raise AssertionError()
-    if not y == 3:
+    if not offset_y == 3:
         raise AssertionError()

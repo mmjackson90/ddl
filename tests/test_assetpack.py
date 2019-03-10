@@ -84,6 +84,9 @@ def test_change_assetpack_name():
 
 
 def test_append_assetpacks():
+    """
+    Tests that appending one assetpack to another gives a bigger assetpack
+    """
     assetpack = AssetpackFactory.load('example_isometric')
     assetpack2 = AssetpackFactory.load('example_isometric')
     assetpack2.change_assetpack_name('new_name')
