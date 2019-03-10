@@ -62,7 +62,7 @@ class ComponentAsset(Asset):
                 sub_offset_x = sub_asset["x"]+offset_x
                 sub_offset_y = sub_asset["y"]+offset_y
                 image_location_list = image_location_list+[(
-                    sub_component.image, sub_offset_x, sub_offset_y
+                    sub_component, sub_offset_x, sub_offset_y
                 )]
             else:
                 sub_component = assetpack.components[sub_asset["asset_id"]]

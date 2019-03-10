@@ -117,14 +117,14 @@ def test_simple_image_location_list():
     if len(ill) != 2:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[0]
-    if not returned_image == 'imageOne':
+    if not returned_image.image == 'imageOne':
         raise AssertionError(returned_image)
     if not offset_x == 2:
         raise AssertionError()
     if not offset_y == 3:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[1]
-    if not returned_image == 'imageOne':
+    if not returned_image.image == 'imageOne':
         raise AssertionError()
     if not offset_x == 4:
         raise AssertionError()
@@ -190,21 +190,21 @@ def test_nested_image_location_list():
     if len(ill) != 3:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[0]
-    if not returned_image == 'imageOne':
+    if not returned_image.image == 'imageOne':
         raise AssertionError(returned_image)
     if not offset_x == 5:
         raise AssertionError()
     if not offset_y == 7:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[1]
-    if not returned_image == 'imageOne':
+    if not returned_image.image == 'imageOne':
         raise AssertionError()
     if not offset_x == 7:
         raise AssertionError(offset_x)
     if not offset_y == 10:
         raise AssertionError(offset_y)
     returned_image, offset_x, offset_y = ill[2]
-    if not returned_image == 'imageOne':
+    if not returned_image.image == 'imageOne':
         raise AssertionError()
     if not offset_x == 9:
         raise AssertionError(offset_x)
