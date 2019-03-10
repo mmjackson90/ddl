@@ -2,7 +2,7 @@
 Tests Components
 """
 
-from ddl.component import Component
+from ddl.asset import ComponentAsset
 
 
 def test_component_init():
@@ -28,7 +28,7 @@ def test_component_init():
             "example"
         ]
     }
-    component = Component(data, 'test_assetpack_name')
+    component = ComponentAsset(data, 'test_assetpack_name')
     if not component.assetpack_name == 'test_assetpack_name':
         raise AssertionError()
     if not component.data == data:
@@ -60,7 +60,7 @@ def test_rescale_component():
             "example"
         ]
     }
-    component = Component(data, 'test_assetpack_name')
+    component = ComponentAsset(data, 'test_assetpack_name')
     component.rescale(2, 3)
     if not component.data["parts"][0]["x"] == 0:
         raise AssertionError()

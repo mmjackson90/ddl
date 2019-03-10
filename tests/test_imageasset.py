@@ -2,7 +2,7 @@
 Tests the methods of ImageAsset
 """
 
-from ddl import ImageAsset
+from ddl.asset import ImageAsset
 from PIL.PngImagePlugin import PngImageFile
 
 

@@ -4,8 +4,10 @@ but not intend to be part of the actual toolchainself.
 """
 
 from ddl import Assetpack
-from ddl.component import Component
+from ddl.asset import ComponentAsset
 from ddl.renderer import Renderer
+
+from PIL import Image
 
 
 class ComponentFactory:
@@ -91,7 +93,7 @@ class ComponentFactory:
 
     def get_component(self):
         """Creates and returns the component without clearing the factory."""
-        return Component(self.get_component_data(), self.assetpack.name)
+        return ComponentAsset(self.get_component_data(), self.assetpack.name)
 
     def print_component(self):
         """Prints the component in json without clearing the factory."""

@@ -5,12 +5,12 @@ Create all the functions currently in use by DDL.
 Thus far this is only really the Artist code.
 """
 
-from PIL import Image
+
 import json
 import math
 from ddl.renderer import Renderer
 from ddl.projection import IsometricProjection, TopDownProjection
-from ddl.component import Component
+from ddl.asset import ComponentAsset, ImageAsset
 
 
 class AssetpackFactory:
@@ -50,8 +50,8 @@ class Assetpack:
             self.images[image['id']] = ImageAsset(image, assetpack_name=name)
 
         for component in components_and_grid['components']:
-            self.components[component['id']] = Component(component,
-                                                         assetpack_name=name)
+            self.components[component['id']] =\
+                ComponentAsset(component, assetpack_name=name)
 
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
@@ -66,33 +66,3 @@ class Assetpack:
         co-ordinates used in blueprints."""
         self.projection.rescale_components(self.components, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)
-
-
-class ImageAsset:
-    """A representation of an actual image file and the pixel offsets required
-     to put it in the correct location."""
-    def __init__(self, data, assetpack_name):
-        self.assetpack_name = assetpack_name
-        self.data = data
-        self.name = data["name"]
-        self.image_id = data["id"]
-        if "top_left" in data.keys():
-            self.top_left = data["top_left"]
-        else:
-            self.top_left = {"x": 0, "y": 0}
-
-        self.image = Image.open('assetpacks/' + assetpack_name + '/art/' +
-                                data["image"])
-
-    def resize(self, size_ratio_x, size_ratio_y):
-        """Alters the image and it's top_left pixel offsets by some x and y
-         scale factors"""
-        final_image_width = round(self.image.width*size_ratio_x)
-        final_image_height = round(self.image.height*size_ratio_y)
-        self.image = self.image.resize((final_image_width, final_image_height))
-        self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
-        self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
-
-    def show(self):
-        """Show the image."""
-        self.image.show()
