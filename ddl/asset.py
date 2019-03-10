@@ -61,6 +61,7 @@ class ComponentAsset(Asset):
         return image_location_list
 
     def get_part_full_id(self, sub_part):
+        """Gives the correct part id, given the assetpack."""
         if sub_part['type'] == 'image':
             # Naive check to see if this already has an assetpack name
             if len(sub_part["image_id"].split('.')) != 3:

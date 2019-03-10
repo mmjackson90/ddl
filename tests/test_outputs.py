@@ -143,11 +143,10 @@ def test_scaled_rendering():
     """Tests rescaling by rescaling a prop pack to match the projection
      of the floor pack."""
     assetpack = AssetpackFactory.load('example_isometric')
-    floor_1x1 = assetpack.assets['example_isometric.i.floor-1x1-exact']
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_components(assetpack.projection)
     assetpack.append_assetpack(prop_assetpack2)
-    boxes2 = assetpack.assets['example_props.c.many-boxes']
+
     component_factory = ComponentFactory(assetpack, "isometric")
     component_factory.new_component('boxes_on_floor', 'floor')
     component_factory.add_image('floor-1x1-exact', 0, 0)
