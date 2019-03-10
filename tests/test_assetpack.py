@@ -24,6 +24,7 @@ def test_assetpack_resize():
     assetpack = AssetpackFactory.load('example_isometric')
     projection2 = FakeProjection(29, 17)
     assetpack.resize_images(projection2)
+    print(assetpack.components)
     if not assetpack.projection.width == 29:
         raise AssertionError()
     if not assetpack.projection.height == 17:

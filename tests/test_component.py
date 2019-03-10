@@ -2,7 +2,7 @@
 Tests Components
 """
 
-from ddl import Component
+from ddl.component import Component
 
 
 def test_component_init():
