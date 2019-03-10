@@ -27,7 +27,7 @@ def test_smoke_design_component():
     """
     assetpack = AssetpackFactory.load('example_isometric')
     component_factory = ComponentFactory(assetpack, "isometric")
-    component_factory.new_component('floor-1x2-exact', 'floor')
+    component_factory.new_component('floor-1x2-exact')
     component_factory.add_image("floor-1x1-exact", 0, 0)
     component_factory.add_image("floor-1x1-exact", 0, 1)
     floor4 = component_factory.pull_component()
@@ -47,7 +47,7 @@ def test_smoke_twiddly_fuzzy():
     """
     assetpack = AssetpackFactory.load('example_isometric')
     component_factory = ComponentFactory(assetpack, "isometric")
-    component_factory.new_component('twiddle_1', 'floor')
+    component_factory.new_component('twiddle_1')
     component_factory.add_component("floor-2x2-exact", 0, 0)
     component_factory.add_image("floor-1x1-exact", 2, 1)
     component_factory.add_image("floor-1x1-exact", 2, 2)
@@ -58,7 +58,7 @@ def test_smoke_twiddly_fuzzy():
     component_factory.output_component()
     component_factory.clear_component()
 
-    component_factory.new_component('fuzzy', 'floor')
+    component_factory.new_component('fuzzy')
     component_factory.add_image("floor-1x1-exact", 0, 0)
     component_factory.add_image("floor-1x1-fuzzy", 0, 1)
     component_factory.add_image("floor-1x1-fuzzy", 1, 0)
@@ -148,7 +148,7 @@ def test_scaled_rendering():
     assetpack.append_assetpack(prop_assetpack2)
 
     component_factory = ComponentFactory(assetpack, "isometric")
-    component_factory.new_component('boxes_on_floor', 'floor')
+    component_factory.new_component('boxes_on_floor')
     component_factory.add_image('floor-1x1-exact', 0, 0)
     component_factory.add_component('many-boxes', 0, 0,
                                     assetpack_name='example_props')

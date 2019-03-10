@@ -3,11 +3,8 @@ A place for any and all useful helper classes that we might Create
 but not intend to be part of the actual toolchainself.
 """
 
-from ddl import Assetpack
 from ddl.asset import ComponentAsset
 from ddl.renderer import Renderer
-
-from PIL import Image
 
 
 class ComponentFactory:
@@ -34,9 +31,9 @@ class ComponentFactory:
                                     sub_asset["component_id"])
         self.assetpack = assetpack
 
-    def new_component(self, component_id, layer, name='',
+    def new_component(self, component_id, name='',
                       horizontally_flippable=True, vertically_flippable=True,
-                      tags=None, connections=None, parts=None):
+                      tags=None, parts=None):
         """Initialises a new, empty component. All component parameters can
          be set using this method, so it's possible to 'copy' another component
         . Cannot be used twice if another component is under construction."""
@@ -49,7 +46,6 @@ class ComponentFactory:
         self.horizontally_flippable = horizontally_flippable
         self.vertically_flippable = vertically_flippable
         self.tags = [] if tags is None else tags
-        self.connections = [] if connections is None else connections
         self.parts = [] if parts is None else parts
 
     def add_image(self, image_id, x_coordinate, y_coordinate,
@@ -93,7 +89,6 @@ class ComponentFactory:
             "id": self.component_id,
             "projection": self.projection,
             "parts": self.parts,
-            "connections": self.connections,
             "horizontally_flippable": self.horizontally_flippable,
             "vertically_flippable": self.vertically_flippable,
             "tags": self.tags
@@ -110,13 +105,12 @@ class ComponentFactory:
     def clear_component(self):
         """Clears the factory to begin building a new component."""
         self.current_component = False
-        self.id = None
+        self.component_id = None
         self.top_left = None
         self.name = None
         self.horizontally_flippable = None
         self.vertically_flippable = None
         self.tags = None
-        self.connections = None
         self.parts = None
 
     def pull_component(self):

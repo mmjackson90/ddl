@@ -3,6 +3,7 @@ Tests Assetpacks
 """
 
 from ddl import AssetpackFactory, Assetpack
+from ddl.asset import ComponentAsset
 
 
 class FakeProjection:
@@ -60,16 +61,24 @@ def test_assetpack_rescale():
 
 
 def test_change_assetpack_name():
+    """Tests changing the name of an assetpack."""
     assetpack = AssetpackFactory.load('example_isometric')
     assetpack.change_assetpack_name('new_name')
     if len(assetpack.assets) != 7:
         raise AssertionError('%s != 7' % len(assetpack.assets))
+
     for key in assetpack.assets.keys():
         if key.split('.')[0] != 'new_name':
             raise AssertionError()
+
     for asset in assetpack.assets.values():
         if asset.assetpack_name != 'new_name':
             raise AssertionError()
+        if isinstance(asset, ComponentAsset):
+            for sub_part in asset.parts:
+                if sub_part["asset_id"].split('.')[0] != 'new_name':
+                    raise AssertionError()
+
     if assetpack.name != 'new_name':
         raise AssertionError()
 

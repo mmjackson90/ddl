@@ -61,6 +61,10 @@ class Assetpack:
  assets share IDs''' % new_asset.get_full_id())
 
     def append_assetpack(self, assetpack):
+        """
+        Checks two assetpacks can be added together, then sticks one
+        assetpack atop the previous one.
+        """
         if not isinstance(self.projection, type(assetpack.projection)):
             raise Exception('''These two assetpacks do not share the same\
 projection type. They cannot be combined''')
@@ -75,12 +79,18 @@ width. Please resize or rescale to make sure the projections match.'''
             self.add_asset(asset)
 
     def change_assetpack_name(self, new_name):
+        """
+        Changes the name of the assetpack and all asset's assetpack
+        identifiers.
+        """
         new_assets = self.assets
         self.assets = {}
         for asset in new_assets.values():
             asset.assetpack_name = new_name
+            asset.reset_sub_parts()
             self.add_asset(asset)
         self.name = new_name
+
 
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all

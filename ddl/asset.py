@@ -1,8 +1,8 @@
 """
-Contains the Component class and ComponentFactory helper class
+Contains the Imageasset and ComponentAsset classes, along with the Asset
+superclass.
 """
 
-import json
 from PIL import Image
 
 
@@ -29,6 +29,10 @@ class Asset:
         """Passes. Implementations of this method exists in subclasses"""
         pass
 
+    def reset_sub_parts(self):
+        """Passes. Implementations of this method exists in subclasses"""
+        pass
+
 
 class ComponentAsset(Asset):
     """This is a space saving measure that records
@@ -38,11 +42,14 @@ class ComponentAsset(Asset):
         super().__init__(data, assetpack_name)
         if "parts" in data.keys():
             self.parts = data["parts"]
-            for sub_part in self.parts:
-                sub_part["asset_id"] = self.get_part_full_id(sub_part)
+            self.reset_sub_parts()
         else:
             raise Exception('Component {} has no parts.',
                             self.data["name"])
+
+    def reset_sub_parts(self):
+        for sub_part in self.parts:
+            sub_part["asset_id"] = self.get_part_full_id(sub_part)
 
     def get_image_location_list(self, offset_x, offset_y, assetpack):
         """Recursively moves down a component, finally returning a list of
@@ -112,7 +119,7 @@ class ImageAsset(Asset):
         """Show the image."""
         self.image.show()
 
-    def get_image_location_list(self, offset_x, offset_y, assetpack):
+    def get_image_location_list(self, offset_x, offset_y, *args):
         """The leaf end of a component call for image lists."""
         return([(self, offset_x, offset_y)])
 
