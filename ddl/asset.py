@@ -57,27 +57,35 @@ class ComponentAsset(Asset):
          values."""
         image_location_list = []
         for sub_asset in self.parts:
-            sub_component = assetpack.assets[sub_asset["asset_id"]]
-            sub_offset_x = sub_asset["x"]+offset_x
-            sub_offset_y = sub_asset["y"]+offset_y
-            new_ill = sub_component.get_image_location_list(
-                                                      sub_offset_x,
-                                                      sub_offset_y,
-                                                      assetpack)
-            image_location_list = image_location_list+new_ill
+            if sub_asset["type"] == "image":
+                sub_component = assetpack.images[sub_asset["asset_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                image_location_list = image_location_list+[(
+                    sub_component.image, sub_offset_x, sub_offset_y
+                )]
+            else:
+                sub_component = assetpack.components[sub_asset["asset_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                new_ill = sub_component.get_image_location_list(
+                                                          sub_offset_x,
+                                                          sub_offset_y,
+                                                          assetpack)
+                image_location_list = image_location_list+new_ill
         return image_location_list
 
     def get_part_full_id(self, sub_part):
         """Gives the correct part id, given the assetpack."""
         if sub_part['type'] == 'image':
             # Naive check to see if this already has an assetpack name
-            if len(sub_part["image_id"].split('.')) != 3:
-                return(self.assetpack_name + '.i.' + sub_part["image_id"])
+            if len(sub_part["image_id"].split('.')) != 2:
+                return(self.assetpack_name + '.' + sub_part["image_id"])
             else:
                 return(sub_part["image_id"])
         else:
-            if len(sub_part["component_id"].split('.')) != 3:
-                return(self.assetpack_name + '.c.' + sub_part["component_id"])
+            if len(sub_part["component_id"].split('.')) != 2:
+                return(self.assetpack_name + '.' + sub_part["component_id"])
             else:
                 return(sub_part["component_id"])
 
@@ -87,10 +95,6 @@ class ComponentAsset(Asset):
         for sub_asset in self.data["parts"]:
             sub_asset["x"] = sub_asset["x"] / scale_ratio_x
             sub_asset["y"] = sub_asset["y"] / scale_ratio_y
-
-    def get_full_id(self):
-        """Returns the ID of this component"""
-        return (self.assetpack_name + '.c.' + self.asset_id)
 
 
 class ImageAsset(Asset):
@@ -118,11 +122,3 @@ class ImageAsset(Asset):
     def show(self):
         """Show the image."""
         self.image.show()
-
-    def get_image_location_list(self, offset_x, offset_y, *args):
-        """The leaf end of a component call for image lists."""
-        return([(self, offset_x, offset_y)])
-
-    def get_full_id(self):
-        """Returns the ID of this component"""
-        return (self.assetpack_name + '.i.' + self.asset_id)

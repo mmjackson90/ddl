@@ -66,22 +66,3 @@ def test_resize():
         raise AssertionError()
     if not image.top_left['y'] == 18:
         raise AssertionError()
-
-
-def test_get_image_location_list():
-    """Tests an image will return an imagelocationlist for itself if asked."""
-    data = {"name": "test_name",
-            "id": "test",
-            "top_left": {"x": 152, "y": 6},
-            "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(data, "example_isometric")
-    ill = image.get_image_location_list(2, 3, 'not_actually_an_asset_pack')
-    if len(ill) != 1:
-        raise AssertionError()
-    returned_image, offset_x, offset_y = ill[0]
-    if not returned_image == image:
-        raise AssertionError()
-    if not offset_x == 2:
-        raise AssertionError()
-    if not offset_y == 3:
-        raise AssertionError()

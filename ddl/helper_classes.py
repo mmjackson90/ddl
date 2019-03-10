@@ -54,8 +54,8 @@ class ComponentFactory:
          x and y."""
         if assetpack_name is None:
             assetpack_name = self.assetpack.name
-        image_key = assetpack_name+'.i.'+image_id
-        if image_key not in self.assetpack.assets.keys():
+        image_key = assetpack_name+'.'+image_id
+        if image_key not in self.assetpack.images.keys():
             raise Exception('This image ID doesnt exist in this assetpack.')
         sub_asset = {"type": "image",
                      "image_id": image_key,
@@ -69,8 +69,8 @@ class ComponentFactory:
          x and y."""
         if assetpack_name is None:
             assetpack_name = self.assetpack.name
-        component_key = assetpack_name+'.c.'+component_id
-        if component_key not in self.assetpack.assets.keys():
+        component_key = assetpack_name+'.'+component_id
+        if component_key not in self.assetpack.components.keys():
             raise Exception('This component ID isn\'t in this assetpack.')
         sub_asset = {"type": "component",
                      "component_id": component_key,

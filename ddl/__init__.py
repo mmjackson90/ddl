@@ -35,7 +35,8 @@ class Assetpack:
      Please see the assetpack and imagepack schema for more info"""
     def __init__(self, name, imagepack, components_and_grid):
 
-        self.assets = {}
+        self.components = {}
+        self.images = {}
         self.name = name
         self.grid = components_and_grid['grid']
         if self.grid['type'] == 'isometric':
@@ -46,19 +47,26 @@ class Assetpack:
                                                 self.grid['height'])
 
         for image in imagepack['images']:
-            new_asset = ImageAsset(image, assetpack_name=name)
-            self.add_asset(new_asset)
+            new_image = ImageAsset(image, assetpack_name=name)
+            self.add_image(new_image)
 
         for component in components_and_grid['components']:
-            new_asset = ComponentAsset(component, assetpack_name=name)
-            self.add_asset(new_asset)
+            new_component = ComponentAsset(component, assetpack_name=name)
+            self.add_component(new_component)
 
-    def add_asset(self, new_asset):
-        """Adds an asset to the assetlist, if it doesn't already exist"""
-        if self.assets.setdefault(new_asset.get_full_id(),
+    def add_component(self, new_asset):
+        """Adds a component to the componentlist, if it doesn't exist"""
+        if self.components.setdefault(new_asset.get_full_id(),
+                                      new_asset) != new_asset:
+            raise ValueError('''The key %s is overloaded. Please ensure no\
+ components share IDs''' % new_asset.get_full_id())
+
+    def add_image(self, new_asset):
+        """Adds an image to the imagelist, if it doesn't already exist"""
+        if self.images.setdefault(new_asset.get_full_id(),
                                   new_asset) != new_asset:
             raise ValueError('''The key %s is overloaded. Please ensure no\
- assets share IDs''' % new_asset.get_full_id())
+ images share IDs''' % new_asset.get_full_id())
 
     def append_assetpack(self, assetpack):
         """
@@ -75,33 +83,40 @@ width. Please resize or rescale to make sure the projections match.'''
         if self.projection.width != assetpack.projection.width:
             raise Exception(grid_error)
 
-        for asset in assetpack.assets.values():
-            self.add_asset(asset)
+        for image in assetpack.images.values():
+            self.add_image(image)
+        for component in assetpack.components.values():
+            self.add_component(component)
 
     def change_assetpack_name(self, new_name):
         """
         Changes the name of the assetpack and all asset's assetpack
         identifiers.
         """
-        new_assets = self.assets
-        self.assets = {}
-        for asset in new_assets.values():
-            asset.assetpack_name = new_name
-            asset.reset_sub_parts()
-            self.add_asset(asset)
+        new_images = self.images
+        new_components = self.components
+        self.images = {}
+        self.components = {}
+        for component in new_components.values():
+            component.assetpack_name = new_name
+            component.reset_sub_parts()
+            self.add_component(component)
+        for image in new_images.values():
+            image.assetpack_name = new_name
+            image.reset_sub_parts()
+            self.add_image(image)
         self.name = new_name
-
 
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
          images in the assetpack to match up the grids.
          Actually scales images at the moment, but could just change scale
          factors"""
-        self.projection.resize_images(self.assets, desired_projection)
+        self.projection.resize_images(self.images, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)
 
     def rescale_components(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
         co-ordinates used in blueprints."""
-        self.projection.rescale_components(self.assets, desired_projection)
+        self.projection.rescale_components(self.components, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)

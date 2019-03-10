@@ -10,15 +10,12 @@ class FakeImageAsset:
     def __init__(self, image):
         self.image = image
 
-    def get_image_location_list(self, offset_x, offset_y, *args):
-        """Fakes the get_image_location_list method for images"""
-        return ([(self.image, offset_x, offset_y)])
-
 
 class FakeAssetPack():
     """A fake asset pack class"""
-    def __init__(self, assets):
-        self.assets = assets
+    def __init__(self, images, components):
+        self.images = images
+        self.components = components
 
 
 def test_component_init():
@@ -112,16 +109,16 @@ def test_simple_image_location_list():
             "example"
         ]
     }
-    assets = {"test_assetpack_name.i.floor-1x1-exact":
+    images = {"test_assetpack_name.floor-1x1-exact":
               FakeImageAsset('imageOne')}
-    fake_asset_pack = FakeAssetPack(assets)
+    fake_asset_pack = FakeAssetPack(images, {})
     component = ComponentAsset(data, 'test_assetpack_name')
     ill = component.get_image_location_list(2, 3, fake_asset_pack)
     if len(ill) != 2:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[0]
     if not returned_image == 'imageOne':
-        raise AssertionError()
+        raise AssertionError(returned_image)
     if not offset_x == 2:
         raise AssertionError()
     if not offset_y == 3:
@@ -182,19 +179,19 @@ def test_nested_image_location_list():
         ]
     }
     component_leaf = ComponentAsset(data_leaf, 'test_assetpack_name')
-    assets = {"test_assetpack_name.i.floor-1x1-exact":
-              FakeImageAsset('imageOne'),
-              "test_assetpack_name.c.floor-2x2-exact":
-              component_leaf
-              }
-    fake_asset_pack = FakeAssetPack(assets)
+    images = {"test_assetpack_name.floor-1x1-exact":
+              FakeImageAsset('imageOne')}
+    components = {"test_assetpack_name.floor-2x2-exact":
+                  component_leaf
+                  }
+    fake_asset_pack = FakeAssetPack(images, components)
     component_branch = ComponentAsset(data_branch, 'test_assetpack_name')
     ill = component_branch.get_image_location_list(5, 7, fake_asset_pack)
     if len(ill) != 3:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[0]
     if not returned_image == 'imageOne':
-        raise AssertionError()
+        raise AssertionError(returned_image)
     if not offset_x == 5:
         raise AssertionError()
     if not offset_y == 7:

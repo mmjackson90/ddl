@@ -29,10 +29,10 @@ def test_assetpack_resize():
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.i.floor-1x1-exact'
+    if not assetpack.images['example_isometric.floor-1x1-exact'
                             ].image.width == 29:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.i.floor-1x1-exact'
+    if not assetpack.images['example_isometric.floor-1x1-exact'
                             ].image.height == 19:
         raise AssertionError()
 
@@ -46,17 +46,17 @@ def test_assetpack_rescale():
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
-                            ].parts[0]['x'] == 0:
+    if not assetpack.components['example_isometric.floor-2x2-exact'
+                                ].parts[0]['x'] == 0:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
-                            ].parts[0]['y'] == 0:
+    if not assetpack.components['example_isometric.floor-2x2-exact'
+                                ].parts[0]['y'] == 0:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
-                            ].parts[3]['x'] == 294/29:
+    if not assetpack.components['example_isometric.floor-2x2-exact'
+                                ].parts[3]['x'] == 294/29:
         raise AssertionError()
-    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
-                            ].parts[3]['y'] == 10:
+    if not assetpack.components['example_isometric.floor-2x2-exact'
+                                ].parts[3]['y'] == 10:
         raise AssertionError()
 
 
@@ -64,18 +64,24 @@ def test_change_assetpack_name():
     """Tests changing the name of an assetpack."""
     assetpack = AssetpackFactory.load('example_isometric')
     assetpack.change_assetpack_name('new_name')
-    if len(assetpack.assets) != 7:
-        raise AssertionError('%s != 7' % len(assetpack.assets))
+    if len(assetpack.images) != 4:
+        raise AssertionError('%s != 4' % len(assetpack.assets))
+    if len(assetpack.components) != 3:
+        raise AssertionError('%s != 3' % len(assetpack.assets))
 
-    for key in assetpack.assets.keys():
+    for key in assetpack.images.keys():
         if key.split('.')[0] != 'new_name':
             raise AssertionError()
 
-    for asset in assetpack.assets.values():
-        if asset.assetpack_name != 'new_name':
+    for key in assetpack.components.keys():
+        if key.split('.')[0] != 'new_name':
             raise AssertionError()
-        if isinstance(asset, ComponentAsset):
-            for sub_part in asset.parts:
+
+    for component in assetpack.components.values():
+        if component.assetpack_name != 'new_name':
+            raise AssertionError()
+        if isinstance(component, ComponentAsset):
+            for sub_part in component.parts:
                 if sub_part["asset_id"].split('.')[0] != 'new_name':
                     raise AssertionError()
 
@@ -91,5 +97,7 @@ def test_append_assetpacks():
     assetpack2 = AssetpackFactory.load('example_isometric')
     assetpack2.change_assetpack_name('new_name')
     assetpack.append_assetpack(assetpack2)
-    if len(assetpack.assets) != 14:
-        raise AssertionError('%s != 14' % len(assetpack.assets))
+    if len(assetpack.images) != 8:
+        raise AssertionError('%s != 14' % len(assetpack.images))
+    if len(assetpack.components) != 6:
+        raise AssertionError('%s != 14' % len(assetpack.components))
