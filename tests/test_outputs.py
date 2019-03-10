@@ -79,7 +79,7 @@ def test_smoke_wall():
     Smoke test a wall/floor combo, just to check the offsets look good.
     """
     assetpack = AssetpackFactory.load('example_isometric')
-    floor_wall = assetpack.components['floor-wall-exact']
+    floor_wall = assetpack.assets['example_isometric.c.floor-wall-exact']
 
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
                          get_image_pixel_list(0, 0, floor_wall.
@@ -97,12 +97,13 @@ def test_smoke_low_res_resize():
     """
 
     assetpack = AssetpackFactory.load('example_isometric')
-    floor1 = assetpack.components['floor-2x2-exact']
+    floor1 = assetpack.assets['example_isometric.c.floor-2x2-exact']
     image_location_list = floor1.get_image_location_list(0, 0, assetpack)
 
     low_res_assetpack = AssetpackFactory.load('low_res_isometric')
     low_res_assetpack.resize_images(assetpack.projection)
-    low_res_floor = low_res_assetpack.components['floor-2x2-low-res']
+    low_res_floor = low_res_assetpack.assets[
+        'low_res_isometric.c.floor-2x2-low-res']
     image_location_list6 = low_res_floor.\
         get_image_location_list(1, 1, low_res_assetpack)
     image_pixel_list6 = assetpack.projection.\
@@ -119,14 +120,14 @@ def test_non_scaled_rendering():
     """Tests rescaling by mashing together a prop pack of one scale and
     a floor pack of a different one."""
     assetpack = AssetpackFactory.load('example_isometric')
-    floor_1x1 = assetpack.components['floor-1x1-exact']
+    floor_1x1 = assetpack.assets['example_isometric.i.floor-1x1-exact']
     image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
                                                                assetpack)
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
 
     prop_assetpack = AssetpackFactory.load('example_props')
-    boxes = prop_assetpack.components['many-boxes']
+    boxes = prop_assetpack.assets['example_props.c.many-boxes']
     image_location_list7_2 = boxes.get_image_location_list(0, 0,
                                                            prop_assetpack)
     # Needs relocating to match the larger grid.
@@ -142,7 +143,7 @@ def test_scaled_rendering():
     """Tests rescaling by rescaling a prop pack to match the projection
      of the floor pack."""
     assetpack = AssetpackFactory.load('example_isometric')
-    floor_1x1 = assetpack.components['floor-1x1-exact']
+    floor_1x1 = assetpack.assets['example_isometric.i.floor-1x1-exact']
     image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
                                                                assetpack)
 
@@ -150,7 +151,7 @@ def test_scaled_rendering():
         get_image_pixel_list(0, 0, image_location_list7_3)
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_components(assetpack.projection)
-    boxes2 = prop_assetpack2.components['many-boxes']
+    boxes2 = prop_assetpack2.assets['example_props.c.many-boxes']
     image_location_list7_1 = boxes2.\
         get_image_location_list(0, 0, prop_assetpack2)
 
