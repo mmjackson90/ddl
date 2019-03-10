@@ -144,20 +144,21 @@ def test_scaled_rendering():
      of the floor pack."""
     assetpack = AssetpackFactory.load('example_isometric')
     floor_1x1 = assetpack.assets['example_isometric.i.floor-1x1-exact']
-    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
-                                                               assetpack)
-
-    image_pixel_list7_3 = assetpack.projection.\
-        get_image_pixel_list(0, 0, image_location_list7_3)
     prop_assetpack2 = AssetpackFactory.load('example_props')
     prop_assetpack2.rescale_components(assetpack.projection)
-    boxes2 = prop_assetpack2.assets['example_props.c.many-boxes']
-    image_location_list7_1 = boxes2.\
-        get_image_location_list(0, 0, prop_assetpack2)
+    assetpack.append_assetpack(prop_assetpack2)
+    boxes2 = assetpack.assets['example_props.c.many-boxes']
+    component_factory = ComponentFactory(assetpack, "isometric")
+    component_factory.new_component('boxes_on_floor', 'floor')
+    component_factory.add_image('floor-1x1-exact', 0, 0)
+    component_factory.add_component('many-boxes', 0, 0,
+                                    assetpack_name='example_props')
+    boxes_on_floor = component_factory.pull_component()
+    image_location_list7_1 = boxes_on_floor.\
+        get_image_location_list(0, 0, assetpack)
 
-    image_pixel_list7_1 = prop_assetpack2.projection.\
+    image_pixel_list7_1 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_1)
 
     renderer8 = Renderer(image_pixel_list=image_pixel_list7_1)
-    renderer8.add_image_pixel_list(image_pixel_list7_3)
     renderer8.output('screen')

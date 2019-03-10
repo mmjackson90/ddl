@@ -60,6 +60,28 @@ class Assetpack:
             raise ValueError('''The key %s is overloaded. Please ensure no\
  assets share IDs''' % new_asset.get_full_id())
 
+    def append_assetpack(self, assetpack):
+        if not isinstance(self.projection, type(assetpack.projection)):
+            raise Exception('''These two assetpacks do not share the same\
+projection type. They cannot be combined''')
+        grid_error = '''These two assetpacks do not share a grid height and\
+width. Please resize or rescale to make sure the projections match.'''
+        if self.projection.width != assetpack.projection.width:
+            raise Exception(grid_error)
+        if self.projection.width != assetpack.projection.width:
+            raise Exception(grid_error)
+
+        for asset in assetpack.assets.values():
+            self.add_asset(asset)
+
+    def change_assetpack_name(self, new_name):
+        new_assets = self.assets
+        self.assets = {}
+        for asset in new_assets.values():
+            asset.assetpack_name = new_name
+            self.add_asset(asset)
+        self.name = new_name
+
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all
          images in the assetpack to match up the grids.

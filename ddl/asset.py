@@ -62,9 +62,16 @@ class ComponentAsset(Asset):
 
     def get_part_full_id(self, sub_part):
         if sub_part['type'] == 'image':
-            return(self.assetpack_name + '.i.' + sub_part["image_id"])
+            # Naive check to see if this already has an assetpack name
+            if len(sub_part["image_id"].split('.')) != 3:
+                return(self.assetpack_name + '.i.' + sub_part["image_id"])
+            else:
+                return(sub_part["image_id"])
         else:
-            return(self.assetpack_name + '.c.' + sub_part["component_id"])
+            if len(sub_part["component_id"].split('.')) != 3:
+                return(self.assetpack_name + '.c.' + sub_part["component_id"])
+            else:
+                return(sub_part["component_id"])
 
     def rescale(self, scale_ratio_x, scale_ratio_y):
         """Alters all the co-ordinates in a blueprint to match a new

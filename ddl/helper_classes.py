@@ -52,26 +52,32 @@ class ComponentFactory:
         self.connections = [] if connections is None else connections
         self.parts = [] if parts is None else parts
 
-    def add_image(self, image_id, x_coordinate, y_coordinate):
+    def add_image(self, image_id, x_coordinate, y_coordinate,
+                  assetpack_name=None):
         """Adds a specific image asset to the component at grid co-ordinates
          x and y."""
-        image_key = self.assetpack.name+'.i.'+image_id
+        if assetpack_name is None:
+            assetpack_name = self.assetpack.name
+        image_key = assetpack_name+'.i.'+image_id
         if image_key not in self.assetpack.assets.keys():
             raise Exception('This image ID doesnt exist in this assetpack.')
         sub_asset = {"type": "image",
-                     "image_id": image_id,
+                     "image_id": image_key,
                      "x": x_coordinate,
                      "y": y_coordinate}
         self.parts = self.parts+[sub_asset]
 
-    def add_component(self, component_id, x_coordinate, y_coordinate):
+    def add_component(self, component_id, x_coordinate, y_coordinate,
+                      assetpack_name=None):
         """Adds a specific component to the component at grid co-ordinates
          x and y."""
-        component_key = self.assetpack.name+'.c.'+component_id
+        if assetpack_name is None:
+            assetpack_name = self.assetpack.name
+        component_key = assetpack_name+'.c.'+component_id
         if component_key not in self.assetpack.assets.keys():
             raise Exception('This component ID isn\'t in this assetpack.')
         sub_asset = {"type": "component",
-                     "component_id": component_id,
+                     "component_id": component_key,
                      "x": x_coordinate,
                      "y": y_coordinate}
         self.parts = self.parts+[sub_asset]

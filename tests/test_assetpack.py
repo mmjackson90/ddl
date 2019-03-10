@@ -57,3 +57,27 @@ def test_assetpack_rescale():
     if not assetpack.assets['example_isometric.c.floor-2x2-exact'
                             ].parts[3]['y'] == 10:
         raise AssertionError()
+
+
+def test_change_assetpack_name():
+    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack.change_assetpack_name('new_name')
+    if len(assetpack.assets) != 7:
+        raise AssertionError('%s != 7' % len(assetpack.assets))
+    for key in assetpack.assets.keys():
+        if key.split('.')[0] != 'new_name':
+            raise AssertionError()
+    for asset in assetpack.assets.values():
+        if asset.assetpack_name != 'new_name':
+            raise AssertionError()
+    if assetpack.name != 'new_name':
+        raise AssertionError()
+
+
+def test_append_assetpacks():
+    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack2 = AssetpackFactory.load('example_isometric')
+    assetpack2.change_assetpack_name('new_name')
+    assetpack.append_assetpack(assetpack2)
+    if len(assetpack.assets) != 14:
+        raise AssertionError('%s != 14' % len(assetpack.assets))
