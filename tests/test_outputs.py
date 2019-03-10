@@ -13,7 +13,7 @@ def test_smoke_render_component():
     """
 
     assetpack = AssetpackFactory.load('example_isometric')
-    floor1 = assetpack.components['floor-2x2-exact']
+    floor1 = assetpack.assets['example_isometric.c.floor-2x2-exact']
     image_location_list = floor1.get_image_location_list(0, 0, assetpack)
 
     renderer = Renderer(image_pixel_list=assetpack.projection

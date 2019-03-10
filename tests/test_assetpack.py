@@ -24,14 +24,15 @@ def test_assetpack_resize():
     assetpack = AssetpackFactory.load('example_isometric')
     projection2 = FakeProjection(29, 17)
     assetpack.resize_images(projection2)
-    print(assetpack.components)
     if not assetpack.projection.width == 29:
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.images['floor-1x1-exact'].image.width == 29:
+    if not assetpack.assets['example_isometric.i.floor-1x1-exact'
+                            ].image.width == 29:
         raise AssertionError()
-    if not assetpack.images['floor-1x1-exact'].image.height == 19:
+    if not assetpack.assets['example_isometric.i.floor-1x1-exact'
+                            ].image.height == 19:
         raise AssertionError()
 
 
@@ -44,11 +45,15 @@ def test_assetpack_rescale():
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.components['floor-2x2-exact'].parts[0]['x'] == 0:
+    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
+                            ].parts[0]['x'] == 0:
         raise AssertionError()
-    if not assetpack.components['floor-2x2-exact'].parts[0]['y'] == 0:
+    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
+                            ].parts[0]['y'] == 0:
         raise AssertionError()
-    if not assetpack.components['floor-2x2-exact'].parts[3]['x'] == 294/29:
+    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
+                            ].parts[3]['x'] == 294/29:
         raise AssertionError()
-    if not assetpack.components['floor-2x2-exact'].parts[3]['y'] == 10:
+    if not assetpack.assets['example_isometric.c.floor-2x2-exact'
+                            ].parts[3]['y'] == 10:
         raise AssertionError()

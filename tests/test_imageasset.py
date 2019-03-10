@@ -19,7 +19,7 @@ def test_zero_top_left():
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
-    if not image.image_id == "test":
+    if not image.asset_id == "test":
         raise AssertionError()
     if not isinstance(image.image, PngImageFile):
         raise AssertionError()
@@ -40,7 +40,7 @@ def test_nonzero_top_left():
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
-    if not image.image_id == "test":
+    if not image.asset_id == "test":
         raise AssertionError()
     if not isinstance(image.image, PngImageFile):
         raise AssertionError()
@@ -65,4 +65,23 @@ def test_resize():
     if not image.top_left['x'] == 304:
         raise AssertionError()
     if not image.top_left['y'] == 18:
+        raise AssertionError()
+
+
+def test_get_image_location_list():
+    """Tests an image will return an imagelocationlist for itself if asked."""
+    data = {"name": "test_name",
+            "id": "test",
+            "top_left": {"x": 152, "y": 6},
+            "image": "1x1_floor_fuzzy.png"}
+    image = ImageAsset(data, "example_isometric")
+    list = image.get_image_location_list(2, 3, 'not_actually_an_asset_pack')
+    if len(list) != 1:
+        raise AssertionError()
+    returned_image, x, y = list[0]
+    if not returned_image == image:
+        raise AssertionError()
+    if not x == 2:
+        raise AssertionError()
+    if not y == 3:
         raise AssertionError()
