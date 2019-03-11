@@ -127,3 +127,20 @@ class Assetpack:
         co-ordinates used in blueprints."""
         self.projection.rescale_components(self.components, desired_projection)
         self.projection.alter_grid_parameters(desired_projection)
+
+    def get_image_location_list(self, offset_x, offset_y, component):
+        part_list = component.get_part_list(offset_x, offset_y)
+        image_location_list = []
+        for type, asset_id, part_offset_x, part_offset_y in part_list:
+            if type == "image":
+                sub_image = self.images[asset_id]
+                image_location_list = image_location_list+[(
+                    sub_image, part_offset_x, part_offset_y
+                )]
+            else:
+                sub_component = self.components[asset_id]
+                new_ill = self.get_image_location_list(part_offset_x,
+                                                       part_offset_y,
+                                                       sub_component)
+                image_location_list = image_location_list+new_ill
+        return image_location_list
