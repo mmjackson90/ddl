@@ -13,6 +13,16 @@ from ddl.projection import IsometricProjection, TopDownProjection
 from ddl.asset import ComponentAsset, ImageAsset
 
 
+class ProjectionTypeException(Exception):
+    """Exception class for if two projections dont share a type"""
+    pass
+
+
+class ProjectionGridException(Exception):
+    """Exception class for if two projections dont share grid sizes"""
+    pass
+
+
 class AssetpackFactory:
     """A factory for creating AssetPacks"""
     @staticmethod
@@ -74,14 +84,13 @@ class Assetpack:
         assetpack atop the previous one.
         """
         if not isinstance(self.projection, type(assetpack.projection)):
-            raise Exception('''These two assetpacks do not share the same\
-projection type. They cannot be combined''')
+            raise ProjectionTypeException()
         grid_error = '''These two assetpacks do not share a grid height and\
 width. Please resize or rescale to make sure the projections match.'''
         if self.projection.width != assetpack.projection.width:
-            raise Exception(grid_error)
+            raise ProjectionGridException()
         if self.projection.width != assetpack.projection.width:
-            raise Exception(grid_error)
+            raise ProjectionGridException()
 
         for image in assetpack.images.values():
             self.add_image(image)
