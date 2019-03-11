@@ -100,7 +100,7 @@ def test_simple_image_location_list():
             },
             {
                 "type": "image",
-                "image_id": "floor-1x1-exact",
+                "image_id": "floor-1x1-other",
                 "x": 2,
                 "y": 3
             }
@@ -110,7 +110,9 @@ def test_simple_image_location_list():
         ]
     }
     images = {"test_assetpack_name.floor-1x1-exact":
-              FakeImageAsset('imageOne')}
+              FakeImageAsset('imageOne'),
+              "test_assetpack_name.floor-1x1-other":
+              FakeImageAsset('imageTwo')}
     fake_asset_pack = FakeAssetPack(images, {})
     component = ComponentAsset(data, 'test_assetpack_name')
     ill = component.get_image_location_list(2, 3, fake_asset_pack)
@@ -124,7 +126,7 @@ def test_simple_image_location_list():
     if not offset_y == 3:
         raise AssertionError()
     returned_image, offset_x, offset_y = ill[1]
-    if not returned_image.image == 'imageOne':
+    if not returned_image.image == 'imageTwo':
         raise AssertionError()
     if not offset_x == 4:
         raise AssertionError()
@@ -147,7 +149,7 @@ def test_nested_image_location_list():
             },
             {
                 "type": "image",
-                "image_id": "floor-1x1-exact",
+                "image_id": "floor-1x1-other",
                 "x": 2,
                 "y": 3
             }
@@ -180,7 +182,9 @@ def test_nested_image_location_list():
     }
     component_leaf = ComponentAsset(data_leaf, 'test_assetpack_name')
     images = {"test_assetpack_name.floor-1x1-exact":
-              FakeImageAsset('imageOne')}
+              FakeImageAsset('imageOne'),
+              "test_assetpack_name.floor-1x1-other":
+              FakeImageAsset('imageTwo')}
     components = {"test_assetpack_name.floor-2x2-exact":
                   component_leaf
                   }
@@ -204,7 +208,7 @@ def test_nested_image_location_list():
     if not offset_y == 10:
         raise AssertionError(offset_y)
     returned_image, offset_x, offset_y = ill[2]
-    if not returned_image.image == 'imageOne':
+    if not returned_image.image == 'imageTwo':
         raise AssertionError()
     if not offset_x == 9:
         raise AssertionError(offset_x)
