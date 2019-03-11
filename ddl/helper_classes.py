@@ -123,9 +123,8 @@ class ComponentFactory:
         """Sets up a locator and a renderer and renders the current component.
          Can take many shortcuts as it knows it's own assetpack/grid.
          Defaults to screen output, but can throw to file if needed."""
-        image_location_list = self.get_component()\
-                                  .get_image_location_list(0, 0,
-                                                           self.assetpack)
+        image_location_list = self.assetpack.\
+            get_image_location_list(0, 0, self.get_component())
         image_list = self.assetpack.projection.\
             get_image_pixel_list(0, 0, image_location_list)
         Renderer(image_list).output(destination, filename)
