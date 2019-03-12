@@ -97,8 +97,8 @@ def test_get_part_list():
     }
     component = ComponentAsset(data, 'test_assetpack_name')
     parts = component.get_part_list(2, 3)
-    type, name, offset_x, offset_y = parts[0]
-    if not type == "image":
+    asset_type, name, offset_x, offset_y = parts[0]
+    if not asset_type == "image":
         raise AssertionError()
     if not name == "test_assetpack_name.floor-1x1-exact":
         raise AssertionError()
@@ -106,8 +106,8 @@ def test_get_part_list():
         raise AssertionError()
     if not offset_y == 3:
         raise AssertionError()
-    type, name, offset_x, offset_y = parts[1]
-    if not type == "component":
+    asset_type, name, offset_x, offset_y = parts[1]
+    if not asset_type == "component":
         raise AssertionError()
     if not name == "test_assetpack_name.test-component-thing":
         raise AssertionError()

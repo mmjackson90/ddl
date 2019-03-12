@@ -112,7 +112,6 @@ def test_simple_image_location_list():
     if len(ill) != 2:
         raise AssertionError()
     # Required to check things are ending up in the right places in the list
-    image, offset_x, offset_y = ill[0]
     if not ill[0][0].asset_id == "floor-1x1-exact":
         raise AssertionError(ill[0][0].asset_id)
     if not ill[1][0].asset_id == "exact-wall-1":

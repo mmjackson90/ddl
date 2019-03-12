@@ -129,10 +129,15 @@ class Assetpack:
         self.projection.alter_grid_parameters(desired_projection)
 
     def get_image_location_list(self, offset_x, offset_y, component):
+        """
+        For a given component, recurses down it's tree of parts until we end
+        up with nothing but a list of images and their absolute (by grid)
+        offsets
+        """
         part_list = component.get_part_list(offset_x, offset_y)
         image_location_list = []
-        for type, asset_id, part_offset_x, part_offset_y in part_list:
-            if type == "image":
+        for asset_type, asset_id, part_offset_x, part_offset_y in part_list:
+            if asset_type == "image":
                 sub_image = self.images[asset_id]
                 image_location_list = image_location_list+[(
                     sub_image, part_offset_x, part_offset_y
