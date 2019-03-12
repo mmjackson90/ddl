@@ -71,3 +71,33 @@ def test_append_taglist():
     taglist2.append(taglist1)
     combined_component_check(taglist1.tag_components)
     combined_component_check(taglist2.tag_components)
+
+
+def test_get_component_list():
+    """
+    Checks that getting component lists given a set of tags works correctly.
+    """
+    component1 = FakeComponent("component1", ['tag1', 'tag2'])
+    component2 = FakeComponent("component2", ['tag2', 'tag3'])
+    taglist = TagList()
+    taglist.add_component(component1)
+    taglist.add_component(component2)
+    if not len(taglist.get_components_that_match_tags(["tag1"])) == 1:
+        raise AssertionError()
+    if "component1" not in taglist.get_components_that_match_tags(["tag1"]):
+        raise AssertionError()
+    if not len(taglist.get_components_that_match_tags(["tag2"])) == 2:
+        raise AssertionError()
+
+    double_tag_list = taglist.get_components_that_match_tags(["tag2", "tag3"])
+    if not len(double_tag_list) == 1:
+        raise AssertionError()
+    if "component2" not in double_tag_list:
+        raise AssertionError()
+
+    if not len(taglist.get_components_that_match_tags(["tag_umpt"])) == 0:
+        raise AssertionError()
+    if not len(taglist.get_components_that_match_tags(["tag1",
+                                                       "tag2",
+                                                       "tag3"])) == 0:
+        raise AssertionError()
