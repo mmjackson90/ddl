@@ -10,6 +10,7 @@ class FakeComponent:
         self.tags = tags
 
     def get_full_id(self):
+        """Fake ID function that simply returns this instance's name"""
         return (self.name)
 
 
