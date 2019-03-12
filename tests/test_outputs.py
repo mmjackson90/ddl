@@ -14,7 +14,7 @@ def test_smoke_render_component():
 
     assetpack = AssetpackFactory.load('example_isometric')
     floor1 = assetpack.components['example_isometric.floor-2x2-exact']
-    image_location_list = floor1.get_image_location_list(0, 0, assetpack)
+    image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
@@ -32,7 +32,7 @@ def test_smoke_design_component():
     component_factory.add_image("floor-1x1-exact", 0, 1)
     floor4 = component_factory.pull_component()
 
-    image_location_list2 = floor4.get_image_location_list(0, 0, assetpack)
+    image_location_list2 = assetpack.get_image_location_list(0, 0, floor4)
     image_pixel_list2 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list2)
     renderer2 = Renderer(image_pixel_list=image_pixel_list2)
@@ -67,9 +67,9 @@ def test_smoke_twiddly_fuzzy():
     fuzzy = component_factory.pull_component()
 
     renderer4 = Renderer(image_pixel_list=assetpack.projection.
-                         get_image_pixel_list(0, 0, fuzzy.
+                         get_image_pixel_list(0, 0, assetpack.
                                               get_image_location_list(0, 0,
-                                                                      assetpack
+                                                                      fuzzy
                                                                       )))
     renderer4.output('screen')
 
@@ -80,12 +80,9 @@ def test_smoke_wall():
     """
     assetpack = AssetpackFactory.load('example_isometric')
     floor_wall = assetpack.components['example_isometric.floor-wall-exact']
-
+    ill = assetpack.get_image_location_list(0, 0, floor_wall)
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
-                         get_image_pixel_list(0, 0, floor_wall.
-                                              get_image_location_list(0, 0,
-                                                                      assetpack
-                                                                      )))
+                         get_image_pixel_list(0, 0, ill))
 
     renderer5.output('screen')
 
@@ -98,14 +95,14 @@ def test_smoke_low_res_resize():
 
     assetpack = AssetpackFactory.load('example_isometric')
     floor1 = assetpack.components['example_isometric.floor-2x2-exact']
-    image_location_list = floor1.get_image_location_list(0, 0, assetpack)
+    image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
     low_res_assetpack = AssetpackFactory.load('low_res_isometric')
     low_res_assetpack.resize_images(assetpack.projection)
     low_res_floor = low_res_assetpack.components[
         'low_res_isometric.floor-2x2-low-res']
-    image_location_list6 = low_res_floor.\
-        get_image_location_list(1, 1, low_res_assetpack)
+    image_location_list6 = low_res_assetpack.\
+        get_image_location_list(1, 1, low_res_floor)
     image_pixel_list6 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list6)
 
@@ -121,15 +118,15 @@ def test_non_scaled_rendering():
     a floor pack of a different one."""
     assetpack = AssetpackFactory.load('example_isometric')
     floor_1x1 = assetpack.components['example_isometric.floor-1x1-exact']
-    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0,
-                                                               assetpack)
+    image_location_list7_3 = assetpack.get_image_location_list(0, 0,
+                                                               floor_1x1)
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
 
     prop_assetpack = AssetpackFactory.load('example_props')
     boxes = prop_assetpack.components['example_props.many-boxes']
-    image_location_list7_2 = boxes.get_image_location_list(0, 0,
-                                                           prop_assetpack)
+    image_location_list7_2 = prop_assetpack.get_image_location_list(0, 0,
+                                                                    boxes)
     # Needs relocating to match the larger grid.
     image_pixel_list7_2 = prop_assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_2)
@@ -153,8 +150,8 @@ def test_scaled_rendering():
     component_factory.add_component('many-boxes', 0, 0,
                                     assetpack_name='example_props')
     boxes_on_floor = component_factory.pull_component()
-    image_location_list7_1 = boxes_on_floor.\
-        get_image_location_list(0, 0, assetpack)
+    image_location_list7_1 = assetpack.\
+        get_image_location_list(0, 0, boxes_on_floor)
 
     image_pixel_list7_1 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_1)

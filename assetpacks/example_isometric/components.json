@@ -72,6 +72,27 @@
             "tags": [
                 "example"
             ]
+        },
+        {
+            "name": "Nested components",
+            "id": "nested-component-test",
+            "parts":[
+                {
+                    "type":"component",
+                    "component_id":"floor-wall-exact",
+                    "x":0,
+                    "y":0
+                },
+                {
+                    "type":"image",
+                    "image_id":"floor-1x1-fuzzy",
+                    "x":3,
+                    "y":1
+                }
+            ],
+            "tags": [
+                "example"
+            ]
         }
     ]
 }
