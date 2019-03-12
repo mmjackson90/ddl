@@ -29,15 +29,43 @@ def test_add_component_to_tag():
         raise AssertionError()
 
 
-def combined_component_check(tag_components):
+def make_add_taglist():
     """
-    Runs checks on component lists that are meant to include combinations of
-    component and tag. This is a measure to have tidy code.
+    Makes a taglist and adds some components to it.
+    Really overloading the tests here, but hey.
     """
+    component1 = FakeComponent("component1", ['tag1', 'tag2'])
+    component2 = FakeComponent("component2", ['tag2', 'tag3'])
+    taglist = TagList()
+    taglist.add_component(component1)
+    taglist.add_component(component2)
+    return (taglist)
+
+
+def test_add_component_right_tags():
+    """
+    Checks that adding components modifies the tag_component tags correctly.
+    """
+    tag_components = make_add_taglist().tag_components
     if "tag1" and "tag2" and "tag3" not in tag_components.keys():
         raise AssertionError(tag_components.keys())
+
+
+def test_add_component_right_components():
+    """
+    Checks that adding components modifies the tag_component components
+    correctly.
+    """
+    tag_components = make_add_taglist().tag_components
     if "component1" and "component2" not in tag_components["tag2"]:
         raise AssertionError()
+
+
+def test_add_component_right_sizes():
+    """
+    Checks that adding components gives the right size sets back afterwards.
+    """
+    tag_components = make_add_taglist().tag_components
     if not len(tag_components["tag1"]) == 1:
         raise AssertionError()
     if not len(tag_components["tag2"]) == 2:
@@ -46,21 +74,10 @@ def combined_component_check(tag_components):
         raise AssertionError()
 
 
-def test_add_component():
+def make_append_taglist():
     """
-    Checks that adding components modifies the tag_component list correctly.
-    """
-    component1 = FakeComponent("component1", ['tag1', 'tag2'])
-    component2 = FakeComponent("component2", ['tag2', 'tag3'])
-    taglist = TagList()
-    taglist.add_component(component1)
-    taglist.add_component(component2)
-    combined_component_check(taglist.tag_components)
-
-
-def test_append_taglist():
-    """
-    Checks that appending taglists works correctly and is commutative.
+    Makes tow taglists and sticks them together.
+    Really overloading the tests here, but hey.
     """
     component1 = FakeComponent("component1", ['tag1', 'tag2'])
     component2 = FakeComponent("component2", ['tag2', 'tag3'])
@@ -69,35 +86,99 @@ def test_append_taglist():
     taglist2 = TagList()
     taglist2.add_component(component2)
     taglist1.append(taglist2)
-    taglist2.append(taglist1)
-    combined_component_check(taglist1.tag_components)
-    combined_component_check(taglist2.tag_components)
+    return(taglist1)
 
 
-def test_get_component_list():
+def test_append_component_right_tags():
+    """
+    Checks that appending taglists modifies the tag_component tags correctly.
+    """
+    tag_components = make_append_taglist().tag_components
+    if "tag1" and "tag2" and "tag3" not in tag_components.keys():
+        raise AssertionError(tag_components.keys())
+
+
+def test_append_component_right_components():
+    """
+    Checks that appending taglists modifies the tag_component components
+    correctly.
+    """
+    tag_components = make_append_taglist().tag_components
+    if "component1" and "component2" not in tag_components["tag2"]:
+        raise AssertionError()
+
+
+def test_append_component_right_sizes():
+    """
+    Checks that appending components gives the right size sets back afterwards.
+    """
+    tag_components = make_append_taglist().tag_components
+    if not len(tag_components["tag1"]) == 1:
+        raise AssertionError()
+    if not len(tag_components["tag2"]) == 2:
+        raise AssertionError()
+    if not len(tag_components["tag3"]) == 1:
+        raise AssertionError()
+
+
+def test_get_list_single_tags_1():
     """
     Checks that getting component lists given a set of tags works correctly.
+    This only checks a single tag at a time.
     """
-    component1 = FakeComponent("component1", ['tag1', 'tag2'])
-    component2 = FakeComponent("component2", ['tag2', 'tag3'])
-    taglist = TagList()
-    taglist.add_component(component1)
-    taglist.add_component(component2)
+    taglist = make_add_taglist()
+    tag2_components = taglist.get_components_that_match_tags(["tag2"])
     if not len(taglist.get_components_that_match_tags(["tag1"])) == 1:
         raise AssertionError()
     if "component1" not in taglist.get_components_that_match_tags(["tag1"]):
         raise AssertionError()
-    if not len(taglist.get_components_that_match_tags(["tag2"])) == 2:
+
+
+def test_get_list_single_tags_1():
+    """
+    Checks that getting component lists given a set of tags works correctly.
+    This only checks a single tag at a time.
+    """
+    taglist = make_add_taglist()
+    tag2_components = taglist.get_components_that_match_tags(["tag2"])
+    if not len(tag2_components) == 2:
+        raise AssertionError()
+    if "component1" not in tag2_components:
+        raise AssertionError()
+    if "component2" not in tag2_components:
         raise AssertionError()
 
+
+def test_get_list_double_tags():
+    """
+    Checks that getting component lists given a set of tags works correctly.
+    This test checks multiple tags return just the one component.
+    """
+    taglist = make_add_taglist()
     double_tag_list = taglist.get_components_that_match_tags(["tag2", "tag3"])
     if not len(double_tag_list) == 1:
         raise AssertionError()
     if "component2" not in double_tag_list:
         raise AssertionError()
 
+
+def test_get_list_missing_tag():
+    """
+    Checks that getting component lists given a set of tags works correctly.
+    This checks that a tag that isn't in the artpack returns an empty list.
+    """
+    taglist = make_add_taglist()
     if not len(taglist.get_components_that_match_tags(["tag_umpt"])) == 0:
         raise AssertionError()
+
+
+def test_get_list_single_tags():
+    """
+    Checks that getting component lists given a set of tags works correctly.
+    This tests that asking for a combination of tags that doesnt exist
+    returns an empty list.
+    """
+    taglist = make_add_taglist()
     if not len(taglist.get_components_that_match_tags(["tag1",
                                                        "tag2",
                                                        "tag3"])) == 0:
