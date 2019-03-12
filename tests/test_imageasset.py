@@ -2,7 +2,7 @@
 Tests the methods of ImageAsset
 """
 
-from ddl import ImageAsset
+from ddl.asset import ImageAsset
 from PIL.PngImagePlugin import PngImageFile
 
 
@@ -19,7 +19,7 @@ def test_zero_top_left():
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
-    if not image.image_id == "test":
+    if not image.asset_id == "test":
         raise AssertionError()
     if not isinstance(image.image, PngImageFile):
         raise AssertionError()
@@ -40,7 +40,7 @@ def test_nonzero_top_left():
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
-    if not image.image_id == "test":
+    if not image.asset_id == "test":
         raise AssertionError()
     if not isinstance(image.image, PngImageFile):
         raise AssertionError()
