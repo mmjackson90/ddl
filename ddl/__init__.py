@@ -85,8 +85,6 @@ class Assetpack:
         """
         if not isinstance(self.projection, type(assetpack.projection)):
             raise ProjectionTypeException()
-        grid_error = '''These two assetpacks do not share a grid height and\
-width. Please resize or rescale to make sure the projections match.'''
         if self.projection.width != assetpack.projection.width:
             raise ProjectionGridException()
         if self.projection.width != assetpack.projection.width:
