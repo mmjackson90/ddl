@@ -46,25 +46,35 @@ class ComponentAsset(Asset):
         else:
             raise Exception('Component {} has no parts.',
                             self.data["name"])
+        self.tags = data["tags"]
 
     def reset_sub_parts(self):
         for sub_part in self.parts:
             sub_part["asset_id"] = self.get_part_full_id(sub_part)
 
-    def get_part_list(self, offset_x, offset_y):
-        """Moves down a component and returns its list of parts
-        given some coordinate grid offset."""
-        part_list = []
-        for part in self.parts:
-            part_offset_x = part["x"]+offset_x
-            part_offset_y = part["y"]+offset_y
-            part_list = part_list+[(
-                part["type"],
-                part["asset_id"],
-                part_offset_x,
-                part_offset_y
-            )]
-        return part_list
+    def get_image_location_list(self, offset_x, offset_y, assetpack):
+        """Recursively moves down a component, finally returning a list of
+         images and their offsets, given some already known pixel offset
+         values."""
+        image_location_list = []
+        for sub_asset in self.parts:
+            if sub_asset["type"] == "image":
+                sub_component = assetpack.images[sub_asset["asset_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                image_location_list = image_location_list+[(
+                    sub_component, sub_offset_x, sub_offset_y
+                )]
+            else:
+                sub_component = assetpack.components[sub_asset["asset_id"]]
+                sub_offset_x = sub_asset["x"]+offset_x
+                sub_offset_y = sub_asset["y"]+offset_y
+                new_ill = sub_component.get_image_location_list(
+                                                          sub_offset_x,
+                                                          sub_offset_y,
+                                                          assetpack)
+                image_location_list = image_location_list+new_ill
+        return image_location_list
 
     def get_part_full_id(self, sub_part):
         """Gives the correct part id, given the assetpack."""
