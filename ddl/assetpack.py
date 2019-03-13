@@ -3,8 +3,6 @@ The assetpack and assetpack factory methods.
 """
 
 import json
-import math
-from ddl.renderer import Renderer
 from ddl.projection import IsometricProjection, TopDownProjection
 from ddl.asset import ComponentAsset, ImageAsset
 from ddl.taglist import TagList
