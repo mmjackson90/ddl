@@ -80,3 +80,9 @@ def test_eg_failures_components():
     with raises(ValidationError):
         Validator.validate_file('assetpacks/example_json_fail/components.json',
                                 'components')
+
+
+def test_dungeon_3x3():
+    """ blueprints/examples/3x3.json """
+    Validator.validate_file('blueprints/examples/dungeon-3x3.json',
+                            'blueprint')

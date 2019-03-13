@@ -1,0 +1,13 @@
+{
+    "name": "DDL Example Dungeon: 3x3 Room",
+    "id": "ddl-example-dungeon-3x3",
+    "parts": [
+        {
+            "x": 0,
+            "y": 0,
+            "constraints": [
+                "floor"
+            ]
+        }
+    ]
+}
