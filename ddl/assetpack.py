@@ -8,6 +8,7 @@ from ddl.renderer import Renderer
 from ddl.projection import IsometricProjection, TopDownProjection
 from ddl.asset import ComponentAsset, ImageAsset
 from ddl.taglist import TagList
+from ddl.validator import Validator
 
 
 class ProjectionTypeException(Exception):
@@ -24,8 +25,16 @@ class AssetpackFactory:
     """A factory for creating AssetPacks"""
     @staticmethod
     def load(name):
-        """Loads AssetPacks from their component and Image packs,
-         given an appropriate name"""
+        """
+        Validates and loads AssetPacks from their component and Image packs,
+        given an appropriate name
+        """
+        Validator.validate_file('assetpacks/' + name + 'pack.json',
+                                'pack')
+        Validator.validate_file('assetpacks/' + name + 'images.json',
+                                'images')
+        Validator.validate_file('assetpacks/' + name + 'components.json',
+                                'components')
         with open(
                 'assetpacks/' + name + '/components.json'
                 ) as component_file, open(
