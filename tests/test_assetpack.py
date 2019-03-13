@@ -2,7 +2,7 @@
 Tests Assetpacks
 """
 
-from ddl import AssetpackFactory, Assetpack
+from ddl.assetpack import AssetpackFactory, Assetpack
 from ddl.asset import ComponentAsset
 
 

@@ -1,7 +1,7 @@
 """Runs tests to ensure the code runs through.
  Coverage unknown, no unit tests yet. Prints pretty pictures though."""
 
-from ddl import AssetpackFactory
+from ddl.assetpack import AssetpackFactory
 from ddl.helper_classes import ComponentFactory
 from ddl.renderer import Renderer
 
