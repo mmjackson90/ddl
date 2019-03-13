@@ -8,6 +8,10 @@
 !/assetpacks/example_props/
 !/assetpacks/example_props/*
 !/assetpacks/example_props/**/*
+/blueprints/*
+!/blueprints/examples/
+!/blueprints/examples/*
+!/blueprints/examples/**/*
 *.pyc
 __pycache__
 .DS_Store

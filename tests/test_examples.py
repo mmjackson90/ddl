@@ -57,3 +57,9 @@ def test_eg_props_components():
     """ assetpacks/example_props/components.json """
     Validator.validate_file('assetpacks/example_props/components.json',
                             'components')
+
+
+def test_dungeon_3x3():
+    """ blueprints/examples/3x3.json """
+    Validator.validate_file('blueprints/examples/dungeon-3x3.json',
+                            'blueprint')
