@@ -40,8 +40,32 @@
             }
         },
         "grid": {
-            "type": "object"
-        }
-    },
-    "additionalProperties": false
+          "type": "object",
+          "properties": {
+            "type": {
+                "description": "Isometric or Topdown",
+                "type": "string",
+                "enum": ["isometric",
+                        "topdown"]
+                },
+                "height": {
+                    "description": "pixel height of a grid square (top to bottom)",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "width": {
+                    "description": "pixel width of a grid square (top to bottom)",
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "required": [
+                "type",
+                "height",
+                "width"
+            ],
+            "additionalProperties": false
+        },
+        "additionalProperties": false
+    }
 }
