@@ -42,7 +42,7 @@ def make_add_taglist():
     return (taglist)
 
 
-def test_add_component_right_tags():
+def test_add_right_tags():
     """
     Checks that adding components modifies the tag_component tags correctly.
     """
@@ -51,7 +51,7 @@ def test_add_component_right_tags():
         raise AssertionError(tag_components.keys())
 
 
-def test_add_component_right_components():
+def test_add_right_components():
     """
     Checks that adding components modifies the tag_component components
     correctly.
@@ -61,7 +61,7 @@ def test_add_component_right_components():
         raise AssertionError()
 
 
-def test_add_component_right_sizes():
+def test_add_right_sizes():
     """
     Checks that adding components gives the right size sets back afterwards.
     """
@@ -89,7 +89,7 @@ def make_append_taglist():
     return(taglist1)
 
 
-def test_append_component_right_tags():
+def test_append_right_tags():
     """
     Checks that appending taglists modifies the tag_component tags correctly.
     """
@@ -98,7 +98,7 @@ def test_append_component_right_tags():
         raise AssertionError(tag_components.keys())
 
 
-def test_append_component_right_components():
+def test_append_right_components():
     """
     Checks that appending taglists modifies the tag_component components
     correctly.
@@ -108,7 +108,7 @@ def test_append_component_right_components():
         raise AssertionError()
 
 
-def test_append_component_right_sizes():
+def test_append_right_sizes():
     """
     Checks that appending components gives the right size sets back afterwards.
     """
@@ -127,14 +127,14 @@ def test_get_list_single_tags_1():
     This only checks a single tag at a time.
     """
     taglist = make_add_taglist()
-    tag2_components = taglist.get_components_that_match_tags(["tag2"])
-    if not len(taglist.get_components_that_match_tags(["tag1"])) == 1:
+    tag1_components = taglist.get_components_that_match_tags(["tag1"])
+    if not len(tag1_components) == 1:
         raise AssertionError()
-    if "component1" not in taglist.get_components_that_match_tags(["tag1"]):
+    if "component1" not in tag1_components:
         raise AssertionError()
 
 
-def test_get_list_single_tags_1():
+def test_get_list_single_tags_2():
     """
     Checks that getting component lists given a set of tags works correctly.
     This only checks a single tag at a time.
@@ -172,7 +172,7 @@ def test_get_list_missing_tag():
         raise AssertionError()
 
 
-def test_get_list_single_tags():
+def test_get_list_fail_combo():
     """
     Checks that getting component lists given a set of tags works correctly.
     This tests that asking for a combination of tags that doesnt exist
