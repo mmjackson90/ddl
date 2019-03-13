@@ -11,6 +11,7 @@ import math
 from ddl.renderer import Renderer
 from ddl.projection import IsometricProjection, TopDownProjection
 from ddl.asset import ComponentAsset, ImageAsset
+from ddl.taglist import TagList
 
 
 class ProjectionTypeException(Exception):
@@ -49,6 +50,7 @@ class Assetpack:
         self.images = {}
         self.name = name
         self.grid = components_and_grid['grid']
+        self.taglist = TagList()
         if self.grid['type'] == 'isometric':
             self.projection = IsometricProjection(self.grid['width'],
                                                   self.grid['height'])
@@ -62,6 +64,7 @@ class Assetpack:
 
         for component in components_and_grid['components']:
             new_component = ComponentAsset(component, assetpack_name=name)
+            self.taglist.add_component(new_component)
             self.add_component(new_component)
 
     def add_component(self, new_asset):
@@ -94,6 +97,8 @@ class Assetpack:
             self.add_image(image)
         for component in assetpack.components.values():
             self.add_component(component)
+
+        self.taglist.append(assetpack.taglist)
 
     def change_assetpack_name(self, new_name):
         """

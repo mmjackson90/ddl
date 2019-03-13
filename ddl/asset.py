@@ -46,6 +46,7 @@ class ComponentAsset(Asset):
         else:
             raise Exception('Component {} has no parts.',
                             self.data["name"])
+        self.tags = data["tags"]
 
     def reset_sub_parts(self):
         for sub_part in self.parts:
