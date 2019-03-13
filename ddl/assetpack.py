@@ -29,11 +29,11 @@ class AssetpackFactory:
         Validates and loads AssetPacks from their component and Image packs,
         given an appropriate name
         """
-        Validator.validate_file('assetpacks/' + name + 'pack.json',
+        Validator.validate_file('assetpacks/' + name + '/pack.json',
                                 'pack')
-        Validator.validate_file('assetpacks/' + name + 'images.json',
+        Validator.validate_file('assetpacks/' + name + '/images.json',
                                 'images')
-        Validator.validate_file('assetpacks/' + name + 'components.json',
+        Validator.validate_file('assetpacks/' + name + '/components.json',
                                 'components')
         with open(
                 'assetpacks/' + name + '/components.json'
