@@ -50,6 +50,7 @@ class ComponentAsset(Asset):
         self.tags = data["tags"]
 
     def reset_sub_parts(self):
+        """Sets the ID of any sub parts to be the full_id of the part"""
         for sub_part in self.parts:
             sub_part["asset_id"] = self.get_part_full_id(sub_part)
 

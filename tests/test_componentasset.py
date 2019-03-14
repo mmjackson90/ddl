@@ -13,7 +13,8 @@ class FakeImageAsset():
         self.asset_id = 'test_image'
 
     def get_full_id(self):
-        return("test.test_image")
+        """returns a fake ID string"""
+        return("test."+self.asset_id)
 
 
 class FakeComponentAsset():
@@ -22,7 +23,8 @@ class FakeComponentAsset():
         self.asset_id = 'test_component'
 
     def get_full_id(self):
-        return("test.test_component")
+        """returns a fake ID string"""
+        return("test."+self.asset_id)
 
 
 def get_test_data():
