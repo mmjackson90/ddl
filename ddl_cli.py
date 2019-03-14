@@ -120,12 +120,14 @@ def explore_assetpack(name):
 
 
 def print_tags(tags):
+    """prints tag lists to screen"""
     print("Tags:")
     for tag in tags:
         print(f"    {tag}")
 
 
 def show_pack_info(name):
+    """Prints pack info to screen"""
     with open('assetpacks/' + name + '/pack.json') as pack_file:
         pack = json.load(pack_file)
         print(f"Name: {pack['name']}")
@@ -135,6 +137,7 @@ def show_pack_info(name):
 
 
 def show_projection_info(assetpack):
+    """prints projection info to screen"""
     if isinstance(assetpack.projection, IsometricProjection):
         print("Type: Isometric")
     else:
@@ -144,12 +147,13 @@ def show_projection_info(assetpack):
 
 
 def explore_assets(assetpack):
+    """Lets the user interactively choose which components to look at next"""
     asset_choices = ['Back', Separator("Components")] +\
-                    list(map('Component: {}'.format,
-                             assetpack.components.keys())) +\
-                    [Separator("Images")] +\
-                    list(map('Image: {}'.format,
-                             assetpack.images.keys()))
+        list(map('Component: {}'.format,
+                 assetpack.components.keys())) +\
+        [Separator("Images")] +\
+        list(map('Image: {}'.format,
+                 assetpack.images.keys()))
     back = False
     while not back:
         explore = [{
@@ -169,6 +173,7 @@ def explore_assets(assetpack):
 
 
 def print_image_info(image):
+    """Prints the info of an image asset"""
     print(f"Image name: {image.name}")
     print(f"Image ID: {image.asset_id}")
     print(f"Grid Top Left Corner pixel (x): {image.top_left['x']}")
@@ -176,6 +181,10 @@ def print_image_info(image):
 
 
 def print_component_info(component):
+    """
+    Prints the info of an component asset. May offer options to recursively
+    explore in the future, but for now let's not.
+    """
     print(f"Component name: {component.name}")
     print(f"Component ID: {component.asset_id}")
     print_tags(component.tags)
@@ -183,6 +192,7 @@ def print_component_info(component):
 
 
 def show_component(assetpack, component):
+    """Shows a component in it's own little window"""
     image_location_list = assetpack.get_image_location_list(0, 0, component)
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
@@ -190,6 +200,7 @@ def show_component(assetpack, component):
 
 
 def explore_asset(initial_option, assetpack):
+    """Lets a user choose what they want to see about an asset"""
     asset_type, asset_key = initial_option.split(': ')
     if asset_type == 'Image':
         asset = assetpack.images[asset_key]
@@ -225,6 +236,7 @@ def explore_asset(initial_option, assetpack):
             show_component(assetpack, asset)
 
     print("")
+
 
 if __name__ == "__main__":
     main()
