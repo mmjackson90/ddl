@@ -91,6 +91,7 @@ def explore_assetpack(name):
             'choices': [
                 'See pack information',
                 'See projection information',
+                'Explore Assets',
                 'Quit'
             ]
         }]
@@ -103,6 +104,8 @@ def explore_assetpack(name):
             show_pack_info(name)
         elif option_chosen == 'See projection information':
             show_projection_info(assetpack)
+        elif option_chosen == 'Explore Assets':
+            explore_assets(assetpack)
         print("")
 
 
@@ -124,6 +127,29 @@ def show_projection_info(assetpack):
         print("Type: Top Down")
     print(f"Grid height: {assetpack.projection.height} pixels.")
     print(f"Grid width: {assetpack.projection.width} pixels.")
+
+
+def explore_assets(assetpack):
+    asset_choices = ['Back', Separator("Components")] +\
+                    list(assetpack.components.keys()) +\
+                    [Separator("Images")] +\
+                    list(assetpack.images.keys())
+    back = False
+    while not back:
+        explore = [{
+            'type': 'list',
+            'message': 'Which asset would you like to look at?',
+            'name': 'explore',
+            'choices': asset_choices
+        }]
+        choice = prompt(explore, style=STYLE)
+        print("")
+        option_chosen = choice['explore']
+        if option_chosen == 'Back':
+            back = True
+        else:
+            print(f"You chose {option_chosen}")
+        print("")
 
 
 if __name__ == "__main__":
