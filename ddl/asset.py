@@ -4,6 +4,7 @@ superclass.
 """
 
 from PIL import Image
+from json import dumps
 
 
 class Asset:
@@ -87,6 +88,43 @@ class ComponentAsset(Asset):
         for sub_asset in self.data["parts"]:
             sub_asset["x"] = sub_asset["x"] / scale_ratio_x
             sub_asset["y"] = sub_asset["y"] / scale_ratio_y
+
+    def add_image(self, image, x_coordinate, y_coordinate):
+        """Adds a specific image asset to the component at grid co-ordinates
+         x and y."""
+        sub_asset = {"type": "image",
+                     "image_id": image.asset_id,
+                     "x": x_coordinate,
+                     "y": y_coordinate,
+                     "asset_id": image.get_full_id()}
+        self.parts = self.parts+[sub_asset]
+
+    def add_component(self, component, x_coordinate, y_coordinate):
+        """Adds a specific component to the component at grid co-ordinates
+         x and y."""
+        sub_asset = {"type": "component",
+                     "component_id": component.asset_id,
+                     "x": x_coordinate,
+                     "y": y_coordinate,
+                     "asset_id": component.get_full_id()}
+        self.parts = self.parts+[sub_asset]
+
+    def remove_last_part(self):
+        """Removes the last part (and therefore all it's sub-parts)."""
+        self.parts.pop()
+
+    def get_data(self):
+        """Creates the component data to either return or print."""
+        return {
+            "name": self.name,
+            "id": self.asset_id,
+            "parts": self.parts,
+            "tags": self.tags
+        }
+
+    def get_json(self):
+        """Prints the component in json"""
+        return(dumps(self.get_data(), indent=4))
 
 
 class ImageAsset(Asset):
