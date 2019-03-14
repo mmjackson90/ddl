@@ -3,6 +3,8 @@ Tests Components
 """
 
 from ddl.asset import ComponentAsset
+import json
+from jsonschema import validate
 
 
 class FakeImageAsset():
@@ -146,27 +148,7 @@ def test_remove_last_part():
 def test_get_component_data():
     """Tests that the component data as a dict returns OK"""
     component = get_test_component()
-    data = {
-        "name": "2x2 Floor exact",
-        "id": "floor-2x2-exact",
-        "parts": [
-            {"asset_id": "test_assetpack_name.floor-1x1-exact",
-                "type": "image",
-                "image_id": "floor-1x1-exact",
-                "x": 0,
-                "y": 0
-             },
-            {"asset_id": "test_assetpack_name.test-component-thing",
-                "type": "component",
-                "component_id": "test-component-thing",
-                "x": 2,
-                "y": 3
-             }
-        ],
-        "tags": [
-            "example"
-        ]
-    }
+    data = get_test_data()
     assert component.get_data() == data
 
 
@@ -182,15 +164,13 @@ def test_get_component_json():
             "type": "image",
             "image_id": "floor-1x1-exact",
             "x": 0,
-            "y": 0,
-            "asset_id": "test_assetpack_name.floor-1x1-exact"
+            "y": 0
         },
         {
             "type": "component",
             "component_id": "test-component-thing",
             "x": 2,
-            "y": 3,
-            "asset_id": "test_assetpack_name.test-component-thing"
+            "y": 3
         }
     ],
     "tags": [
@@ -198,3 +178,29 @@ def test_get_component_json():
     ]
 }"""
     assert component.get_json() == output_string
+
+
+def test_json_validity():
+    """
+    tests that the component prints it's json in a way that is
+    valid for later loading.
+    """
+    component = get_test_component()
+    component_json = component.get_json()
+    output_json = json.loads(
+        f"""
+        {{
+                "grid":{{
+                    "type": "isometric",
+                    "height":1,
+                    "width":1
+                }},
+                "components": [
+                    {component_json}
+                ]
+            }}
+        """
+    )
+    with open('schemas/components.json') as schema_file:
+        schema_json = json.load(schema_file)
+        validate(output_json, schema_json)

@@ -114,11 +114,14 @@ class ComponentAsset(Asset):
         self.parts.pop()
 
     def get_data(self):
-        """Creates the component data to either return or print."""
+        """Creates the original component data to either return or print."""
+        parts = self.parts
+        for part in parts:
+            part.pop('asset_id', None)
         return {
             "name": self.name,
             "id": self.asset_id,
-            "parts": self.parts,
+            "parts": parts,
             "tags": self.tags
         }
 
