@@ -7,6 +7,8 @@ from jsonschema.exceptions import ValidationError
 from ddl import AssetpackFactory
 from ddl.validator import Validator
 from ddl.projection import IsometricProjection
+from ddl.asset import ImageAsset, ComponentAsset
+from ddl.renderer import Renderer
 
 import json
 
@@ -24,14 +26,18 @@ STYLE = style_from_dict({
 
 @click.group()
 def main():
-    """The main function for handling the rest of the jazz"""
+    """A CLI tool for validating and examining assetpacks, and in the future
+    designing components, tweaking assetpacks and generally everything."""
     pass
 
 
 @main.command()
 @click.argument('name')
 def validate_assetpack(name):
-    """Validates an assetpack and printes errors if anything is off"""
+    """Validates an assetpack and errors if anything is wrong.
+
+    name: The name of an assetpack in the current assetpack structure.
+    """
     pack = False
     images = False
     component = False
@@ -80,7 +86,11 @@ def validate_assetpack(name):
 @main.command()
 @click.argument('name')
 def explore_assetpack(name):
-    """Lets a user interactively show things in an assetpack"""
+    """
+    Lets a user interactively show things in an assetpack.
+
+    name: The name of an assetpack in the current assetpack structure.
+    """
     assetpack = AssetpackFactory.load(name)
     quit = False
     while not quit:
@@ -109,15 +119,19 @@ def explore_assetpack(name):
         print("")
 
 
+def print_tags(tags):
+    print("Tags:")
+    for tag in tags:
+        print(f"    {tag}")
+
+
 def show_pack_info(name):
     with open('assetpacks/' + name + '/pack.json') as pack_file:
         pack = json.load(pack_file)
         print(f"Name: {pack['name']}")
         print(f"Author: {pack['author']}")
         print(f"Projection: {pack['projection']}")
-        print("Tags:")
-        for tag in pack["tags"]:
-            print(f"    {tag}")
+    print_tags(pack["tags"])
 
 
 def show_projection_info(assetpack):
@@ -131,9 +145,11 @@ def show_projection_info(assetpack):
 
 def explore_assets(assetpack):
     asset_choices = ['Back', Separator("Components")] +\
-                    list(assetpack.components.keys()) +\
+                    list(map('Component: {}'.format,
+                             assetpack.components.keys())) +\
                     [Separator("Images")] +\
-                    list(assetpack.images.keys())
+                    list(map('Image: {}'.format,
+                             assetpack.images.keys()))
     back = False
     while not back:
         explore = [{
@@ -148,9 +164,67 @@ def explore_assets(assetpack):
         if option_chosen == 'Back':
             back = True
         else:
-            print(f"You chose {option_chosen}")
+            explore_asset(option_chosen, assetpack)
         print("")
 
+
+def print_image_info(image):
+    print(f"Image name: {image.name}")
+    print(f"Image ID: {image.asset_id}")
+    print(f"Grid Top Left Corner pixel (x): {image.top_left['x']}")
+    print(f"Grid Top Left Corner pixel (y): {image.top_left['y']}")
+
+
+def print_component_info(component):
+    print(f"Component name: {component.name}")
+    print(f"Component ID: {component.asset_id}")
+    print_tags(component.tags)
+    print(f"Number of parts: {len(component.parts)}")
+
+
+def show_component(assetpack, component):
+    image_location_list = assetpack.get_image_location_list(0, 0, component)
+    renderer = Renderer(image_pixel_list=assetpack.projection
+                        .get_image_pixel_list(0, 0, image_location_list))
+    renderer.output('screen')
+
+
+def explore_asset(initial_option, assetpack):
+    asset_type, asset_key = initial_option.split(': ')
+    if asset_type == 'Image':
+        asset = assetpack.images[asset_key]
+    else:
+        asset = assetpack.components[asset_key]
+    explore = [{
+        'type': 'list',
+        'message': 'What would you like to do?',
+        'name': 'asset',
+        'choices': ['Show metadata',
+                    'Show image',
+                    'Show both']
+    }]
+    choice = prompt(explore, style=STYLE)
+    print("")
+    option_chosen = choice['asset']
+    if option_chosen == 'Show metadata':
+        if (isinstance(asset, ImageAsset)):
+            print_image_info(asset)
+        else:
+            print_component_info(asset)
+    elif option_chosen == 'Show image':
+        if (isinstance(asset, ImageAsset)):
+            asset.show()
+        else:
+            show_component(assetpack, asset)
+    else:
+        if (isinstance(asset, ImageAsset)):
+            print_image_info(asset)
+            asset.show()
+        else:
+            print_component_info(asset)
+            show_component(assetpack, asset)
+
+    print("")
 
 if __name__ == "__main__":
     main()
