@@ -7,12 +7,14 @@ interactive
 
 
 import click
-from PyInquirer import style_from_dict, Token, prompt
+from PyInquirer import style_from_dict, Token, prompt, Separator
+import PyInquirer
 from jsonschema.exceptions import ValidationError
 
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
+from ddl.asset import ComponentAsset
 
 
 STYLE = style_from_dict({
@@ -118,6 +120,110 @@ def explore_assetpack(name):
             ddl.asset_exploration.show_projection_info(assetpack)
         elif option_chosen == 'Explore Assets':
             ddl.asset_exploration.explore_assets(assetpack)
+        print("")
+
+
+def validate_component_id(new_id, assetpack):
+    full_id = assetpack.name + '.' + new_id
+    if full_id in assetpack.components.keys():
+        message = 'This component name already exists in the assetpack.'
+        raise PyInquirer.ValidationError(message)
+    return True
+
+
+def add_component(initial_option, component, assetpack):
+    """Lets a user choose what they want to see about an asset"""
+    asset_type, asset_key = initial_option.split(': ')
+    coordinates_questions = [{
+            'type': 'input',
+            'message': 'Where is this in the x dimension?',
+            'name': 'x'
+        },
+        {
+            'type': 'input',
+            'message': 'Where is this in the y dimension?',
+            'name': 'y'
+        }
+    ]
+    coordinates = prompt(coordinates_questions, style=STYLE)
+    results = prompt
+    component_x = int(coordinates['x'])
+    component_y = int(coordinates['y'])
+    if asset_type == 'Image':
+        asset = assetpack.images[asset_key]
+        component.add_image(asset,
+                            component_x,
+                            component_y)
+    else:
+        asset = assetpack.components[asset_key]
+        component.add_component(asset,
+                                component_x,
+                                component_y)
+
+
+@main.command()
+@click.argument('name')
+def create_new_component(name):
+    """
+    Lets a user interactively build a new component from an assetpack.
+
+    name: The name of an assetpack in the current assetpack structure.
+    """
+    assetpack = AssetpackFactory.load(name)
+    component_info = [{
+            'type': 'input',
+            'message': 'What would you like to call this component?',
+            'name': 'component_name'
+        },
+        {
+            'type': 'input',
+            'message': 'What ID would you like to give this component?',
+            'name': 'component_id',
+            'validate': lambda new_id: validate_component_id(new_id, assetpack)
+        },
+        {
+            'type': 'input',
+            'message': 'What tags should the component have?',
+            'name': 'component_tags'
+        }
+    ]
+    info = prompt(component_info, style=STYLE)
+    component_name = info['component_name']
+    component_id = info['component_id']
+    component_tags = info['component_tags'].split(',')
+    component_parts = []
+    data = {
+        "name": component_name,
+        "id": component_id,
+        "parts": component_parts,
+        "tags": component_tags
+    }
+    component = ComponentAsset(data, assetpack.name)
+
+    asset_choices = ['Done', Separator("Components")] +\
+        list(map('Component: {}'.format,
+                 assetpack.components.keys())) +\
+        [Separator("Images")] +\
+        list(map('Image: {}'.format,
+                 assetpack.images.keys()))
+    done = False
+    while not done:
+        explore = [{
+            'type': 'list',
+            'message': 'Which asset would you like to look at?',
+            'name': 'explore',
+            'choices': asset_choices
+        }]
+        choice = prompt(explore, style=STYLE)
+        print("")
+        option_chosen = choice['explore']
+        if option_chosen == 'Done':
+            component.reset_sub_parts()
+            print(component.parts)
+            ddl.asset_exploration.show_component(assetpack, component)
+            done = True
+        else:
+            add_component(option_chosen, component, assetpack)
         print("")
 
 
