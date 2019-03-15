@@ -10,7 +10,7 @@ import click
 from PyInquirer import style_from_dict, Token, prompt
 from jsonschema.exceptions import ValidationError
 
-from ddl import AssetpackFactory
+from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
 
