@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 
+"""
+A script to run an CLI in a variety of modes, some of which are
+interactive
+"""
+
+
 import click
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import style_from_dict, Token, prompt
 from jsonschema.exceptions import ValidationError
 
 from ddl import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
-
-import json
 
 
 STYLE = style_from_dict({
@@ -38,7 +42,7 @@ def validate_assetpack(name):
     """
     pack = False
     images = False
-    component = False
+    components = False
     error_header = '\n\n########ERROR########'
 
     try:
@@ -90,8 +94,8 @@ def explore_assetpack(name):
     name: The name of an assetpack in the current assetpack structure.
     """
     assetpack = AssetpackFactory.load(name)
-    quit = False
-    while not quit:
+    exit = False
+    while not exit:
         init = [{
             'type': 'list',
             'message': 'What would you like to do?',
@@ -107,7 +111,7 @@ def explore_assetpack(name):
         print("")
         option_chosen = choice['init']
         if option_chosen == 'Quit':
-            quit = True
+            exit = True
         elif option_chosen == 'See pack information':
             ddl.asset_exploration.show_pack_info(name)
         elif option_chosen == 'See projection information':

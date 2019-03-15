@@ -2,7 +2,6 @@
 
 from PyInquirer import style_from_dict, Token, prompt, Separator
 from ddl.projection import IsometricProjection
-from ddl.asset import ImageAsset, ComponentAsset
 from ddl.renderer import Renderer
 
 STYLE = style_from_dict({
