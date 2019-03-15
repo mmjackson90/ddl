@@ -94,8 +94,8 @@ def explore_assetpack(name):
     name: The name of an assetpack in the current assetpack structure.
     """
     assetpack = AssetpackFactory.load(name)
-    exit = False
-    while not exit:
+    exit_cli = False
+    while not exit_cli:
         init = [{
             'type': 'list',
             'message': 'What would you like to do?',
@@ -111,7 +111,7 @@ def explore_assetpack(name):
         print("")
         option_chosen = choice['init']
         if option_chosen == 'Quit':
-            exit = True
+            exit_cli = True
         elif option_chosen == 'See pack information':
             ddl.asset_exploration.show_pack_info(name)
         elif option_chosen == 'See projection information':
