@@ -29,7 +29,7 @@ class Renderer:
     def add_image_pixel_list(self, image_pixel_list):
         """Add some images at some series of offsets to the list of images to
          be rendered"""
-        for sub_image, pixel_x, pixel_y in image_pixel_list:
+        for sub_image, pixel_x, pixel_y, h_flip, v_flip in image_pixel_list:
             min_x, min_y, max_x, max_y = \
                 self.get_image_pixel_boundaries(sub_image, pixel_x, pixel_y)
             self.min_x = min(min_x, self.min_x)
@@ -39,14 +39,14 @@ class Renderer:
 
         self.image_pixel_list = image_pixel_list+self.image_pixel_list
 
-    def add_to_image(self, sub_image, pixel_x, pixel_y):
+    def add_to_image(self, sub_image, pixel_x, pixel_y, h_flip, v_flip):
         """Adds all images to the final picture, taking into account their
          top-left corner offsets"""
         final_x = pixel_x
         final_y = pixel_y
         # second image.image call is alpha mask.
-        self.image.paste(sub_image.get_image(),
-                         (final_x, final_y), sub_image.image)
+        image = sub_image.get_image(h_flip, v_flip)
+        self.image.paste(image, (final_x, final_y), image)
 
     @staticmethod
     def get_image_pixel_boundaries(sub_image, pixel_x, pixel_y):
@@ -62,10 +62,13 @@ class Renderer:
         image_pixel_width = self.max_x - self.min_x + 20
         image_pixel_height = self.max_y - self.min_y + 20
         self.initialise_image(image_pixel_width, image_pixel_height)
-        for sub_image, pixel_x, pixel_y in self.image_pixel_list:
+        for info in self.image_pixel_list:
+            sub_image, pixel_x, pixel_y, h_flip, v_flip = info
             self.add_to_image(sub_image,
                               pixel_x-self.min_x+10,
-                              pixel_y-self.min_y+10)
+                              pixel_y-self.min_y+10,
+                              h_flip,
+                              v_flip)
 
     def output(self, destination, filename=None):
         """Actually put the image somewhere"""

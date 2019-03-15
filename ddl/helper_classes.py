@@ -50,7 +50,7 @@ class ComponentFactory:
         self.component = ComponentAsset(data, self.assetpack.pack_id)
 
     def add_image(self, image_id, x_coordinate, y_coordinate,
-                  assetpack_id=None):
+                  assetpack_id=None, h_flip=False, v_flip=False):
         """Adds a specific image asset to the component at grid co-ordinates
          x and y."""
         if assetpack_id is None:
@@ -59,7 +59,8 @@ class ComponentFactory:
         if image_key not in self.assetpack.images.keys():
             raise Exception('This image ID doesnt exist in this assetpack.')
         image = self.assetpack.images[image_key]
-        self.component.add_image(image, x_coordinate, y_coordinate)
+        self.component.add_image(image, x_coordinate, y_coordinate,
+                                 h_flip, v_flip)
 
     def add_component(self, component_id, x_coordinate, y_coordinate,
                       assetpack_id=None):

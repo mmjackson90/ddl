@@ -115,7 +115,8 @@ class ComponentAsset(Asset):
             sub_asset["x"] = sub_asset["x"] / scale_ratio_x
             sub_asset["y"] = sub_asset["y"] / scale_ratio_y
 
-    def add_image(self, image, x_coordinate, y_coordinate):
+    def add_image(self, image, x_coordinate, y_coordinate,
+                  h_flip=False, v_flip=False):
         """Adds a specific image asset to the component at grid co-ordinates
          x and y."""
         sub_asset = {"type": "image",
@@ -123,6 +124,10 @@ class ComponentAsset(Asset):
                      "x": x_coordinate,
                      "y": y_coordinate,
                      "asset_id": image.get_full_id()}
+        if h_flip:
+            sub_asset['flip_horizontally'] = True
+        if v_flip:
+            sub_asset['flip_vertically'] = True
         self.parts = self.parts+[sub_asset]
 
     def add_component(self, component, x_coordinate, y_coordinate):
