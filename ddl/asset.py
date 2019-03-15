@@ -61,19 +61,16 @@ class ComponentAsset(Asset):
     def instantiate_sub_parts(self):
         """Instantiates the sub part list. This should only be a temporary measure
         until we start passing components in directly"""
-        i = 0
-        self.part_pointers = [None]*len(self.parts)
         for sub_part in self.parts:
             if sub_part['type'] == "image":
                 sub_image = self.assetpack.images[sub_part['asset_id']]
-                self.part_pointers[i] = (sub_image, sub_part["x"], sub_part["y"])
+                sub_part['asset'] = (sub_image, sub_part["x"], sub_part["y"])
             else:
                 sub_component = self.assetpack.components[sub_part['asset_id']]
-                self.part_pointers[i] = (sub_component, sub_part["x"], sub_part["y"])
-            i = i + 1
+                sub_part['asset'] = (sub_component, sub_part["x"], sub_part["y"])
         self.parts_instantiated = True
 
-    def get_image_location_list(self, offset_x, offset_y):
+    def get_image_location_list(self, offset_x, offset_y, h_flip=False, v_flip=False):
         """
         For a given component, recurses down it's tree of parts until we end
         up with nothing but a list of images and their absolute (by grid)
@@ -83,17 +80,18 @@ class ComponentAsset(Asset):
             self.instantiate_sub_parts()
 
         image_location_list = []
-        for part in self.part_pointers:
-            asset, part_x, part_y = part
-            part_offset_x = part_x+offset_x
-            part_offset_y = part_y+offset_y
-            if isinstance(asset, ComponentAsset):
-                image_location_list = image_location_list + asset.\
-                    get_image_location_list(part_offset_x, part_offset_y)
+        for part in self.parts:
+            part_offset_x = part["x"]+offset_x
+            part_offset_y = part["y"]+offset_y
+            if isinstance(part["asset"], ComponentAsset):
+                image_location_list = image_location_list + part["asset"].\
+                    get_image_location_list(part_offset_x, part_offset_y, h_flip, v_flip)
             else:
-                image_location_list = image_location_list + [(asset,
+                image_location_list = image_location_list + [(part["asset"],
                                                               part_offset_x,
-                                                              part_offset_y)]
+                                                              part_offset_y,
+                                                              h_flip,
+                                                              v_flip)]
         return image_location_list
 
     def get_part_full_id(self, sub_part):
@@ -179,6 +177,18 @@ class ImageAsset(Asset):
         self.image = self.image.resize((final_image_width, final_image_height))
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
+
+    def get_image(self, h_flip=False, v_flip=False):
+        """
+        Gets the image, takign into account flipping (and probably scaling
+        once we move to more efficient storage)
+        """
+        if h_flip:
+            return(self.image.transpose(Image.FLIP_LEFT_RIGHT))
+        elif v_flip:
+            return(self.image.transpose(Image.FLIP_TOP_BOTTOM))
+        else:
+            return(self.image)
 
     def show(self):
         """Show the image."""

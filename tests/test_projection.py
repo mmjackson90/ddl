@@ -79,21 +79,16 @@ def test_get_image_pixel_list():
 
     image = FakeImageAsset()
     projection1 = TopDownProjection(10, 10)
-    image_location_list = [(image, 0, 0), (image, 1, 2)]
+    image_location_list = [(image, 0, 0, False, False),
+                           (image, 1, 2, False, False)]
     pixel_list = projection1.get_image_pixel_list(1, 3, image_location_list)
     # The image should not have been modified.
-    if pixel_list[0][0] is not image:
-        raise AssertionError()
-    if not pixel_list[0][1] == 10:
-        raise AssertionError()
-    if not pixel_list[0][2] == 30:
-        raise AssertionError()
-    if pixel_list[1][0] is not image:
-        raise AssertionError()
-    if not pixel_list[1][1] == 20:
-        raise AssertionError()
-    if not pixel_list[1][2] == 50:
-        raise AssertionError()
+    assert pixel_list[0][0] == image
+    assert pixel_list[0][1] == 8
+    assert pixel_list[0][2] == 27
+    assert pixel_list[1][0] == image
+    assert pixel_list[1][1] == 18
+    assert pixel_list[1][2] == 47
 
 
 def test_isometric_get_pixels():

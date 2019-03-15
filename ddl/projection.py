@@ -56,11 +56,16 @@ class Projection:
                                                     grid_offset_y)
         pixel_offset_x, pixel_offset_y = pixel_offsets
         image_pixel_list = []
-        for image, x_coordinate, y_coordinate in image_location_list:
+        for info in image_location_list:
+            image, x_coordinate, y_coordinate, h_flip, v_flip = info
             pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
                                                            y_coordinate)
-            pixel_x = pixel_x+pixel_offset_x
-            pixel_y = pixel_y+pixel_offset_y
+            #TODO: THIS DOESNT WORK YET.
+            if not h_flip:
+                pixel_x = pixel_x+pixel_offset_x-image.top_left["x"]
+
+            if not v_flip:
+                pixel_y = pixel_y+pixel_offset_y-image.top_left["y"]
             image_pixel_list = image_pixel_list+[(image, pixel_x, pixel_y)]
         return image_pixel_list
 

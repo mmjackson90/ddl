@@ -42,16 +42,17 @@ class Renderer:
     def add_to_image(self, sub_image, pixel_x, pixel_y):
         """Adds all images to the final picture, taking into account their
          top-left corner offsets"""
-        final_x = pixel_x-sub_image.top_left["x"]
-        final_y = pixel_y-sub_image.top_left["y"]
+        final_x = pixel_x
+        final_y = pixel_y
         # second image.image call is alpha mask.
-        self.image.paste(sub_image.image, (final_x, final_y), sub_image.image)
+        self.image.paste(sub_image.get_image(),
+                         (final_x, final_y), sub_image.image)
 
     @staticmethod
     def get_image_pixel_boundaries(sub_image, pixel_x, pixel_y):
         """Get the pixel boundaries, given all the images."""
-        min_x = pixel_x-sub_image.top_left["x"]
-        min_y = pixel_y-sub_image.top_left["y"]
+        min_x = pixel_x
+        min_y = pixel_y
         max_x = min_x+sub_image.image.width
         max_y = min_y+sub_image.image.height
         return (min_x, min_y, max_x, max_y)
