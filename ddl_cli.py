@@ -124,10 +124,14 @@ def explore_assetpack(name):
 
 
 def validate_component_id(new_id, assetpack):
+
     full_id = assetpack.name + '.' + new_id
+    if len(new_id) < 3:
+        message = 'Try an ID with more than 2 characters.'
+        raise PyInquirer.ValidationError(message=message)
     if full_id in assetpack.components.keys():
         message = 'This component name already exists in the assetpack.'
-        raise PyInquirer.ValidationError(message)
+        raise PyInquirer.ValidationError(message=message)
     return True
 
 
@@ -137,18 +141,20 @@ def add_component(initial_option, component, assetpack):
     coordinates_questions = [{
             'type': 'input',
             'message': 'Where is this in the x dimension?',
-            'name': 'x'
+            'name': 'x',
+            'validate': lambda x: check_number(x)
         },
         {
             'type': 'input',
             'message': 'Where is this in the y dimension?',
-            'name': 'y'
+            'name': 'y',
+            'validate': lambda y: check_number(y)
         }
     ]
     coordinates = prompt(coordinates_questions, style=STYLE)
     results = prompt
-    component_x = int(coordinates['x'])
-    component_y = int(coordinates['y'])
+    component_x = float(coordinates['x'])
+    component_y = float(coordinates['y'])
     if asset_type == 'Image':
         asset = assetpack.images[asset_key]
         component.add_image(asset,
@@ -159,6 +165,15 @@ def add_component(initial_option, component, assetpack):
         component.add_component(asset,
                                 component_x,
                                 component_y)
+
+
+def check_number(string):
+    try:
+        float(string)
+        return True
+    except ValueError:
+        message = 'Please input a number.'
+        raise PyInquirer.ValidationError(message=message)
 
 
 @main.command()
@@ -219,7 +234,7 @@ def create_new_component(name):
         option_chosen = choice['explore']
         if option_chosen == 'Done':
             component.reset_sub_parts()
-            print(component.parts)
+            print(component.get_json())
             ddl.asset_exploration.show_component(assetpack, component)
             done = True
         else:
