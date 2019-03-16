@@ -51,10 +51,11 @@ class Renderer:
     @staticmethod
     def get_image_pixel_boundaries(sub_image, pixel_x, pixel_y):
         """Get the pixel boundaries, given all the images."""
+        image_width, image_height = sub_image.get_image_sizes()
         min_x = pixel_x
         min_y = pixel_y
-        max_x = min_x+sub_image.image.width
-        max_y = min_y+sub_image.image.height
+        max_x = min_x+image_width.image.width
+        max_y = min_y+image_height.image.height
         return (min_x, min_y, max_x, max_y)
 
     def assemble(self):

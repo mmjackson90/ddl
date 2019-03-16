@@ -17,6 +17,10 @@ class FakeImageAsset:
         self.height = self.height*scale_1
         self.width = self.width*scale_2
 
+    def get_image_sizes(self):
+        """ A fake get size function that returns two known values"""
+        return (10, 10)
+
 
 class FakeComponent:
     """A fake Component"""
@@ -89,6 +93,24 @@ def test_get_image_pixel_list():
     assert pixel_list[1][0] == image
     assert pixel_list[1][1] == 18
     assert pixel_list[1][2] == 47
+
+
+def test_flipped_image_pixel_list():
+    """Goes through a list of images and grid co-ordinates and returns a
+     list of images and pixel co-ordinates."""
+
+    image = FakeImageAsset()
+    projection1 = TopDownProjection(10, 10)
+    image_location_list = [(image, 0, 0, True, False),
+                           (image, 0, 0, False, True)]
+    pixel_list = projection1.get_image_pixel_list(0, 0, image_location_list)
+    # The image should not have been modified.
+    assert pixel_list[0][0] == image
+    assert pixel_list[0][1] == -8
+    assert pixel_list[0][2] == -3
+    assert pixel_list[1][0] == image
+    assert pixel_list[1][1] == -2
+    assert pixel_list[1][2] == -7
 
 
 def test_isometric_get_pixels():

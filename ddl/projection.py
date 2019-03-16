@@ -60,17 +60,18 @@ class Projection:
             image, x_coordinate, y_coordinate, h_flip, v_flip = info
             pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
                                                            y_coordinate)
+            image_width, image_height = image.get_image_sizes()
             # TODO: THIS DOESNT WORK YET.
             if not h_flip:
                 pixel_x = pixel_x+pixel_offset_x-image.top_left["x"]
             else:
                 pixel_x = pixel_x+pixel_offset_x - \
-                    image.image.width+image.top_left["x"]
+                    image_width+image.top_left["x"]
             if not v_flip:
                 pixel_y = pixel_y+pixel_offset_y-image.top_left["y"]
             else:
                 pixel_y = pixel_y+pixel_offset_y - \
-                    image.image.width+image.top_left["y"]
+                    image_width+image.top_left["y"]
             next_ipl = [(image, pixel_x, pixel_y, h_flip, v_flip)]
             image_pixel_list = image_pixel_list+next_ipl
         return image_pixel_list
