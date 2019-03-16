@@ -224,3 +224,13 @@ def test_nested_image_location_list():
         raise AssertionError()
     if not ill[2][2] == 4:
         raise AssertionError()
+
+def test_flipped_image_part_list():
+    data = get_test_data()
+    data["parts"][1]["flip_horizontally"] = True
+    data["parts"][1]["flip_vertically"] = True
+    component = ComponentAsset(data, 'test_assetpack_name')
+    parts = component.get_part_list(2, 3)
+    asset_type, name, offset_x, offset_y, h_flip, v_flip = parts[1]
+    assert h_flip
+    assert v_flip
