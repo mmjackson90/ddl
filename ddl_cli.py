@@ -124,7 +124,7 @@ def explore_assetpack(name):
 
 
 def validate_component_id(new_id, assetpack):
-
+    """Validates a component ID against the IDS in an assetpack"""
     full_id = assetpack.name + '.' + new_id
     if len(new_id) < 3:
         message = 'Try an ID with more than 2 characters.'
@@ -142,17 +142,16 @@ def add_component(initial_option, component, assetpack):
             'type': 'input',
             'message': 'Where is this in the x dimension?',
             'name': 'x',
-            'validate': lambda x: check_number(x)
+            'validate': check_number
         },
         {
             'type': 'input',
             'message': 'Where is this in the y dimension?',
             'name': 'y',
-            'validate': lambda y: check_number(y)
+            'validate': check_number
         }
     ]
     coordinates = prompt(coordinates_questions, style=STYLE)
-    results = prompt
     component_x = float(coordinates['x'])
     component_y = float(coordinates['y'])
     if asset_type == 'Image':
@@ -168,6 +167,7 @@ def add_component(initial_option, component, assetpack):
 
 
 def check_number(string):
+    """Checks a string can be parsed to a number"""
     try:
         float(string)
         return True
