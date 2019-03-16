@@ -253,7 +253,8 @@ def test_nested_image_location_list():
         raise AssertionError()
 
 
-def test_flipped_image_part_list():
+def test_flipped_part_list():
+    """Tests getting a list of flipped parts gives the right flags"""
     data = get_test_data()
     data["parts"][1]["flip_horizontally"] = True
     data["parts"][1]["flip_vertically"] = True
