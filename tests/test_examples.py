@@ -77,6 +77,6 @@ def test_eg_failures_images():
 
 def test_eg_failures_components():
     """ assetpacks/example_json_fail/components.json """
-    with raises(Exception):
+    with raises(ValidationError):
         Validator.validate_file('assetpacks/example_json_fail/components.json',
                                 'components')
