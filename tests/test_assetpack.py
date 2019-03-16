@@ -121,7 +121,7 @@ def test_simple_image_location_list():
         raise AssertionError()
 
 
-def test_flipped_image_location_list():
+def test_flipped_location_list():
     """Tests an assetpack will return an imagelocationlist for a simple
     component if asked. No Nesting."""
     assetpack = AssetpackFactory.load('example_isometric')

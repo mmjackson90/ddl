@@ -29,7 +29,8 @@ class Renderer:
     def add_image_pixel_list(self, image_pixel_list):
         """Add some images at some series of offsets to the list of images to
          be rendered"""
-        for sub_image, pixel_x, pixel_y, h_flip, v_flip in image_pixel_list:
+        for info in image_pixel_list:
+            sub_image, pixel_x, pixel_y = info[:3]
             min_x, min_y, max_x, max_y = \
                 self.get_image_pixel_boundaries(sub_image, pixel_x, pixel_y)
             self.min_x = min(min_x, self.min_x)

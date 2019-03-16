@@ -71,7 +71,7 @@ class Projection:
                 pixel_y = pixel_y+pixel_offset_y-image.top_left["y"]
             else:
                 pixel_y = pixel_y+pixel_offset_y - \
-                    image_width+image.top_left["y"]
+                    image_height+image.top_left["y"]
             next_ipl = [(image, pixel_x, pixel_y, h_flip, v_flip)]
             image_pixel_list = image_pixel_list+next_ipl
         return image_pixel_list

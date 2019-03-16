@@ -11,6 +11,7 @@ class FakeImageAsset:
         self.width = 1
         self.height = 1
         self.top_left = {'x': 2, 'y': 3}
+        self.image_sizes = (10, 10)
 
     def resize(self, scale_1, scale_2):
         """ A fake resize function that just alters two internal parameters"""
@@ -19,7 +20,7 @@ class FakeImageAsset:
 
     def get_image_sizes(self):
         """ A fake get size function that returns two known values"""
-        return (10, 10)
+        return self.image_sizes
 
 
 class FakeComponent:
