@@ -1,0 +1,9 @@
+{
+    "images": [
+        {
+            "name": "Little box",
+            "id": "little-box",
+            "image": "little_box.png"
+        }
+    ]
+}

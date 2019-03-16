@@ -11,6 +11,9 @@
 !/assetpacks/example_props/
 !/assetpacks/example_props/*
 !/assetpacks/example_props/**/*
+!/assetpacks/example_top_down_props/
+!/assetpacks/example_top_down_props/*
+!/assetpacks/example_top_down_props/**/*
 !/assetpacks/example_json_fail/
 !/assetpacks/example_json_fail/*
 !/assetpacks/example_json_fail/**/*
