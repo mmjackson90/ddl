@@ -54,8 +54,8 @@ class Renderer:
         image_width, image_height = sub_image.get_image_sizes()
         min_x = pixel_x
         min_y = pixel_y
-        max_x = min_x+image_width.image.width
-        max_y = min_y+image_height.image.height
+        max_x = min_x+image_width
+        max_y = min_y+image_height
         return (min_x, min_y, max_x, max_y)
 
     def assemble(self):

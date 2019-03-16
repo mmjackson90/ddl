@@ -183,7 +183,7 @@ class ImageAsset(Asset):
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
 
-    def get_image_sizes():
+    def get_image_sizes(self):
         return (self.image.width, self.image.height)
 
     def get_image(self, h_flip=False, v_flip=False):
