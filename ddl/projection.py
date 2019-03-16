@@ -60,18 +60,13 @@ class Projection:
             image, x_coordinate, y_coordinate, h_flip, v_flip = info
             pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
                                                            y_coordinate)
-            image_width, image_height = image.get_image_sizes()
-            # TODO: THIS DOESNT WORK YET.
-            if not h_flip:
-                pixel_x = pixel_x+pixel_offset_x-image.top_left["x"]
-            else:
-                pixel_x = pixel_x+pixel_offset_x - \
-                    image_width+image.top_left["x"]
-            if not v_flip:
-                pixel_y = pixel_y+pixel_offset_y-image.top_left["y"]
-            else:
-                pixel_y = pixel_y+pixel_offset_y - \
-                    image_height+image.top_left["y"]
+
+            image_offset_x, image_offset_y = self.get_image_offset(image,
+                                                                   h_flip,
+                                                                   v_flip)
+            pixel_x = pixel_x+pixel_offset_x+image_offset_x
+            pixel_y = pixel_y+pixel_offset_y+image_offset_y
+
             next_ipl = [(image, pixel_x, pixel_y, h_flip, v_flip)]
             image_pixel_list = image_pixel_list+next_ipl
         return image_pixel_list
@@ -88,6 +83,19 @@ class IsometricProjection(Projection):
                   (y_coordinate*math.floor(self.height/2))
         return (round(pixel_x), round(pixel_y))
 
+    def get_image_offset(self, image, h_flip, v_flip):
+        """Gets an image offset, bearing in mind flipping."""
+        image_width, image_height = image.get_image_sizes()
+        if not h_flip:
+            image_offset_x = -image.top_left["x"]
+        else:
+            image_offset_x = -image_width+image.top_left["x"]
+        if not v_flip:
+            image_offset_y = -image.top_left["y"]
+        else:
+            image_offset_y = image.top_left["y"]
+        return (image_offset_x, image_offset_y)
+
 
 class TopDownProjection(Projection):
     """A TopDown Projection subclass to overload how pixel offsets
@@ -97,3 +105,16 @@ class TopDownProjection(Projection):
         pixel_x = x_coordinate*self.width
         pixel_y = y_coordinate*self.height
         return (round(pixel_x), round(pixel_y))
+
+    def get_image_offset(self, image, h_flip, v_flip):
+        """Gets an image offset, bearing in mind flipping."""
+        image_width, image_height = image.get_image_sizes()
+        if not h_flip:
+            image_offset_x = -image.top_left["x"]
+        else:
+            image_offset_x = image.top_left["x"]
+        if not v_flip:
+            image_offset_y = -image.top_left["y"]
+        else:
+            image_offset_y = image.top_left["y"]
+        return (image_offset_x, image_offset_y)
