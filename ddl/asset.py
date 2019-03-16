@@ -173,6 +173,8 @@ class ImageAsset(Asset):
 
         self.image = Image.open(assetpack_path + '/art/' +
                                 data["image"])
+        if self.image.mode != 'RGBA':
+            self.image = self.image.convert('RGBA')
 
     def resize(self, size_ratio_x, size_ratio_y):
         """Alters the image and it's top_left pixel offsets by some x and y

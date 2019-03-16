@@ -45,6 +45,19 @@ class Projection:
         for component in components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
 
+    def get_image_offset(self, image, h_flip, v_flip):
+        """Gets an image offset, bearing in mind flipping."""
+        image_width, image_height = image.get_image_sizes()
+        if not h_flip:
+            image_offset_x = -image.top_left["x"]
+        else:
+            image_offset_x = -image_width+image.top_left["x"]
+        if not v_flip:
+            image_offset_y = -image.top_left["y"]
+        else:
+            image_offset_y = -image_height+image.top_left["y"]
+        return (image_offset_x, image_offset_y)
+
     def get_image_pixel_list(self,
                              grid_offset_x,
                              grid_offset_y,
@@ -83,19 +96,6 @@ class IsometricProjection(Projection):
                   (y_coordinate*math.floor(self.height/2))
         return (round(pixel_x), round(pixel_y))
 
-    def get_image_offset(self, image, h_flip, v_flip):
-        """Gets an image offset, bearing in mind flipping."""
-        image_width, image_height = image.get_image_sizes()
-        if not h_flip:
-            image_offset_x = -image.top_left["x"]
-        else:
-            image_offset_x = -image_width+image.top_left["x"]
-        if not v_flip:
-            image_offset_y = -image.top_left["y"]
-        else:
-            image_offset_y = image.top_left["y"]
-        return (image_offset_x, image_offset_y)
-
 
 class TopDownProjection(Projection):
     """A TopDown Projection subclass to overload how pixel offsets
@@ -105,16 +105,3 @@ class TopDownProjection(Projection):
         pixel_x = x_coordinate*self.width
         pixel_y = y_coordinate*self.height
         return (round(pixel_x), round(pixel_y))
-
-    def get_image_offset(self, image, h_flip, v_flip):
-        """Gets an image offset, bearing in mind flipping."""
-        image_width, image_height = image.get_image_sizes()
-        if not h_flip:
-            image_offset_x = -image.top_left["x"]
-        else:
-            image_offset_x = image.top_left["x"]
-        if not v_flip:
-            image_offset_y = -image.top_left["y"]
-        else:
-            image_offset_y = image.top_left["y"]
-        return (image_offset_x, image_offset_y)

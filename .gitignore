@@ -2,6 +2,9 @@
 !/assetpacks/example_isometric/
 !/assetpacks/example_isometric/*
 !/assetpacks/example_isometric/**/*
+!/assetpacks/example_top_down/
+!/assetpacks/example_top_down/*
+!/assetpacks/example_top_down/**/*
 !/assetpacks/low_res_isometric/
 !/assetpacks/low_res_isometric/*
 !/assetpacks/low_res_isometric/**/*
