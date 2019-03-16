@@ -5,6 +5,7 @@ superclass.
 
 from PIL import Image
 from json import dumps
+from copy import deepcopy
 
 
 class Asset:
@@ -116,7 +117,7 @@ class ComponentAsset(Asset):
 
     def get_data(self):
         """Creates the original component data to either return or print."""
-        parts = self.parts
+        parts = deepcopy(self.parts)
         for part in parts:
             part.pop('asset_id', None)
         return {
