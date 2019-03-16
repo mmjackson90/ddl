@@ -1,0 +1,8 @@
+{
+    "name": "Example Failure pack",
+    "author": "The DDL Team",
+    "This things": "Should fail hard.",
+    "tags": [
+        "Utterly bork."
+    ]
+}

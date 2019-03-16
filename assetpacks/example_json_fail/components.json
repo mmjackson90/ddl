@@ -1,0 +1,8 @@
+{
+    "grid":{
+        "FAILURE": "isometric",
+        "FLAILURE":17,
+        "LIFELURE":29
+    },
+    "components": []
+}
