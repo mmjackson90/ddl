@@ -91,7 +91,7 @@ def test_smoke_wall():
     Smoke test a wall/floor combo, just to check the offsets look good.
     """
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    floor_wall = assetpack.components['easy-dungeon-ddl-example-iso.floor-wall-exact']
+    floor_wall = assetpack.components['easy-dungeon-ddl-example-iso.double-floor-wall-exact']
     ill = floor_wall.get_image_location_list(0, 0)
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
                          get_image_pixel_list(0, 0, ill))

@@ -69,7 +69,7 @@ def test_change_assetpack_name():
     assetpack.change_assetpack_id('new_name')
     if len(assetpack.images) != 4:
         raise AssertionError()
-    if len(assetpack.components) != 4:
+    if len(assetpack.components) != 5:
         raise AssertionError()
 
     for key in assetpack.images.keys():
@@ -102,5 +102,5 @@ def test_append_assetpacks():
     assetpack.append_assetpack(assetpack2)
     if len(assetpack.images) != 8:
         raise AssertionError('%s != 14' % len(assetpack.images))
-    if len(assetpack.components) != 8:
+    if len(assetpack.components) != 10:
         raise AssertionError()

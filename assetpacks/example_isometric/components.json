@@ -69,6 +69,34 @@
             ]
         },
         {
+            "name": "double floor-wall-exact",
+            "id": "double-floor-wall-exact",
+            "parts": [
+                {
+                    "type": "image",
+                    "image_id": "floor-1x1-exact",
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "type": "image",
+                    "image_id": "exact-wall-1",
+                    "x": 0,
+                    "y": 0,
+                    "flip_horizontally": true
+                },
+                {
+                    "type": "image",
+                    "image_id": "exact-wall-1",
+                    "x": 0,
+                    "y": 0
+                }
+            ],
+            "tags": [
+                "example"
+            ]
+        },
+        {
             "name": "Nested components",
             "id": "nested-component-test",
             "parts":[
