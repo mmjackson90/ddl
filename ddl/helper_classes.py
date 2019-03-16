@@ -31,9 +31,7 @@ class ComponentFactory:
                                     sub_asset["component_id"])
         self.assetpack = assetpack
 
-    def new_component(self, component_id, name='',
-                      horizontally_flippable=True, vertically_flippable=True,
-                      tags=None, parts=None):
+    def new_component(self, component_id, name='', tags=None, parts=None):
         """Initialises a new, empty component. All component parameters can
          be set using this method, so it's possible to 'copy' another component
         . Cannot be used twice if another component is under construction."""
@@ -41,12 +39,15 @@ class ComponentFactory:
             raise Exception('''This factory is currently building another
  component. Please finalise that asset before starting a new one.''')
         self.current_component = True
-        self.component_id = component_id
-        self.name = name
-        self.horizontally_flippable = horizontally_flippable
-        self.vertically_flippable = vertically_flippable
-        self.tags = [] if tags is None else tags
-        self.parts = [] if parts is None else parts
+        tags = [] if tags is None else tags
+        parts = [] if parts is None else parts
+        data = {
+            "name": name,
+            "id": component_id,
+            "parts": parts,
+            "tags": tags
+        }
+        self.component = ComponentAsset(data, self.assetpack.name)
 
     def add_image(self, image_id, x_coordinate, y_coordinate,
                   assetpack_name=None):
@@ -57,11 +58,8 @@ class ComponentFactory:
         image_key = assetpack_name+'.'+image_id
         if image_key not in self.assetpack.images.keys():
             raise Exception('This image ID doesnt exist in this assetpack.')
-        sub_asset = {"type": "image",
-                     "image_id": image_key,
-                     "x": x_coordinate,
-                     "y": y_coordinate}
-        self.parts = self.parts+[sub_asset]
+        image = self.assetpack.images[image_key]
+        self.component.add_image(image, x_coordinate, y_coordinate)
 
     def add_component(self, component_id, x_coordinate, y_coordinate,
                       assetpack_name=None):
@@ -72,46 +70,25 @@ class ComponentFactory:
         component_key = assetpack_name+'.'+component_id
         if component_key not in self.assetpack.components.keys():
             raise Exception('This component ID isn\'t in this assetpack.')
-        sub_asset = {"type": "component",
-                     "component_id": component_key,
-                     "x": x_coordinate,
-                     "y": y_coordinate}
-        self.parts = self.parts+[sub_asset]
+        component = self.assetpack.components[component_key]
+        self.component.add_component(component, x_coordinate, y_coordinate)
 
     def remove_last_part(self):
         """Removes the last part (and therefore all it's sub-parts)."""
-        self.parts.pop()
-
-    def get_component_data(self):
-        """Creates the component data to either return or print."""
-        return {
-            "name": self.name,
-            "id": self.component_id,
-            "projection": self.projection,
-            "parts": self.parts,
-            "horizontally_flippable": self.horizontally_flippable,
-            "vertically_flippable": self.vertically_flippable,
-            "tags": self.tags
-        }
+        self.component.remove_last_part()
 
     def get_component(self):
         """Creates and returns the component without clearing the factory."""
-        return ComponentAsset(self.get_component_data(), self.assetpack.name)
+        return self.component
 
     def print_component(self):
         """Prints the component in json without clearing the factory."""
-        print(json.dumps(self.get_component_data(), indent=4))
+        print(self.component.get_json())
 
     def clear_component(self):
         """Clears the factory to begin building a new component."""
         self.current_component = False
-        self.component_id = None
-        self.top_left = None
-        self.name = None
-        self.horizontally_flippable = None
-        self.vertically_flippable = None
-        self.tags = None
-        self.parts = None
+        self.component = None
 
     def pull_component(self):
         """Creates and returns the component and clears the factory"""
@@ -124,7 +101,7 @@ class ComponentFactory:
          Can take many shortcuts as it knows it's own assetpack/grid.
          Defaults to screen output, but can throw to file if needed."""
         image_location_list = self.assetpack.\
-            get_image_location_list(0, 0, self.get_component())
+            get_image_location_list(0, 0, self.component)
         image_list = self.assetpack.projection.\
             get_image_pixel_list(0, 0, image_location_list)
         Renderer(image_list).output(destination, filename)
