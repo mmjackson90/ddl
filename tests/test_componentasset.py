@@ -61,7 +61,7 @@ def get_test_component():
 def test_component_init():
     """Tests the initialisation of components"""
     component = get_test_component()
-    if not component.assetpack_name == 'test_assetpack_name':
+    if not component.assetpack_id == 'test_assetpack_name':
         raise AssertionError()
     if not len(component.parts) == 2:
         raise AssertionError()
