@@ -54,7 +54,7 @@ class AssetpackFactory:
             Validator.validate_json(images_json, 'images')
             Validator.validate_json(components_json, 'components')
 
-            pack_id = path.split('/')[-1]
+            pack_id = pack_json['id']
 
             if pack_json['projection'] == 'isometric':
                 projection = IsometricProjection(pack_json['grid']['width'],
