@@ -32,7 +32,7 @@ def show_pack_info(path):
         print(f"Name: {pack['name']}")
         print(f"Author: {pack['author']}")
         print(f"Projection: {pack['projection']}")
-    print_tags(pack["tags"])
+        print_tags(pack["tags"])
 
 
 def show_projection_info(assetpack):
