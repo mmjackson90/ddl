@@ -15,6 +15,7 @@ from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
 from ddl.asset import ComponentAsset
+import os
 
 
 STYLE = style_from_dict({
@@ -36,49 +37,48 @@ def main():
 
 
 @main.command()
-@click.argument('name')
-def validate_assetpack(name):
+@click.argument('path')
+def validate_assetpack(asset_path):
     """Validates an assetpack and errors if anything is wrong.
 
-    name: The name of an assetpack in the current assetpack structure.
+    path: The path of the asset pack directory.
     """
     pack = False
     images = False
     components = False
     error_header = '\n\n########ERROR########'
 
+    path = os.path.abspath(path)
     try:
-        Validator.validate_file('assetpacks/' + name + '/pack.json',
-                                'pack')
+        Validator.validate_file(path + '/pack.json', 'pack')
         pack = True
         print("Pack validated")
     except FileNotFoundError:
         print(error_header)
-        print('assetpacks/' + name + '/pack.json was not found.')
+        print(path + '/pack.json was not found.')
     except ValidationError as val:
         print(error_header)
         print(str(val))
 
     try:
-        Validator.validate_file('assetpacks/' + name + '/images.json',
-                                'images')
+        Validator.validate_file(path + '/images.json', 'images')
         images = True
         print("Images validated")
     except FileNotFoundError:
         print(error_header)
-        print('assetpacks/' + name + '/images.json was not found.')
+        print(path + '/images.json was not found.')
     except ValidationError as val:
         print(error_header)
         print(str(val))
 
     try:
-        filepath = 'assetpacks/' + name + '/components.json'
+        filepath = path + '/components.json'
         Validator.validate_file(filepath, 'components')
         components = True
         print("Components validated")
     except FileNotFoundError:
         print(error_header)
-        print('assetpacks/' + name + '/components.json was not found.')
+        print(asset_path + '/components.json was not found.')
     except ValidationError as val:
         print(error_header)
         print(str(val))
@@ -88,14 +88,15 @@ def validate_assetpack(name):
 
 
 @main.command()
-@click.argument('name')
-def explore_assetpack(name):
+@click.argument('path')
+def explore_assetpack(path):
     """
     Lets a user interactively show things in an assetpack.
 
-    name: The name of an assetpack in the current assetpack structure.
+    path: The path of the asset pack directory.
     """
-    assetpack = AssetpackFactory.load(name)
+    path = os.path.abspath(path)
+    assetpack = AssetpackFactory.load(path)
     exit_cli = False
     while not exit_cli:
         init = [{
@@ -177,14 +178,15 @@ def check_number(string):
 
 
 @main.command()
-@click.argument('name')
-def create_new_component(name):
+@click.argument('path')
+def create_new_component(path):
     """
     Lets a user interactively build a new component from an assetpack.
 
-    name: The name of an assetpack in the current assetpack structure.
+    path: The path of the asset pack directory.
     """
-    assetpack = AssetpackFactory.load(name)
+    path = os.path.abspath(path)
+    assetpack = AssetpackFactory.load(path)
     component_info = [{
             'type': 'input',
             'message': 'What would you like to call this component?',
