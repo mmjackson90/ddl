@@ -55,12 +55,12 @@ class Assetpack:
     """This class records all information needed to
      position and render the various images located in an assetpack.
      Please see the assetpack and imagepack schema for more info"""
-    def __init__(self, id, path, imagepack, components_and_grid):
+    def __init__(self, pack_id, pack_path, imagepack, components_and_grid):
 
         self.components = {}
         self.images = {}
-        self.id = id
-        self.path = path
+        self.pack_id = pack_id
+        self.pack_path = pack_path
         self.grid = components_and_grid['grid']
         self.taglist = TagList()
         if self.grid['type'] == 'isometric':
@@ -71,11 +71,11 @@ class Assetpack:
                                                 self.grid['height'])
 
         for image in imagepack['images']:
-            new_image = ImageAsset(image, assetpack_id=id, assetpack_path=path)
+            new_image = ImageAsset(image, assetpack_id=pack_id, assetpack_path=pack_path)
             self.add_image(new_image)
 
         for component in components_and_grid['components']:
-            new_component = ComponentAsset(component, assetpack_id=id)
+            new_component = ComponentAsset(component, assetpack_id=pack_id)
             self.taglist.add_component(new_component)
             self.add_component(new_component)
 
