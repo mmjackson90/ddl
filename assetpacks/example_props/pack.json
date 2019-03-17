@@ -1,6 +1,7 @@
 {
     "name": "Example Props Pack",
-    "author": "The DDL Team",
+    "id": "easy-dungeon-ddl-example-props",
+    "author": "The Easy Dungeon Company",
     "projection": "isometric",
     "tags": [
         "example"

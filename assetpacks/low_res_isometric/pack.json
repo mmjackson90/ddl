@@ -1,6 +1,7 @@
 {
     "name": "Example Low-Resolution Isometric Asset Pack",
-    "author": "The DDL Team",
+    "id": "easy-dungeon-ddl-example-iso-lowres",
+    "author": "The Easy Dungeon Company",
     "projection": "isometric",
     "tags": [
         "example"

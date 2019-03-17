@@ -6,6 +6,11 @@
         "name": {
             "type": "string"
         },
+        "id": {
+            "description": "A unique identifier for this component within the assetpack.",
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+        },
         "author": {
             "type": "string"
         },
@@ -49,6 +54,7 @@
     },
     "required": [
         "name",
+        "id",
         "projection",
         "grid"
     ],
