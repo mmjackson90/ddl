@@ -31,7 +31,7 @@ class Validator:
     @staticmethod
     def validate_json(json_object, schema):
         """
-        Load a file and then validate it against the given schema.
+        Validate the given JSON object against a schema.
         """
 
         with open('schemas/' + schema + '.json') as schema_file:
