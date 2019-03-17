@@ -46,9 +46,9 @@ class AssetpackFactory:
             components_and_grid = json.load(component_file)
             imagepack = json.load(imagepack_file)
 
-            id = path.split('/')[-1]
+            pack_id = path.split('/')[-1]
 
-            return Assetpack(id, pack_path, imagepack, components_and_grid)
+            return Assetpack(pack_id, pack_path, imagepack, components_and_grid)
 
 
 class Assetpack:
@@ -129,7 +129,7 @@ class Assetpack:
             image.assetpack_id = new_id
             image.reset_sub_parts()
             self.add_image(image)
-        self.id = new_id
+        self.pack_id = new_id
 
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all

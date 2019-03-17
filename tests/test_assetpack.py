@@ -88,7 +88,7 @@ def test_change_assetpack_name():
                 if sub_part["asset_id"].split('.')[0] != 'new_name':
                     raise AssertionError()
 
-    if assetpack.id != 'new_name':
+    if assetpack.pack_id != 'new_name':
         raise AssertionError()
 
 
