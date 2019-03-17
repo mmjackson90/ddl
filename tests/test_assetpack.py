@@ -15,14 +15,14 @@ class FakeProjection:
 
 def test_factory_creates_assetpack():
     """ Ensure the AssetpackFactory returns an Assetpack. """
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     if not isinstance(assetpack, Assetpack):
         raise AssertionError()
 
 
 def test_assetpack_resize():
     """Test resizing an assetpack's images to match a new projection."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     projection2 = FakeProjection(29, 17)
     assetpack.resize_images(projection2)
     if not assetpack.projection.width == 29:
@@ -39,7 +39,7 @@ def test_assetpack_resize():
 
 def test_assetpack_rescale():
     """Test rescaling an assetpack's components to match a new projection."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     projection2 = FakeProjection(29, 17)
     assetpack.rescale_components(projection2)
     if not assetpack.projection.width == 29:
@@ -62,7 +62,7 @@ def test_assetpack_rescale():
 
 def test_change_assetpack_name():
     """Tests changing the name of an assetpack."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     assetpack.change_assetpack_name('new_name')
     if len(assetpack.images) != 4:
         raise AssertionError()
@@ -93,8 +93,8 @@ def test_append_assetpacks():
     """
     Tests that appending one assetpack to another gives a bigger assetpack
     """
-    assetpack = AssetpackFactory.load('example_isometric')
-    assetpack2 = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    assetpack2 = AssetpackFactory.load('assetpacks/example_isometric')
     assetpack2.change_assetpack_name('new_name')
     assetpack.append_assetpack(assetpack2)
     if len(assetpack.images) != 8:
@@ -106,7 +106,7 @@ def test_append_assetpacks():
 def test_simple_image_location_list():
     """Tests an assetpack will return an imagelocationlist for a simple
     component if asked. No Nesting."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     component = assetpack.components['example_isometric.floor-wall-exact']
     ill = assetpack.get_image_location_list(2, 3, component)
     if len(ill) != 2:
@@ -121,7 +121,7 @@ def test_simple_image_location_list():
 def test_nested_image_location_list():
     """Tests an assetpack will return an imagelocationlist for a complex
     component if asked. Nesting involved."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     component = assetpack.components['example_isometric.nested-component-test']
     ill = assetpack.get_image_location_list(2, 3, component)
     if len(ill) != 3:

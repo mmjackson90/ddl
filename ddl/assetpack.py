@@ -22,24 +22,27 @@ class ProjectionGridException(Exception):
 class AssetpackFactory:
     """A factory for creating AssetPacks"""
     @staticmethod
-    def load(name):
+    def load(path):
         """
         Validates and loads AssetPacks from their component and Image packs,
         given an appropriate name
         """
-        Validator.validate_file('assetpacks/' + name + '/pack.json',
+        Validator.validate_file(path + '/pack.json',
                                 'pack')
-        Validator.validate_file('assetpacks/' + name + '/images.json',
+        Validator.validate_file(path + '/images.json',
                                 'images')
-        Validator.validate_file('assetpacks/' + name + '/components.json',
+        Validator.validate_file(path + '/components.json',
                                 'components')
         with open(
-                'assetpacks/' + name + '/components.json'
+                path + '/components.json'
                 ) as component_file, open(
-                'assetpacks/' + name + '/images.json'
+                path + '/images.json'
                 ) as imagepack_file:
             components_and_grid = json.load(component_file)
             imagepack = json.load(imagepack_file)
+
+            name = path.split('/')[-1]
+
             return Assetpack(name, imagepack, components_and_grid)
 
 

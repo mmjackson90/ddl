@@ -12,7 +12,7 @@ def test_smoke_render_component():
     images that came from a definition.
     """
 
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     floor1 = assetpack.components['example_isometric.floor-2x2-exact']
     image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
@@ -25,7 +25,7 @@ def test_smoke_design_component():
     """
     Smoke test creating a new component and then passing it to a renderer.
     """
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     component_factory = ComponentFactory(assetpack, "isometric")
     component_factory.new_component('floor-1x2-exact')
     component_factory.add_image("floor-1x1-exact", 0, 0)
@@ -45,7 +45,7 @@ def test_smoke_twiddly_fuzzy():
     component factory's built in output method to render it, before testing the
     clear component functionality and finally rendering out some fuzzy tiles.
     """
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     component_factory = ComponentFactory(assetpack, "isometric")
     component_factory.new_component('twiddle_1')
     component_factory.add_component("floor-2x2-exact", 0, 0)
@@ -78,7 +78,7 @@ def test_smoke_wall():
     """
     Smoke test a wall/floor combo, just to check the offsets look good.
     """
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     floor_wall = assetpack.components['example_isometric.floor-wall-exact']
     ill = assetpack.get_image_location_list(0, 0, floor_wall)
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
@@ -93,11 +93,11 @@ def test_smoke_low_res_resize():
     artpack.
     """
 
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     floor1 = assetpack.components['example_isometric.floor-2x2-exact']
     image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
-    low_res_assetpack = AssetpackFactory.load('low_res_isometric')
+    low_res_assetpack = AssetpackFactory.load('assetpacks/low_res_isometric')
     low_res_assetpack.resize_images(assetpack.projection)
     low_res_floor = low_res_assetpack.components[
         'low_res_isometric.floor-2x2-low-res']
@@ -116,14 +116,14 @@ def test_smoke_low_res_resize():
 def test_non_scaled_rendering():
     """Tests rescaling by mashing together a prop pack of one scale and
     a floor pack of a different one."""
-    assetpack = AssetpackFactory.load('example_isometric')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     floor_1x1 = assetpack.components['example_isometric.floor-1x1-exact']
     image_location_list7_3 = assetpack.get_image_location_list(0, 0,
                                                                floor_1x1)
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
 
-    prop_assetpack = AssetpackFactory.load('example_props')
+    prop_assetpack = AssetpackFactory.load('assetpacks/example_props')
     boxes = prop_assetpack.components['example_props.many-boxes']
     image_location_list7_2 = prop_assetpack.get_image_location_list(0, 0,
                                                                     boxes)
@@ -139,8 +139,8 @@ def test_non_scaled_rendering():
 def test_scaled_rendering():
     """Tests rescaling by rescaling a prop pack to match the projection
      of the floor pack."""
-    assetpack = AssetpackFactory.load('example_isometric')
-    prop_assetpack2 = AssetpackFactory.load('example_props')
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    prop_assetpack2 = AssetpackFactory.load('assetpacks/example_props')
     prop_assetpack2.rescale_components(assetpack.projection)
     assetpack.append_assetpack(prop_assetpack2)
 
