@@ -116,7 +116,7 @@ def explore_assetpack(path):
         if option_chosen == 'Quit':
             exit_cli = True
         elif option_chosen == 'See pack information':
-            ddl.asset_exploration.show_pack_info(name)
+            ddl.asset_exploration.show_pack_info(path)
         elif option_chosen == 'See projection information':
             ddl.asset_exploration.show_projection_info(assetpack)
         elif option_chosen == 'Explore Assets':

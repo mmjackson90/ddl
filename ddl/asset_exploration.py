@@ -25,9 +25,9 @@ def print_tags(tags):
         print(f"    {tag}")
 
 
-def show_pack_info(name):
+def show_pack_info(path):
     """Prints pack info to screen"""
-    with open('assetpacks/' + name + '/pack.json') as pack_file:
+    with open(path + '/pack.json') as pack_file:
         pack = json.load(pack_file)
         print(f"Name: {pack['name']}")
         print(f"Author: {pack['author']}")
