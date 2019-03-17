@@ -1,9 +1,4 @@
 {
-    "grid":{
-        "type": "isometric",
-        "height":170,
-        "width":294
-    },
     "components": [
         {   "name": "1x1 Floor Exact",
             "id": "floor-1x1-exact",

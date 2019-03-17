@@ -4,5 +4,9 @@
     "projection": "isometric",
     "tags": [
         "example"
-    ]
+    ],
+    "grid": {
+        "height": 17,
+        "width": 29
+    }
 }

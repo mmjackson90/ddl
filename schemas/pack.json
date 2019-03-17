@@ -9,14 +9,6 @@
         "author": {
             "type": "string"
         },
-        "projection": {
-            "type": "string",
-            "description": "The projection system which should be used to render this assetpack.",
-            "enum": [
-                "topdown",
-                "isometric"
-            ]
-        },
         "tags": {
             "type": "array",
             "description": "Tags which apply to all components within this pack.",
@@ -24,11 +16,41 @@
                 "type": "string",
                 "pattern": "^[a-z0-9-]+$"
             }
+        },
+        "projection": {
+            "description": "Does this pack contain isometric or topdown assets",
+            "type": "string",
+            "enum": [
+                "isometric",
+                "topdown"
+            ]
+        },
+        "grid": {
+            "type": "object",
+            "properties": {
+
+                "height": {
+                    "description": "pixel height of a grid square (top to bottom)",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "width": {
+                    "description": "pixel width of a grid square (top to bottom)",
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "required": [
+                "height",
+                "width"
+            ],
+            "additionalProperties": false
         }
     },
     "required": [
         "name",
-        "projection"
+        "projection",
+        "grid"
     ],
     "additionalProperties": false
 }

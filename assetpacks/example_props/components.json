@@ -1,9 +1,4 @@
 {
-    "grid":{
-        "type": "isometric",
-        "height":17,
-        "width":29
-    },
     "components": [
         {
             "name": "Lots of boxes",

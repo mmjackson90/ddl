@@ -47,32 +47,32 @@ class AssetpackFactory:
                 ) as imagepack_file:
 
             pack_json = json.load(pack_file)
-            components_and_grid = json.load(components_file)
-            imagepack = json.load(imagepack_file)
+            components_json = json.load(components_file)
+            images_json = json.load(imagepack_file)
 
             Validator.validate_json(pack_json, 'pack')
-            Validator.validate_json(imagepack, 'images')
-            Validator.validate_json(components_and_grid, 'components')
+            Validator.validate_json(images_json, 'images')
+            Validator.validate_json(components_json, 'components')
 
             pack_id = path.split('/')[-1]
 
-            if components_and_grid['grid']['type'] == 'isometric':
-                projection = IsometricProjection(components_and_grid['grid']['width'],
-                                                 components_and_grid['grid']['height'])
+            if pack_json['projection'] == 'isometric':
+                projection = IsometricProjection(pack_json['grid']['width'],
+                                                 pack_json['grid']['height'])
             else:
-                projection = TopDownProjection(components_and_grid['grid']['width'],
-                                               components_and_grid['grid']['height'])
+                projection = TopDownProjection(pack_json['grid']['width'],
+                                               pack_json['grid']['height'])
 
             assetpack = Assetpack(pack_id, projection)
 
-            for image in imagepack['images']:
+            for image in images_json['images']:
                 new_image = ImageAsset(image,
                                        assetpack_id=pack_id,
                                        assetpack_path=pack_path
                                        )
                 assetpack.add_image(new_image)
 
-            for component in components_and_grid['components']:
+            for component in components_json['components']:
                 new_component = ComponentAsset(component, assetpack_id=pack_id)
                 assetpack.taglist.add_component(new_component)
                 assetpack.add_component(new_component)
