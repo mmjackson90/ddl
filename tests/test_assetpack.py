@@ -2,6 +2,8 @@
 Tests Assetpacks
 """
 
+import os
+
 from ddl.assetpack import AssetpackFactory, Assetpack
 from ddl.asset import ComponentAsset
 
@@ -15,7 +17,8 @@ class FakeProjection:
 
 def test_factory_creates_assetpack():
     """ Ensure the AssetpackFactory returns an Assetpack. """
-    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    pack_path = os.path.abspath('assetpacks/example_isometric')
+    assetpack = AssetpackFactory.load(pack_path)
     if not isinstance(assetpack, Assetpack):
         raise AssertionError()
 

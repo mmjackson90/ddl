@@ -3,6 +3,8 @@ The assetpack and assetpack factory methods.
 """
 
 import json
+import os
+
 from ddl.projection import IsometricProjection, TopDownProjection
 from ddl.asset import ComponentAsset, ImageAsset
 from ddl.taglist import TagList
@@ -27,23 +29,26 @@ class AssetpackFactory:
         Validates and loads AssetPacks from their component and Image packs,
         given an appropriate name
         """
-        Validator.validate_file(path + '/pack.json',
+
+        pack_path = os.path.abspath(path)
+
+        Validator.validate_file(pack_path + '/pack.json',
                                 'pack')
-        Validator.validate_file(path + '/images.json',
+        Validator.validate_file(pack_path + '/images.json',
                                 'images')
-        Validator.validate_file(path + '/components.json',
+        Validator.validate_file(pack_path + '/components.json',
                                 'components')
         with open(
-                path + '/components.json'
+                pack_path + '/components.json'
                 ) as component_file, open(
-                path + '/images.json'
+                pack_path + '/images.json'
                 ) as imagepack_file:
             components_and_grid = json.load(component_file)
             imagepack = json.load(imagepack_file)
 
             id = path.split('/')[-1]
 
-            return Assetpack(id, path, imagepack, components_and_grid)
+            return Assetpack(id, pack_path, imagepack, components_and_grid)
 
 
 class Assetpack:
