@@ -41,20 +41,21 @@ class AssetpackFactory:
             components_and_grid = json.load(component_file)
             imagepack = json.load(imagepack_file)
 
-            name = path.split('/')[-1]
+            id = path.split('/')[-1]
 
-            return Assetpack(name, imagepack, components_and_grid)
+            return Assetpack(id, path, imagepack, components_and_grid)
 
 
 class Assetpack:
     """This class records all information needed to
      position and render the various images located in an assetpack.
      Please see the assetpack and imagepack schema for more info"""
-    def __init__(self, name, imagepack, components_and_grid):
+    def __init__(self, id, path, imagepack, components_and_grid):
 
         self.components = {}
         self.images = {}
-        self.name = name
+        self.id = id
+        self.path = path
         self.grid = components_and_grid['grid']
         self.taglist = TagList()
         if self.grid['type'] == 'isometric':
@@ -65,11 +66,11 @@ class Assetpack:
                                                 self.grid['height'])
 
         for image in imagepack['images']:
-            new_image = ImageAsset(image, assetpack_name=name)
+            new_image = ImageAsset(image, assetpack_id=id, assetpack_path=path)
             self.add_image(new_image)
 
         for component in components_and_grid['components']:
-            new_component = ComponentAsset(component, assetpack_name=name)
+            new_component = ComponentAsset(component, assetpack_id=id)
             self.taglist.add_component(new_component)
             self.add_component(new_component)
 
@@ -106,7 +107,7 @@ class Assetpack:
 
         self.taglist.append(assetpack.taglist)
 
-    def change_assetpack_name(self, new_name):
+    def change_assetpack_id(self, new_id):
         """
         Changes the name of the assetpack and all asset's assetpack
         identifiers.
@@ -116,14 +117,14 @@ class Assetpack:
         self.images = {}
         self.components = {}
         for component in new_components.values():
-            component.assetpack_name = new_name
+            component.assetpack_id = new_id
             component.reset_sub_parts()
             self.add_component(component)
         for image in new_images.values():
-            image.assetpack_name = new_name
+            image.assetpack_id = new_id
             image.reset_sub_parts()
             self.add_image(image)
-        self.name = new_name
+        self.id = new_id
 
     def resize_images(self, desired_projection):
         """Accepts a desired grid size definition and uses it to rescale all

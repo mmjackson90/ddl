@@ -148,7 +148,7 @@ def test_scaled_rendering():
     component_factory.new_component('boxes_on_floor')
     component_factory.add_image('floor-1x1-exact', 0, 0)
     component_factory.add_component('many-boxes', 0, 0,
-                                    assetpack_name='example_props')
+                                    assetpack_id='example_props')
     boxes_on_floor = component_factory.pull_component()
     image_location_list7_1 = assetpack.\
         get_image_location_list(0, 0, boxes_on_floor)

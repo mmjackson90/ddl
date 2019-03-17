@@ -63,7 +63,7 @@ def test_assetpack_rescale():
 def test_change_assetpack_name():
     """Tests changing the name of an assetpack."""
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    assetpack.change_assetpack_name('new_name')
+    assetpack.change_assetpack_id('new_name')
     if len(assetpack.images) != 4:
         raise AssertionError()
     if len(assetpack.components) != 4:
@@ -78,14 +78,14 @@ def test_change_assetpack_name():
             raise AssertionError()
 
     for component in assetpack.components.values():
-        if component.assetpack_name != 'new_name':
+        if component.assetpack_id != 'new_name':
             raise AssertionError()
         if isinstance(component, ComponentAsset):
             for sub_part in component.parts:
                 if sub_part["asset_id"].split('.')[0] != 'new_name':
                     raise AssertionError()
 
-    if assetpack.name != 'new_name':
+    if assetpack.id != 'new_name':
         raise AssertionError()
 
 
@@ -95,7 +95,7 @@ def test_append_assetpacks():
     """
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
     assetpack2 = AssetpackFactory.load('assetpacks/example_isometric')
-    assetpack2.change_assetpack_name('new_name')
+    assetpack2.change_assetpack_id('new_name')
     assetpack.append_assetpack(assetpack2)
     if len(assetpack.images) != 8:
         raise AssertionError('%s != 14' % len(assetpack.images))

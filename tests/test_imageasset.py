@@ -14,8 +14,8 @@ def test_zero_top_left():
     data = {"name": "test_name",
             "id": "test",
             "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(data, "example_isometric")
-    if not image.assetpack_name == "example_isometric":
+    image = ImageAsset(data, "example_isometric", "assetpacks/example_isometric")
+    if not image.assetpack_id == "example_isometric":
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
@@ -35,8 +35,8 @@ def test_nonzero_top_left():
             "id": "test",
             "top_left": {"x": 152, "y": 6},
             "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(data, "example_isometric")
-    if not image.assetpack_name == "example_isometric":
+    image = ImageAsset(data, "example_isometric", "assetpacks/example_isometric")
+    if not image.assetpack_id == "example_isometric":
         raise AssertionError()
     if not image.name == "test_name":
         raise AssertionError()
@@ -56,7 +56,7 @@ def test_resize():
             "id": "test",
             "top_left": {"x": 152, "y": 6},
             "image": "1x1_floor_fuzzy.png"}
-    image = ImageAsset(data, "example_isometric")
+    image = ImageAsset(data, "example_isometric", "assetpacks/example_isometric")
     image.resize(2, 3)
     if not image.image.width == 608:
         raise AssertionError()

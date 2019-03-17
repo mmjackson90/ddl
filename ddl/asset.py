@@ -13,15 +13,15 @@ class Asset:
     The superclass for components and images. Implements methods common to
     both to allow for easier implementation of global asset lists.
     """
-    def __init__(self, data, assetpack_name):
+    def __init__(self, data, assetpack_id):
         self.data = data
-        self.assetpack_name = assetpack_name
+        self.assetpack_id = assetpack_id
         self.name = data['name']
         self.asset_id = data['id']
 
     def get_full_id(self):
-        """Default. Should always be overriden"""
-        return (self.assetpack_name + '.' + self.asset_id)
+        """ Return the full ID of this asset, including the Assetpack ID"""
+        return (self.assetpack_id + '.' + self.asset_id)
 
     def rescale(self, scale_ratio_x, scale_ratio_y):
         """Passes. Implementations of this method exists in subclasses"""
@@ -40,8 +40,8 @@ class ComponentAsset(Asset):
     """This is a space saving measure that records
      multiple image_assets and components (collectively known as assets)
      and their respective positions within the Asset Pack's grid."""
-    def __init__(self, data, assetpack_name):
-        super().__init__(data, assetpack_name)
+    def __init__(self, data, assetpack_id):
+        super().__init__(data, assetpack_id)
         if "parts" in data.keys():
             self.parts = data["parts"]
             self.reset_sub_parts()
@@ -75,12 +75,12 @@ class ComponentAsset(Asset):
         if sub_part['type'] == 'image':
             # Naive check to see if this already has an assetpack name
             if len(sub_part["image_id"].split('.')) != 2:
-                return(self.assetpack_name + '.' + sub_part["image_id"])
+                return(self.assetpack_id + '.' + sub_part["image_id"])
             else:
                 return(sub_part["image_id"])
         else:
             if len(sub_part["component_id"].split('.')) != 2:
-                return(self.assetpack_name + '.' + sub_part["component_id"])
+                return(self.assetpack_id + '.' + sub_part["component_id"])
             else:
                 return(sub_part["component_id"])
 
@@ -135,14 +135,14 @@ class ComponentAsset(Asset):
 class ImageAsset(Asset):
     """A representation of an actual image file and the pixel offsets required
      to put it in the correct location."""
-    def __init__(self, data, assetpack_name):
-        super().__init__(data, assetpack_name)
+    def __init__(self, data, assetpack_id, assetpack_path):
+        super().__init__(data, assetpack_id)
         if "top_left" in data.keys():
             self.top_left = data["top_left"]
         else:
             self.top_left = {"x": 0, "y": 0}
 
-        self.image = Image.open('assetpacks/' + assetpack_name + '/art/' +
+        self.image = Image.open(assetpack_path + '/art/' +
                                 data["image"])
 
     def resize(self, size_ratio_x, size_ratio_y):
