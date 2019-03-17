@@ -39,12 +39,20 @@ class AssetpackFactory:
         Validator.validate_file(pack_path + '/components.json',
                                 'components')
         with open(
+                pack_path + '/pack.json'
+                ) as pack_file, open(
                 pack_path + '/components.json'
-                ) as component_file, open(
+                ) as components_file, open(
                 pack_path + '/images.json'
                 ) as imagepack_file:
-            components_and_grid = json.load(component_file)
+
+            pack_json = json.load(pack_file)
+            components_and_grid = json.load(components_file)
             imagepack = json.load(imagepack_file)
+
+            Validator.validate_json(pack_json, 'pack')
+            Validator.validate_json(imagepack, 'images')
+            Validator.validate_json(components_and_grid, 'components')
 
             pack_id = path.split('/')[-1]
 
