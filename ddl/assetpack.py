@@ -56,36 +56,41 @@ class AssetpackFactory:
 
             pack_id = path.split('/')[-1]
 
-            return Assetpack(pack_id, pack_path, imagepack, components_and_grid)
+            if components_and_grid['grid']['type'] == 'isometric':
+                projection = IsometricProjection(components_and_grid['grid']['width'],
+                                                 components_and_grid['grid']['height'])
+            else:
+                projection = TopDownProjection(components_and_grid['grid']['width'],
+                                               components_and_grid['grid']['height'])
+
+            assetpack = Assetpack(pack_id, projection)
+
+            for image in imagepack['images']:
+                new_image = ImageAsset(image,
+                                       assetpack_id=pack_id,
+                                       assetpack_path=pack_path
+                                       )
+                assetpack.add_image(new_image)
+
+            for component in components_and_grid['components']:
+                new_component = ComponentAsset(component, assetpack_id=pack_id)
+                assetpack.taglist.add_component(new_component)
+                assetpack.add_component(new_component)
+
+            return assetpack
 
 
 class Assetpack:
     """This class records all information needed to
      position and render the various images located in an assetpack.
      Please see the assetpack and imagepack schema for more info"""
-    def __init__(self, pack_id, pack_path, imagepack, components_and_grid):
+    def __init__(self, pack_id, projection):
 
         self.components = {}
         self.images = {}
         self.pack_id = pack_id
-        self.pack_path = pack_path
-        self.grid = components_and_grid['grid']
+        self.projection = projection
         self.taglist = TagList()
-        if self.grid['type'] == 'isometric':
-            self.projection = IsometricProjection(self.grid['width'],
-                                                  self.grid['height'])
-        else:
-            self.projection = TopDownProjection(self.grid['width'],
-                                                self.grid['height'])
-
-        for image in imagepack['images']:
-            new_image = ImageAsset(image, assetpack_id=pack_id, assetpack_path=pack_path)
-            self.add_image(new_image)
-
-        for component in components_and_grid['components']:
-            new_component = ComponentAsset(component, assetpack_id=pack_id)
-            self.taglist.add_component(new_component)
-            self.add_component(new_component)
 
     def add_component(self, new_asset):
         """Adds a component to the componentlist, if it doesn't exist"""
