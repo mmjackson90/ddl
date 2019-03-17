@@ -1,9 +1,4 @@
 {
-    "grid":{
-        "type": "isometric",
-        "height":84,
-        "width":147
-    },
     "components": [
         {
             "name": "2x2 Floor low_res",

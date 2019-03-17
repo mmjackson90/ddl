@@ -192,11 +192,6 @@ def test_json_validity():
     output_json = json.loads(
         f"""
         {{
-                "grid":{{
-                    "type": "isometric",
-                    "height":1,
-                    "width":1
-                }},
                 "components": [
                     {component_json}
                 ]
