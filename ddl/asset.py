@@ -40,10 +40,13 @@ class ComponentAsset(Asset):
     """This is a space saving measure that records
      multiple image_assets and components (collectively known as assets)
      and their respective positions within the Asset Pack's grid."""
-    def __init__(self, data, assetpack_id):
-        super().__init__(data, assetpack_id)
+    def __init__(self, data, assetpack):
+        super().__init__(data, assetpack.pack_id)
+        self.assetpack = assetpack
         if "parts" in data.keys():
             self.parts = data["parts"]
+
+            self.parts_instantiated = False
             self.reset_sub_parts()
         else:
             raise Exception('Component {} has no parts.',
@@ -55,20 +58,41 @@ class ComponentAsset(Asset):
         for sub_part in self.parts:
             sub_part["asset_id"] = self.get_part_full_id(sub_part)
 
-    def get_part_list(self, offset_x, offset_y):
-        """Moves down a component and returns its list of parts
-        given some coordinate grid offset."""
-        part_list = []
-        for part in self.parts:
-            part_offset_x = part["x"]+offset_x
-            part_offset_y = part["y"]+offset_y
-            part_list = part_list+[(
-                part["type"],
-                part["asset_id"],
-                part_offset_x,
-                part_offset_y
-            )]
-        return part_list
+    def instantiate_sub_parts(self):
+        i = 0
+        self.part_pointers = [None]*len(self.parts)
+        for sub_part in self.parts:
+            if sub_part['type'] == "image":
+                sub_image = self.assetpack.images[sub_part['asset_id']]
+                self.part_pointers[i] = (sub_image, sub_part["x"], sub_part["y"])
+            else:
+                sub_component = self.assetpack.components[sub_part['asset_id']]
+                self.part_pointers[i] = (sub_component, sub_part["x"], sub_part["y"])
+            i = i + 1
+        self.parts_instantiated = True
+
+    def get_image_location_list(self, offset_x, offset_y):
+        """
+        For a given component, recurses down it's tree of parts until we end
+        up with nothing but a list of images and their absolute (by grid)
+        offsets
+        """
+        if not self.parts_instantiated:
+            self.instantiate_sub_parts()
+
+        image_location_list = []
+        for part in self.part_pointers:
+            asset, part_x, part_y = part
+            part_offset_x = part_x+offset_x
+            part_offset_y = part_y+offset_y
+            if isinstance(asset, ComponentAsset):
+                image_location_list = image_location_list + asset.\
+                    get_image_location_list(part_offset_x, part_offset_y)
+            else:
+                image_location_list = image_location_list + [(asset,
+                                                              part_offset_x,
+                                                              part_offset_y)]
+        return image_location_list
 
     def get_part_full_id(self, sub_part):
         """Gives the correct part id, given the assetpack."""
