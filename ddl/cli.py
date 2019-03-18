@@ -5,6 +5,7 @@ from jsonschema.exceptions import ValidationError
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
+import ddl.image_helper
 from ddl.asset import ComponentAsset
 import os
 
@@ -241,3 +242,10 @@ def create_new_component(path):
         else:
             add_component(option_chosen, component, assetpack)
         print("")
+
+
+@main.command()
+@click.argument('path')
+def create_new_images(path):
+    """Iterates through all .png images in a directory and lets you set the information for them."""
+    ddl.image_helper.show_directory(path)
