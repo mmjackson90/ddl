@@ -117,7 +117,7 @@ def explore_assetpack(path):
 
 def validate_component_id(new_id, assetpack):
     """Validates a component ID against the IDS in an assetpack"""
-    full_id = assetpack.name + '.' + new_id
+    full_id = assetpack.pack_id + '.' + new_id
     if len(new_id) < 3:
         message = 'Try an ID with more than 2 characters.'
         raise PyInquirer.ValidationError(message=message)
@@ -168,6 +168,30 @@ def check_number(string):
         raise PyInquirer.ValidationError(message=message)
 
 
+def init_component(assetpack, info):
+    component_name = info['component_name']
+    component_id = info['component_id']
+    component_tags = info['component_tags'].split(',')
+    component_parts = []
+    data = {
+        "name": component_name,
+        "id": component_id,
+        "parts": component_parts,
+        "tags": component_tags
+    }
+    return ComponentAsset(data, assetpack.pack_id)
+
+
+def get_component_build_choices(assetpack):
+    asset_choices = ['Done', Separator("Components")] +\
+        list(map('Component: {}'.format,
+                 assetpack.components.keys())) +\
+        [Separator("Images")] +\
+        list(map('Image: {}'.format,
+                 assetpack.images.keys()))
+    return asset_choices
+
+
 @main.command()
 @click.argument('path')
 def create_new_component(path):
@@ -196,24 +220,8 @@ def create_new_component(path):
         }
     ]
     info = prompt(component_info, style=STYLE)
-    component_name = info['component_name']
-    component_id = info['component_id']
-    component_tags = info['component_tags'].split(',')
-    component_parts = []
-    data = {
-        "name": component_name,
-        "id": component_id,
-        "parts": component_parts,
-        "tags": component_tags
-    }
-    component = ComponentAsset(data, assetpack.name)
-
-    asset_choices = ['Done', Separator("Components")] +\
-        list(map('Component: {}'.format,
-                 assetpack.components.keys())) +\
-        [Separator("Images")] +\
-        list(map('Image: {}'.format,
-                 assetpack.images.keys()))
+    asset_choices = get_component_build_choices(assetpack)
+    component = init_component(assetpack, info)
     done = False
     while not done:
         explore = [{
