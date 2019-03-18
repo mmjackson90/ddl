@@ -1,3 +1,5 @@
+"""Tests the non-interactive functions of the CLI tool using click's runner"""
+
 from ddl.cli import validate_assetpack, main
 from click.testing import CliRunner
 
