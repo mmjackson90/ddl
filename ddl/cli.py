@@ -19,6 +19,7 @@ STYLE = style_from_dict({
     Token.Question: '',
 })
 
+
 @click.group()
 def main():
     """A CLI tool for validating and examining assetpacks, and in the future
