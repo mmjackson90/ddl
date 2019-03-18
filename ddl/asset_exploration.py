@@ -87,6 +87,7 @@ def show_component(assetpack, component):
 
 
 def get_asset(assetpack, initial_option):
+    """Gets an asset from a choice made in a menu"""
     asset_type, asset_key = initial_option.split(': ')
     if asset_type == 'Image':
         asset = assetpack.images[asset_key]

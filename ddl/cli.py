@@ -150,6 +150,7 @@ def add_component(initial_option, component, assetpack):
 
 
 def init_component(assetpack, info):
+    """Initialise a blank component"""
     component_name = info['component_name']
     component_id = info['component_id']
     component_tags = list(map(str.strip, info['component_tags'].split(',')))
@@ -164,6 +165,7 @@ def init_component(assetpack, info):
 
 
 def get_component_build_choices(assetpack):
+    """Get the choices of asset from an assetpack"""
     asset_choices = ['Done', Separator("Components")] +\
         list(map('Component: {}'.format,
                  assetpack.components.keys())) +\

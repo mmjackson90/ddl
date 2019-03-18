@@ -1,22 +1,19 @@
+"""Tooling for interactively going through a directory of images and creating
+the json representation of an AssetPack"""
+
 import os
+from glob import glob
 from PIL import Image, ImageTk
 import tkinter as tk
 from ddl.cli_utils import *
 from json import dumps
 from PyInquirer import style_from_dict, Token, prompt, Separator
 
-STYLE = style_from_dict({
-    Token.Separator: '#cc5454',
-    Token.QuestionMark: '#673ab7 bold',
-    Token.Selected: '#cc5454',  # default
-    Token.Pointer: '#673ab7 bold',
-    Token.Instruction: '',  # default
-    Token.Answer: '#f44336 bold',
-    Token.Question: '',
-})
-
 
 def add_iso_grid(canvas, grid_width, grid_height, x_offset, y_offset):
+    """Will add an ISO grid to a canvas.
+    ###THIS FUNCTION IS HIGHLY MUTAGENIC - HANDLE WITH CARE###
+    """
     left = x_offset-grid_width/2
     right = grid_width/2 + x_offset
     x_mid = x_offset
@@ -34,13 +31,13 @@ def show_directory(path):
     """Uses tkinter to iterate through a directory of images. Enter to move on."""
 
     root = tk.Tk()
-    dirlist = os.listdir(path)
+    dirlist = glob(path+'/*.png')
     old_canvas = None
     print("LETS DO EET")
     all_image_data = []
     used_ids = []
     for filename in dirlist:
-        image1 = Image.open(path+'/'+filename)
+        image1 = Image.open(filename)
         image = Image.new("RGBA", image1.size, "WHITE")
         image.paste(image1, (0, 0), image1)
         tkpi = ImageTk.PhotoImage(image.convert('RGB'))
@@ -51,7 +48,6 @@ def show_directory(path):
         offset_x = 0
         offset_y = 0
         while next_action != 'Next':
-            exit_cli = False
             choices = [{
                 'type': 'list',
                 'message': 'What would you like to do?',
@@ -65,8 +61,7 @@ def show_directory(path):
 
             canvas = tk.Canvas(width=grid_width*3, height=grid_height*3, bg='white')
 
-            # pack the canvas into a frame/form
-            image_ref = canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=tkpi, anchor=tk.NW)
+            canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=tkpi, anchor=tk.NW)
             # AAAAAAA MUTATION
             add_iso_grid(canvas, grid_width, grid_height, grid_width*1.5, grid_height)
 

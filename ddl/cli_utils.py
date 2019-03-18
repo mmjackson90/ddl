@@ -18,6 +18,7 @@ def check_number(string):
         message = 'Please input a number.'
         raise ValidationError(message=message)
 
+
 def check_integer(string):
     """Checks a string can be parsed to a number"""
     try:
@@ -26,6 +27,7 @@ def check_integer(string):
     except ValueError:
         message = 'Please input a number.'
         raise ValidationError(message=message)
+
 
 def validate_image_id(new_id, used_ids):
     """Validates a component ID against the IDS in an assetpack"""
@@ -39,6 +41,7 @@ def validate_image_id(new_id, used_ids):
         message = 'This image name already exists.'
         raise ValidationError(message=message)
     return True
+
 
 STYLE = style_from_dict({
     Token.Separator: '#cc5454',

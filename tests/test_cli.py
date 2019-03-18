@@ -1,6 +1,6 @@
 """Tests the non-interactive functions of the CLI tool using click's runner"""
 
-from ddl.cli import validate_assetpack, main, init_component, get_component_build_choices
+from ddl.cli import main, init_component, get_component_build_choices
 
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
@@ -19,7 +19,7 @@ Validation passed. assetpacks/example_isometric is a good assetpack.
 """
 
 
-def test_validate_assetpack_not_succeed():
+def test_invalidate_assetpack():
     """Tests that an assetpack fails to validate correctly"""
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "assetpacks/example_json_fail"])
@@ -46,7 +46,7 @@ def test_init_component():
     assert component.parts == []
 
 
-def test_get_component_build_choices():
+def test_get_build_choices():
     """Tests that an assetpack returns the correct choices of assets"""
     assetpack = get_test_assetpack()
     choices = get_component_build_choices(assetpack)

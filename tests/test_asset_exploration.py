@@ -5,64 +5,73 @@ CLI is that the methods be called consistently."""
 import ddl.asset_exploration
 from ddl.assetpack import Assetpack
 from ddl.asset import ImageAsset, ComponentAsset
-from ddl.projection import IsometricProjection, TopDownProjection
+from ddl.projection import IsometricProjection
 
 
 def get_test_assetpack():
     """Loads up a semi-fake assetpack"""
-    return Assetpack('test', 'assetpacks/low_res_isometric',
-                     {"images": [
-                              {
-                                  "name": "1x1 Floor low_res",
-                                  "id": "c",
-                                  "image": "1x1_floor_low_res.png",
-                                  "top_left": {
-                                      "x": 73,
-                                      "y": 0
-                                  }
-                              }
-                            ]},
-                     {"components": [
-                              {
-                                  "name": "test Floor low_res",
-                                  "id": "a",
-                                  "parts": [
-                                      {
-                                          "type": "image",
-                                          "image_id": "c",
-                                          "x": 0,
-                                          "y": 0
-                                      },
-                                      {
-                                          "type": "image",
-                                          "image_id": "c",
-                                          "x": 1,
-                                          "y": 0
-                                      }
-                                  ],
-                                  "tags": [
-                                      "example"
-                                  ]
-                              },
-                              {
-                                  "name": "test Floor low_res",
-                                  "id": "b",
-                                  "parts": [
-                                      {
-                                          "type": "image",
-                                          "image_id": "c",
-                                          "x": 0,
-                                          "y": 0
-                                      }
-                                  ],
-                                  "tags": [
-                                      "example"
-                                  ]
-                              }
-                          ],
-                      "grid": {"type": "isometric",
-                               "width": 10,
-                               "height": 20}})
+    projection = IsometricProjection(10, 20)
+    assetpack = Assetpack('test', projection)
+    images = [
+             {
+                 "name": "1x1 Floor low_res",
+                 "id": "c",
+                 "image": "1x1_floor_low_res.png",
+                 "top_left": {
+                     "x": 73,
+                     "y": 0
+                 }
+             }
+           ]
+    for image in images:
+        new_image = ImageAsset(image,
+                               assetpack_id='test',
+                               assetpack_path='assetpacks/low_res_isometric'
+                               )
+        assetpack.add_image(new_image)
+    components = [
+             {
+                 "name": "test Floor low_res",
+                 "id": "a",
+                 "parts": [
+                     {
+                         "type": "image",
+                         "image_id": "c",
+                         "x": 0,
+                         "y": 0
+                     },
+                     {
+                         "type": "image",
+                         "image_id": "c",
+                         "x": 1,
+                         "y": 0
+                     }
+                 ],
+                 "tags": [
+                     "example"
+                 ]
+             },
+             {
+                 "name": "test Floor low_res",
+                 "id": "b",
+                 "parts": [
+                     {
+                         "type": "image",
+                         "image_id": "c",
+                         "x": 0,
+                         "y": 0
+                     }
+                 ],
+                 "tags": [
+                     "example"
+                 ]
+             }
+         ]
+    for component in components:
+        new_component = ComponentAsset(component, assetpack_id='test')
+        assetpack.taglist.add_component(new_component)
+        assetpack.add_component(new_component)
+    return assetpack
 
 
 def test_tag_printing(capsys):
@@ -82,7 +91,7 @@ def test_show_pack_info(capsys, monkeypatch):
     ddl.asset_exploration.show_pack_info('assetpacks/example_isometric')
     captured = capsys.readouterr()
     assert captured.out == """Name: Example Isometric Asset Pack
-Author: The DDL Team
+Author: The Easy Dungeon Company
 Projection: isometric
 """
 
@@ -98,7 +107,7 @@ Grid width: 10 pixels.
 """
 
 
-def test_get_asset_choices(capsys, monkeypatch):
+def test_get_asset_choices(capsys):
     """Tests asset choices are correctly pulled out"""
     assetpack = get_test_assetpack()
     choices = ddl.asset_exploration.get_asset_choices(assetpack)
@@ -130,6 +139,7 @@ Grid Top Left Corner pixel (y): 3
 def test_print_component_info(capsys, monkeypatch):
     """Tests component info prints"""
     def faketags(tags):
+        """A fake tags function to bind and monkeypatch"""
         pass
     monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
 
