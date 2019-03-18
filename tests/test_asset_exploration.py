@@ -2,7 +2,6 @@
 
 import ddl.asset_exploration
 from ddl.projection import IsometricProjection, TopDownProjection
-from PyInquirer import Separator, prompt
 
 
 def test_tag_printing(capsys):
