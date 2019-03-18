@@ -13,16 +13,35 @@ import ddl.image_helper
 from ddl.asset import ComponentAsset
 from ddl.cli_utils import *
 import os
-
+import logging
+from ddl.blueprint import BlueprintFactory
 import tkinter as tk
 from PIL import Image, ImageTk
 
 
 @click.group()
-def main():
+@click.option('-v', '--verbose', count=True)
+@click.pass_context
+def main(context, verbose):
     """A CLI tool for validating and examining assetpacks, and in the future
     designing components, tweaking assetpacks and generally everything."""
-    pass
+
+    context.ensure_object(dict)
+
+    levels = {
+        1: logging.ERROR,
+        2: logging.WARNING,
+        3: logging.INFO,
+        4: logging.DEBUG
+    }
+
+    logger = logging.getLogger('ddl')
+    logger.setLevel(levels.get(verbose, logging.INFO))
+    logger.addHandler(logging.StreamHandler())
+
+    logger.info('DDL CLI')
+
+    context.obj['LOGGER'] = logger
 
 
 @main.command()
@@ -282,3 +301,32 @@ def create_new_images(path, gridtype, width, height):
     check_integer(height)
 
     ddl.image_helper.show_directory(path, gridtype, int(height), int(width))
+
+
+@main.command()
+@click.argument('blueprint_file', type=click.Path(exists=True))
+@click.argument('assetpack_file', type=click.Path(exists=True))
+@click.pass_context
+def build(context, blueprint_file, assetpack_file):
+    """ Build a blueprint file, and output an image. """
+
+    logger = context.obj['LOGGER']
+
+    logger.info('Building Blueprint')
+
+    blueprint = BlueprintFactory.load(click.format_filename(blueprint_file))
+
+    logger.debug('Loaded blueprint from {}'.format(click.format_filename(blueprint_file)))
+
+    assetpack = AssetpackFactory.load(click.format_filename(assetpack_file))
+
+    logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
+
+    for (x, y), tile in blueprint.get_constraints_in_layer('floor').items():
+        logger.debug('Tile at ({}, {}) has constraints {}'.format(x, y, ', '.join(tile)))
+        valid_components = assetpack.taglist.get_components_that_match_tags(tile)
+
+        if valid_components:
+            logger.debug('Matching components are: {}'.format(', '.join(valid_components)))
+        else:
+            raise Exception('No matching components for given constraints.')

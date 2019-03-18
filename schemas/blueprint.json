@@ -30,24 +30,34 @@
                         "description": "The Y coordinate this part starts at",
                         "minimum": 0
                     },
-                    "blueprint": {},
-                    "constraints": {}
+                    "height": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "width": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "layer" : {
+                        "type": "string",
+                        "enum": [
+                            "floor",
+                            "wall",
+                            "prop"
+                        ]
+                    },
+                    "constraints": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "required": [
                     "x",
-                    "y"
-                ],
-                "oneOf": [
-                    {
-                        "required": [
-                            "blueprint"
-                        ]
-                    },
-                    {
-                        "required": [
-                            "constraints"
-                        ]
-                    }
+                    "y",
+                    "layer",
+                    "constraints"
                 ],
                 "additionalProperties": false
             }

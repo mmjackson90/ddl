@@ -5,6 +5,9 @@
         {
             "x": 0,
             "y": 0,
+            "width": 3,
+            "height": 3,
+            "layer": "floor",
             "constraints": [
                 "floor"
             ]
