@@ -4,25 +4,8 @@ from PyInquirer import style_from_dict, Token, prompt, Separator
 from ddl.projection import IsometricProjection
 from ddl.renderer import Renderer
 from ddl.asset import ImageAsset
-
+from ddl.cli_utils import *
 import json
-
-STYLE = style_from_dict({
-    Token.Separator: '#cc5454',
-    Token.QuestionMark: '#673ab7 bold',
-    Token.Selected: '#cc5454',  # default
-    Token.Pointer: '#673ab7 bold',
-    Token.Instruction: '',  # default
-    Token.Answer: '#f44336 bold',
-    Token.Question: '',
-})
-
-
-def print_tags(tags):
-    """prints tag lists to screen"""
-    print("Tags:")
-    for tag in tags:
-        print(f"    {tag}")
 
 
 def show_pack_info(path):

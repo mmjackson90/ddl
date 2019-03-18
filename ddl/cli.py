@@ -7,18 +7,8 @@ from ddl.validator import Validator
 import ddl.asset_exploration
 import ddl.image_helper
 from ddl.asset import ComponentAsset
+from ddl.cli_utils import *
 import os
-
-
-STYLE = style_from_dict({
-    Token.Separator: '#cc5454',
-    Token.QuestionMark: '#673ab7 bold',
-    Token.Selected: '#cc5454',  # default
-    Token.Pointer: '#673ab7 bold',
-    Token.Instruction: '',  # default
-    Token.Answer: '#f44336 bold',
-    Token.Question: '',
-})
 
 
 @click.group()
@@ -157,16 +147,6 @@ def add_component(initial_option, component, assetpack):
         component.add_component(asset,
                                 component_x,
                                 component_y)
-
-
-def check_number(string):
-    """Checks a string can be parsed to a number"""
-    try:
-        float(string)
-        return True
-    except ValueError:
-        message = 'Please input a number.'
-        raise PyInquirer.ValidationError(message=message)
 
 
 def init_component(assetpack, info):

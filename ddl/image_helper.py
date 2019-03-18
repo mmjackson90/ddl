@@ -1,7 +1,7 @@
 import os
 from PIL import Image, ImageTk
 import tkinter as tk
-from ddl.asset_exploration import print_tags
+from ddl.cli_utils import *
 
 from PyInquirer import style_from_dict, Token, prompt, Separator
 
