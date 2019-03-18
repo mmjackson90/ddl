@@ -103,13 +103,18 @@ def show_component(assetpack, component):
     renderer.output('screen')
 
 
-def explore_asset(initial_option, assetpack):
-    """Lets a user choose what they want to see about an asset"""
+def get_asset(assetpack, initial_option):
     asset_type, asset_key = initial_option.split(': ')
     if asset_type == 'Image':
         asset = assetpack.images[asset_key]
     else:
         asset = assetpack.components[asset_key]
+    return asset
+
+
+def explore_asset(initial_option, assetpack):
+    """Lets a user choose what they want to see about an asset"""
+    asset = get_asset(assetpack, initial_option)
     explore = [{
         'type': 'list',
         'message': 'What would you like to do?',

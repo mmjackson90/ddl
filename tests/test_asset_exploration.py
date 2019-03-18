@@ -153,3 +153,17 @@ def test_show_component():
     """Functional test. No asserts, just makes sure it doesn't bork."""
     assetpack = get_test_assetpack()
     ddl.asset_exploration.show_component(assetpack, assetpack.components['test.a'])
+
+
+def test_get_asset_component():
+    """Tests a component asset is correctly pulled based on choices"""
+    assetpack = get_test_assetpack()
+    asset = ddl.asset_exploration.get_asset(assetpack, "Component: test.a")
+    assert isinstance(asset, ComponentAsset)
+
+
+def test_get_asset_image():
+    """Tests a component asset is correctly pulled based on choices"""
+    assetpack = get_test_assetpack()
+    asset = ddl.asset_exploration.get_asset(assetpack, "Image: test.c")
+    assert isinstance(asset, ImageAsset)
