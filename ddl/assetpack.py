@@ -39,45 +39,58 @@ class AssetpackFactory:
         Validator.validate_file(pack_path + '/components.json',
                                 'components')
         with open(
+                pack_path + '/pack.json'
+                ) as pack_file, open(
                 pack_path + '/components.json'
-                ) as component_file, open(
+                ) as components_file, open(
                 pack_path + '/images.json'
                 ) as imagepack_file:
-            components_and_grid = json.load(component_file)
-            imagepack = json.load(imagepack_file)
 
-            pack_id = path.split('/')[-1]
+            pack_json = json.load(pack_file)
+            components_json = json.load(components_file)
+            images_json = json.load(imagepack_file)
 
-            return Assetpack(pack_id, pack_path, imagepack, components_and_grid)
+            Validator.validate_json(pack_json, 'pack')
+            Validator.validate_json(images_json, 'images')
+            Validator.validate_json(components_json, 'components')
+
+            pack_id = pack_json['id']
+
+            if pack_json['projection'] == 'isometric':
+                projection = IsometricProjection(pack_json['grid']['width'],
+                                                 pack_json['grid']['height'])
+            else:
+                projection = TopDownProjection(pack_json['grid']['width'],
+                                               pack_json['grid']['height'])
+
+            assetpack = Assetpack(pack_id, projection)
+
+            for image in images_json['images']:
+                new_image = ImageAsset(image,
+                                       assetpack_id=pack_id,
+                                       assetpack_path=pack_path
+                                       )
+                assetpack.add_image(new_image)
+
+            for component in components_json['components']:
+                new_component = ComponentAsset(component, assetpack_id=pack_id)
+                assetpack.taglist.add_component(new_component)
+                assetpack.add_component(new_component)
+
+            return assetpack
 
 
 class Assetpack:
     """This class records all information needed to
      position and render the various images located in an assetpack.
      Please see the assetpack and imagepack schema for more info"""
-    def __init__(self, pack_id, pack_path, imagepack, components_and_grid):
+    def __init__(self, pack_id, projection):
 
         self.components = {}
         self.images = {}
         self.pack_id = pack_id
-        self.pack_path = pack_path
-        self.grid = components_and_grid['grid']
+        self.projection = projection
         self.taglist = TagList()
-        if self.grid['type'] == 'isometric':
-            self.projection = IsometricProjection(self.grid['width'],
-                                                  self.grid['height'])
-        else:
-            self.projection = TopDownProjection(self.grid['width'],
-                                                self.grid['height'])
-
-        for image in imagepack['images']:
-            new_image = ImageAsset(image, assetpack_id=pack_id, assetpack_path=pack_path)
-            self.add_image(new_image)
-
-        for component in components_and_grid['components']:
-            new_component = ComponentAsset(component, assetpack_id=pack_id)
-            self.taglist.add_component(new_component)
-            self.add_component(new_component)
 
     def add_component(self, new_asset):
         """Adds a component to the componentlist, if it doesn't exist"""

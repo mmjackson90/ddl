@@ -32,10 +32,10 @@ def test_assetpack_resize():
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.images['example_isometric.floor-1x1-exact'
+    if not assetpack.images['easy-dungeon-ddl-example-iso.floor-1x1-exact'
                             ].image.width == 29:
         raise AssertionError()
-    if not assetpack.images['example_isometric.floor-1x1-exact'
+    if not assetpack.images['easy-dungeon-ddl-example-iso.floor-1x1-exact'
                             ].image.height == 19:
         raise AssertionError()
 
@@ -49,16 +49,16 @@ def test_assetpack_rescale():
         raise AssertionError()
     if not assetpack.projection.height == 17:
         raise AssertionError()
-    if not assetpack.components['example_isometric.floor-2x2-exact'
+    if not assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact'
                                 ].parts[0]['x'] == 0:
         raise AssertionError()
-    if not assetpack.components['example_isometric.floor-2x2-exact'
+    if not assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact'
                                 ].parts[0]['y'] == 0:
         raise AssertionError()
-    if not assetpack.components['example_isometric.floor-2x2-exact'
+    if not assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact'
                                 ].parts[3]['x'] == 294/29:
         raise AssertionError()
-    if not assetpack.components['example_isometric.floor-2x2-exact'
+    if not assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact'
                                 ].parts[3]['y'] == 10:
         raise AssertionError()
 
@@ -110,7 +110,7 @@ def test_simple_image_location_list():
     """Tests an assetpack will return an imagelocationlist for a simple
     component if asked. No Nesting."""
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    component = assetpack.components['example_isometric.floor-wall-exact']
+    component = assetpack.components['easy-dungeon-ddl-example-iso.floor-wall-exact']
     ill = assetpack.get_image_location_list(2, 3, component)
     if len(ill) != 2:
         raise AssertionError()
@@ -125,7 +125,7 @@ def test_nested_image_location_list():
     """Tests an assetpack will return an imagelocationlist for a complex
     component if asked. Nesting involved."""
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    component = assetpack.components['example_isometric.nested-component-test']
+    component = assetpack.components['easy-dungeon-ddl-example-iso.nested-component-test']
     ill = assetpack.get_image_location_list(2, 3, component)
     if len(ill) != 3:
         raise AssertionError()

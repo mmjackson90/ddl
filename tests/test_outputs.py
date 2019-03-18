@@ -13,7 +13,7 @@ def test_smoke_render_component():
     """
 
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    floor1 = assetpack.components['example_isometric.floor-2x2-exact']
+    floor1 = assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact']
     image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
     renderer = Renderer(image_pixel_list=assetpack.projection
@@ -79,7 +79,7 @@ def test_smoke_wall():
     Smoke test a wall/floor combo, just to check the offsets look good.
     """
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    floor_wall = assetpack.components['example_isometric.floor-wall-exact']
+    floor_wall = assetpack.components['easy-dungeon-ddl-example-iso.floor-wall-exact']
     ill = assetpack.get_image_location_list(0, 0, floor_wall)
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
                          get_image_pixel_list(0, 0, ill))
@@ -94,13 +94,13 @@ def test_smoke_low_res_resize():
     """
 
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    floor1 = assetpack.components['example_isometric.floor-2x2-exact']
+    floor1 = assetpack.components['easy-dungeon-ddl-example-iso.floor-2x2-exact']
     image_location_list = assetpack.get_image_location_list(0, 0, floor1)
 
     low_res_assetpack = AssetpackFactory.load('assetpacks/low_res_isometric')
     low_res_assetpack.resize_images(assetpack.projection)
     low_res_floor = low_res_assetpack.components[
-        'low_res_isometric.floor-2x2-low-res']
+        'easy-dungeon-ddl-example-iso-lowres.floor-2x2-low-res']
     image_location_list6 = low_res_assetpack.\
         get_image_location_list(1, 1, low_res_floor)
     image_pixel_list6 = assetpack.projection.\
@@ -117,14 +117,14 @@ def test_non_scaled_rendering():
     """Tests rescaling by mashing together a prop pack of one scale and
     a floor pack of a different one."""
     assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    floor_1x1 = assetpack.components['example_isometric.floor-1x1-exact']
+    floor_1x1 = assetpack.components['easy-dungeon-ddl-example-iso.floor-1x1-exact']
     image_location_list7_3 = assetpack.get_image_location_list(0, 0,
                                                                floor_1x1)
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
 
     prop_assetpack = AssetpackFactory.load('assetpacks/example_props')
-    boxes = prop_assetpack.components['example_props.many-boxes']
+    boxes = prop_assetpack.components['easy-dungeon-ddl-example-props.many-boxes']
     image_location_list7_2 = prop_assetpack.get_image_location_list(0, 0,
                                                                     boxes)
     # Needs relocating to match the larger grid.
@@ -148,7 +148,7 @@ def test_scaled_rendering():
     component_factory.new_component('boxes_on_floor')
     component_factory.add_image('floor-1x1-exact', 0, 0)
     component_factory.add_component('many-boxes', 0, 0,
-                                    assetpack_id='example_props')
+                                    assetpack_id='easy-dungeon-ddl-example-props')
     boxes_on_floor = component_factory.pull_component()
     image_location_list7_1 = assetpack.\
         get_image_location_list(0, 0, boxes_on_floor)
