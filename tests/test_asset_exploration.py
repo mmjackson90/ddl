@@ -9,6 +9,7 @@ from ddl.projection import IsometricProjection, TopDownProjection
 
 
 def get_test_assetpack():
+    """Loads up a semi-fake assetpack"""
     return Assetpack('test', 'assetpacks/low_res_isometric',
                      {"images": [
                               {
@@ -28,8 +29,14 @@ def get_test_assetpack():
                                   "parts": [
                                       {
                                           "type": "image",
-                                          "image_id": "floor-1x1-low-res",
+                                          "image_id": "c",
                                           "x": 0,
+                                          "y": 0
+                                      },
+                                      {
+                                          "type": "image",
+                                          "image_id": "c",
+                                          "x": 1,
                                           "y": 0
                                       }
                                   ],
@@ -43,7 +50,7 @@ def get_test_assetpack():
                                   "parts": [
                                       {
                                           "type": "image",
-                                          "image_id": "floor-1x1-low-res",
+                                          "image_id": "c",
                                           "x": 0,
                                           "y": 0
                                       }
@@ -59,6 +66,7 @@ def get_test_assetpack():
 
 
 def test_tag_printing(capsys):
+    """Tests tags print right"""
     tags = ['a', 'b', 'c']
     ddl.asset_exploration.print_tags(tags)
     captured = capsys.readouterr()
@@ -66,6 +74,7 @@ def test_tag_printing(capsys):
 
 
 def test_show_pack_info(capsys, monkeypatch):
+    """Tests pack info displays correctly"""
     # Mostly this is to test that capsys and monkeypatch work the way I expect.
     def faketags(tags):
         pass
@@ -79,6 +88,7 @@ Projection: isometric
 
 
 def test_show_projection_isometric(capsys):
+    """Tests projection info displays correctly"""
     assetpack = get_test_assetpack()
     ddl.asset_exploration.show_projection_info(assetpack)
     captured = capsys.readouterr()
@@ -89,6 +99,7 @@ Grid width: 10 pixels.
 
 
 def test_get_asset_choices(capsys, monkeypatch):
+    """Tests asset choices are correctly pulled out"""
     assetpack = get_test_assetpack()
     choices = ddl.asset_exploration.get_asset_choices(assetpack)
     assert choices[0] == 'Back'
@@ -98,6 +109,7 @@ def test_get_asset_choices(capsys, monkeypatch):
 
 
 def test_print_image_info(capsys):
+    """Tests image info prints"""
     image = ImageAsset({"name": 'image',
                         "id": "image_id",
                         "image": "1x1_floor_low_res.png",
@@ -116,7 +128,7 @@ Grid Top Left Corner pixel (y): 3
 
 
 def test_print_component_info(capsys, monkeypatch):
-
+    """Tests component info prints"""
     def faketags(tags):
         pass
     monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
@@ -135,3 +147,9 @@ def test_print_component_info(capsys, monkeypatch):
 Component ID: test_id
 Number of parts: 2
 """
+
+
+def test_show_component():
+    """Functional test. No asserts, just makes sure it doesn't bork."""
+    assetpack = get_test_assetpack()
+    ddl.asset_exploration.show_component(assetpack, assetpack.components['test.a'])
