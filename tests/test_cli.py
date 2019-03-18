@@ -23,7 +23,7 @@ def test_validate_assetpack_not_succeed():
     """Tests that an assetpack fails to validate correctly"""
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "assetpacks/example_json_fail"])
-    assert result.exit_code == 0
+    assert result.exit_code == 1
     assert result.output != """Pack validated
 Images validated
 Components validated
