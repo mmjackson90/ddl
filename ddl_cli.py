@@ -7,14 +7,17 @@ interactive
 
 
 import click
+import logging
+
 from PyInquirer import style_from_dict, Token, prompt, Separator
 import PyInquirer
 from jsonschema.exceptions import ValidationError
 
-from ddl.assetpack import AssetpackFactory
+from ddl.assetpack import AssetpackFactory, Assetpack
 from ddl.validator import Validator
 import ddl.asset_exploration
 from ddl.asset import ComponentAsset
+from ddl.blueprint import BlueprintFactory
 
 
 STYLE = style_from_dict({
@@ -29,10 +32,28 @@ STYLE = style_from_dict({
 
 
 @click.group()
-def main():
+@click.option('-v', '--verbose', count=True)
+@click.pass_context
+def main(context, verbose):
     """A CLI tool for validating and examining assetpacks, and in the future
     designing components, tweaking assetpacks and generally everything."""
-    pass
+
+    context.ensure_object(dict)
+
+    levels = {
+        1: logging.ERROR,
+        2: logging.WARNING,
+        3: logging.INFO,
+        4: logging.DEBUG
+    }
+
+    logger = logging.getLogger('ddl')
+    logger.setLevel(levels.get(verbose, logging.INFO))
+    logger.addHandler(logging.StreamHandler())
+
+    logger.info('DDL CLI')
+
+    context.obj['LOGGER'] = logger
 
 
 @main.command()
@@ -241,6 +262,34 @@ def create_new_component(name):
             add_component(option_chosen, component, assetpack)
         print("")
 
+
+@main.command()
+@click.argument('blueprint_file', type=click.Path(exists=True))
+@click.argument('assetpack_file', type=click.Path(exists=True))
+@click.pass_context
+def build(context, blueprint_file, assetpack_file):
+    """ Build a blueprint file, and output an image. """
+
+    logger = context.obj['LOGGER']
+
+    logger.info('Building Blueprint')
+
+    blueprint = BlueprintFactory.load(click.format_filename(blueprint_file))
+
+    logger.debug('Loaded blueprint from {}'.format(click.format_filename(blueprint_file)))
+
+    assetpack = AssetpackFactory.load(click.format_filename(assetpack_file))
+
+    logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
+
+    for (x,y), tile in blueprint.get_constraints_in_layer('floor').items():
+        logger.debug('Tile at ({}, {}) has constraints {}'.format(x, y, ', '.join(tile)))
+        valid_components = assetpack.taglist.get_components_that_match_tags(tile)
+
+        if valid_components:
+            logger.debug('Matching components are: {}'.format(', '.join(valid_components)))
+        else:
+            raise Exception('No matching components for given constraints.')
 
 if __name__ == "__main__":
     main()

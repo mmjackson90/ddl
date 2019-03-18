@@ -7,4 +7,4 @@ from ddl.blueprint import BlueprintFactory
 
 def test_load_from_file():
 
-    blueprint = BlueprintFactory.load('examples/dungeon-3x3')
+    blueprint = BlueprintFactory.load('blueprints/examples/dungeon-3x3.json')
