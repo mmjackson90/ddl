@@ -2,7 +2,7 @@ import os
 from PIL import Image, ImageTk
 import tkinter as tk
 from ddl.cli_utils import *
-
+from json import dumps
 from PyInquirer import style_from_dict, Token, prompt, Separator
 
 STYLE = style_from_dict({
@@ -37,10 +37,10 @@ def show_directory(path):
     dirlist = os.listdir(path)
     old_canvas = None
     print("LETS DO EET")
-    for f in dirlist:
-        print(f)
-
-        image1 = Image.open(path+'/'+f)
+    all_image_data = []
+    used_ids = []
+    for filename in dirlist:
+        image1 = Image.open(path+'/'+filename)
         image = Image.new("RGBA", image1.size, "WHITE")
         image.paste(image1, (0, 0), image1)
         tkpi = ImageTk.PhotoImage(image.convert('RGB'))
@@ -50,7 +50,6 @@ def show_directory(path):
         next_action = ''
         offset_x = 0
         offset_y = 0
-        tags = []
         while next_action != 'Next':
             exit_cli = False
             choices = [{
@@ -60,8 +59,7 @@ def show_directory(path):
                 'choices': [
                     'Next',
                     'Edit offset X',
-                    'Edit offset Y',
-                    'Edit tags'
+                    'Edit offset Y'
                 ]
             }]
 
@@ -75,7 +73,7 @@ def show_directory(path):
             canvas.pack()
             canvas.image = tkpi
 
-            root.title(f)
+            root.title(filename)
             if old_canvas is not None:
                 old_canvas.destroy()
             old_canvas = canvas
@@ -83,17 +81,55 @@ def show_directory(path):
             root.update()
             next_action = prompt(choices, style=STYLE)['next_action']
             print("")
-            if next_action == 'Edit offset X':
-                print(f"Current x offset: {offset_x}")
-                offset_x = int(input())
-            elif next_action == 'Edit offset Y':
-                print(f"Current y offset: {offset_y}")
-                offset_y = int(input())
-            elif next_action == 'Edit tags':
-                print_tags(tags)
-                tags = list(map(str.strip, input().split(',')))
+            if next_action == 'Edit offset Y':
+                coordinates_questions = [{
+                        'type': 'input',
+                        'message': f"Current y offset: {offset_y}",
+                        'name': 'y',
+                        'validate': check_integer
+                    }
+                ]
+                offset_y = int(prompt(coordinates_questions, style=STYLE)['y'])
+            elif next_action == 'Edit offset X':
+                coordinates_questions = [{
+                        'type': 'input',
+                        'message': f"Current x offset: {offset_x}",
+                        'name': 'x',
+                        'validate': check_integer
+                    }
+                ]
+                offset_x = int(prompt(coordinates_questions, style=STYLE)['x'])
             print("")
 
+        id_questions = [{
+                'type': 'input',
+                'message': f"Please give this image an ID",
+                'name': 'id',
+                'validate': lambda new_id: validate_image_id(new_id, used_ids)
+            },
+            {
+                'type': 'input',
+                'message': f"and a nice descriptive name.",
+                'name': 'name'
+            }
+        ]
+        results = prompt(id_questions, style=STYLE)
+        new_id = results['id']
+        new_name = results['id']
+        print(new_id in used_ids)
+        image_data = {
+            "name": new_name,
+            "id": new_id,
+            "image": filename,
+            "top_left": {
+                    "x": offset_x,
+                    "y": offset_y
+                }
+            }
+        used_ids = used_ids + [new_id]
+
+        all_image_data = all_image_data+[image_data]
+    print(dumps({"images": all_image_data}, indent=4))
 
 if __name__ == '__main__':
     show_directory('assetpacks/example_isometric/art')

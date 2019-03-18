@@ -152,7 +152,7 @@ def add_component(initial_option, component, assetpack):
 def init_component(assetpack, info):
     component_name = info['component_name']
     component_id = info['component_id']
-    component_tags = info['component_tags'].split(',')
+    component_tags = list(map(str.strip, info['component_tags'].split(',')))
     component_parts = []
     data = {
         "name": component_name,
