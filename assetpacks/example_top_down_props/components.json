@@ -1,9 +1,4 @@
 {
-    "grid":{
-        "type": "topdown",
-        "height":10,
-        "width":10
-    },
     "components": [
         {
             "name": "Lots of boxes",

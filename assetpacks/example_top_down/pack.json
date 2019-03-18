@@ -4,5 +4,10 @@
     "projection": "topdown",
     "tags": [
         "example"
-    ]
+    ],
+    "grid":{
+        "height":100,
+        "width":100
+    },
+    "id": "easy-dungeon-ddl-example-td"
 }

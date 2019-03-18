@@ -124,8 +124,8 @@ def test_simple_image_location_list():
 def test_flipped_location_list():
     """Tests an assetpack will return an imagelocationlist for a simple
     component if asked. No Nesting."""
-    assetpack = AssetpackFactory.load('example_isometric')
-    asset_id = 'example_isometric.double-floor-wall-exact'
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    asset_id = 'easy-dungeon-ddl-example-iso.double-floor-wall-exact'
     component = assetpack.components[asset_id]
     ill = assetpack.get_image_location_list(2, 3, component)
     assert ill[1][3]
