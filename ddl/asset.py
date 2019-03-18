@@ -59,6 +59,8 @@ class ComponentAsset(Asset):
             sub_part["asset_id"] = self.get_part_full_id(sub_part)
 
     def instantiate_sub_parts(self):
+        """Instantiates the sub part list. This should only be a temporary measure
+        until we start passing components in directly"""
         i = 0
         self.part_pointers = [None]*len(self.parts)
         for sub_part in self.parts:

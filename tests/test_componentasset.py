@@ -29,6 +29,7 @@ class FakeComponentAsset():
 
 
 class FakeAssetpack():
+    """The fakest assetpack around"""
     def __init__(self):
         self.pack_id = 'test_assetpack_name'
 
@@ -85,7 +86,6 @@ def test_rescale_component():
         raise AssertionError()
     if not component.data["parts"][1]["y"] == 1:
         raise AssertionError()
-
 
 
 def test_get_add_image():
