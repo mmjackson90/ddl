@@ -32,7 +32,7 @@ def show_pack_info(path):
         print(f"Name: {pack['name']}")
         print(f"Author: {pack['author']}")
         print(f"Projection: {pack['projection']}")
-        print_tags(pack["tags"])
+    print_tags(pack["tags"])
 
 
 def show_projection_info(assetpack):
@@ -45,21 +45,26 @@ def show_projection_info(assetpack):
     print(f"Grid width: {assetpack.projection.width} pixels.")
 
 
-def explore_assets(assetpack):
-    """Lets the user interactively choose which components to look at next"""
+def get_asset_choices(assetpack):
+    """gets a list of assets in a form that PyInquirer can  parse as options"""
     asset_choices = ['Back', Separator("Components")] +\
         list(map('Component: {}'.format,
                  assetpack.components.keys())) +\
         [Separator("Images")] +\
         list(map('Image: {}'.format,
                  assetpack.images.keys()))
+    return asset_choices
+
+
+def explore_assets(assetpack):
+    """Lets the user interactively choose which components to look at next"""
     back = False
     while not back:
         explore = [{
             'type': 'list',
             'message': 'Which asset would you like to look at?',
             'name': 'explore',
-            'choices': asset_choices
+            'choices': get_asset_choices(assetpack)
         }]
         choice = prompt(explore, style=STYLE)
         print("")

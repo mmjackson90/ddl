@@ -2,6 +2,7 @@
 
 import ddl.asset_exploration
 from ddl.projection import IsometricProjection, TopDownProjection
+from PyInquirer import Separator, prompt
 
 
 def test_tag_printing(capsys):
@@ -24,15 +25,27 @@ Projection: isometric
 """
 
 
-class FakeAssetPack:
-    def __init__(self, projection):
-        self.projection = projection
-
-
 def test_show_projection_isometric(capsys):
+    class FakeAssetPack:
+        def __init__(self, projection):
+            self.projection = projection
+
     ddl.asset_exploration.show_projection_info(FakeAssetPack(IsometricProjection(10, 20)))
     captured = capsys.readouterr()
     assert captured.out == """Type: Isometric
 Grid height: 20 pixels.
 Grid width: 10 pixels.
 """
+
+
+def test_get_asset_choices(capsys, monkeypatch):
+    class FakeAssetPack:
+        def __init__(self):
+            self.components = {"a": 1,
+                               "b": 1}
+            self.images = {"c": 1}
+    choices = ddl.asset_exploration.get_asset_choices(FakeAssetPack())
+    assert choices[0] == 'Back'
+    assert choices[2] == 'Component: a'
+    assert choices[3] == 'Component: b'
+    assert choices[5] == 'Image: c'
