@@ -1,5 +1,5 @@
 """Util functions and globals shared between many CLI modules"""
-from PyInquirer import style_from_dict, Token, prompt, ValidationError
+from PyInquirer import style_from_dict, Token, ValidationError
 from PIL import Image, ImageTk
 
 

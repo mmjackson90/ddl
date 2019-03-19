@@ -2,11 +2,11 @@
 the json representation of an AssetPack"""
 
 from glob import glob
-from PIL import Image, ImageTk
+from PIL import Image
 import tkinter as tk
 from ddl.cli_utils import *
 from json import dumps
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import prompt
 
 
 def add_iso_grid(canvas, grid_width, grid_height, x_offset, y_offset):

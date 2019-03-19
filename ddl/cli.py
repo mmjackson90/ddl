@@ -1,7 +1,7 @@
 """Contains most of the functions for the CLI. Put here for testing purposes."""
 
 import click
-from PyInquirer import style_from_dict, prompt, Separator
+from PyInquirer import prompt, Separator
 import PyInquirer
 from jsonschema.exceptions import ValidationError
 from ddl.assetpack import AssetpackFactory
@@ -238,4 +238,4 @@ def create_new_images(path, gridtype, width, height):
     check_integer(width)
     check_integer(height)
 
-    ddl.image_helper.show_directory(path, type, int(height), int(width))
+    ddl.image_helper.show_directory(path, gridtype, int(height), int(width))
