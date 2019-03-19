@@ -1,5 +1,7 @@
+"""Contains most of the functions for the CLI. Put here for testing purposes."""
+
 import click
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import style_from_dict, prompt, Separator
 import PyInquirer
 from jsonschema.exceptions import ValidationError
 from ddl.assetpack import AssetpackFactory
