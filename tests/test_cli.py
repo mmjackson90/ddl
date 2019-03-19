@@ -1,6 +1,6 @@
 """Tests the non-interactive functions of the CLI tool using click's runner"""
 
-from ddl.cli import main, init_component, get_component_build_choices
+from ddl.cli import main, init_component
 
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
@@ -44,13 +44,3 @@ def test_init_component():
     assert component.asset_id == "test_id"
     assert component.tags == ["a", "b"]
     assert component.parts == []
-
-
-def test_get_build_choices():
-    """Tests that an assetpack returns the correct choices of assets"""
-    assetpack = get_test_assetpack()
-    choices = get_component_build_choices(assetpack)
-    assert choices[0] == 'Done'
-    assert choices[2] == 'Component: test.a'
-    assert choices[3] == 'Component: test.b'
-    assert choices[5] == 'Image: test.c'
