@@ -6,11 +6,15 @@ import PyInquirer
 from jsonschema.exceptions import ValidationError
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
+from ddl.renderer import Renderer
 import ddl.asset_exploration
 import ddl.image_helper
 from ddl.asset import ComponentAsset
 from ddl.cli_utils import *
 import os
+
+import tkinter as tk
+from PIL import Image, ImageTk
 
 
 @click.group()
@@ -205,13 +209,16 @@ def create_new_component(path):
         }
     ]
     info = prompt(component_info, style=STYLE)
+    root = tk.Tk()
+    root.title(info['component_id'])
     asset_choices = get_component_build_choices(assetpack)
     component = init_component(assetpack, info)
     done = False
+    old_canvas = None
     while not done:
         explore = [{
             'type': 'list',
-            'message': 'Which asset would you like to look at?',
+            'message': 'Which asset would you like to add?',
             'name': 'explore',
             'choices': asset_choices
         }]
@@ -221,10 +228,25 @@ def create_new_component(path):
         if option_chosen == 'Done':
             component.reset_sub_parts()
             print(component.get_json())
-            ddl.asset_exploration.show_component(assetpack, component)
             done = True
         else:
             add_component(option_chosen, component, assetpack)
+        image_location_list = assetpack.get_image_location_list(0, 0, component)
+        renderer = Renderer(image_pixel_list=assetpack.projection
+                            .get_image_pixel_list(0, 0, image_location_list))
+        orig_image = renderer.output('variable')
+        image = get_rgb_image(orig_image)
+        canvas = tk.Canvas(width=orig_image.width, height=orig_image.height, bg='white')
+        canvas.create_image(0, 0, image=image, anchor=tk.NW)
+        canvas.pack()
+        canvas.image = image
+
+        if old_canvas is not None:
+            old_canvas.destroy()
+
+        old_canvas = canvas
+        root.update_idletasks()
+        root.update()
         print("")
 
 

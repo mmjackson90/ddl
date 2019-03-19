@@ -79,6 +79,8 @@ class Renderer:
                                    .choice(string.ascii_lowercase)
                                    for n in range(8)])
             self.image.save('output/' + filename + ".png", "PNG")
+        elif destination == 'variable':
+            return self.image
         elif destination == 'dryrun':
             # This doesn't actually do anything, but is handy for testing there
             # are no material errors.
