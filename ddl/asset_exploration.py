@@ -1,6 +1,6 @@
 """Functions for the ddl_cli to use to explore an assetpack"""
 
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import style_from_dict, prompt, Separator
 from ddl.projection import IsometricProjection
 from ddl.renderer import Renderer
 from ddl.asset import ImageAsset
