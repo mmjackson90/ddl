@@ -112,48 +112,53 @@ def get_next_action():
     return prompt(choices, style=STYLE)['next_action']
 
 
+def positioning_loop(root, grid_type, grid_width, grid_height, image):
+    old_canvas = None
+    next_action = ''
+    offset_x = 0
+    offset_y = 0
+    while next_action not in ['Next', 'Quit now', 'Skip']:
+        canvas = tk.Canvas(width=grid_width*3, height=grid_height*3, bg='white')
+
+        # AAAAAAA MUTATION
+        if grid_type == 'isometric':
+            canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
+            add_iso_grid(canvas, grid_width, grid_height, grid_width*1.5, grid_height)
+        else:
+            canvas.create_image(grid_width-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
+            add_topdown_grid(canvas, grid_width, grid_height, grid_width, grid_height)
+
+        canvas.pack()
+        canvas.image = image
+
+        if old_canvas is not None:
+            old_canvas.destroy()
+        old_canvas = canvas
+        root.update_idletasks()
+        root.update()
+        next_action = get_next_action()
+        print("")
+        if next_action == 'Edit offset Y':
+            offset_y = update_y_offset(offset_y)
+        elif next_action == 'Edit offset X':
+            offset_x = update_x_offset(offset_x)
+        print("")
+    return (offset_x, offset_y, next_action)
+
+
 def show_directory(path, grid_type, grid_height, grid_width):
     """Uses tkinter to iterate through a directory of images. Enter to move on."""
 
     root = tk.Tk()
     dirlist = glob(path+'/*.png')
-    old_canvas = None
+
     print("LETS DO EET")
     all_image_data = []
     used_ids = []
     for filename in dirlist:
+        root.title(filename)
         image = get_rgb_image(Image.open(filename))
-
-        next_action = ''
-        offset_x = 0
-        offset_y = 0
-        while next_action not in ['Next', 'Quit now', 'Skip']:
-            canvas = tk.Canvas(width=grid_width*3, height=grid_height*3, bg='white')
-
-            # AAAAAAA MUTATION
-            if grid_type == 'isometric':
-                canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
-                add_iso_grid(canvas, grid_width, grid_height, grid_width*1.5, grid_height)
-            else:
-                canvas.create_image(grid_width-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
-                add_topdown_grid(canvas, grid_width, grid_height, grid_width, grid_height)
-
-            canvas.pack()
-            canvas.image = image
-
-            root.title(filename)
-            if old_canvas is not None:
-                old_canvas.destroy()
-            old_canvas = canvas
-            root.update_idletasks()
-            root.update()
-            next_action = get_next_action()
-            print("")
-            if next_action == 'Edit offset Y':
-                offset_y = update_y_offset(offset_y)
-            elif next_action == 'Edit offset X':
-                offset_x = update_x_offset(offset_x)
-            print("")
+        offset_x, offset_y, next_action = positioning_loop(root, grid_type, grid_width, grid_height, image)
         if next_action == 'Quit now':
             break
         if not next_action == 'Skip':
