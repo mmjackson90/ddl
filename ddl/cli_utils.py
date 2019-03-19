@@ -1,5 +1,5 @@
 """Util functions and globals shared between many CLI modules"""
-from PyInquirer import style_from_dict, Token, ValidationError
+from PyInquirer import style_from_dict, Token, ValidationError, Separator
 from PIL import Image, ImageTk
 
 
@@ -64,3 +64,14 @@ def get_rgb_image(input_image):
     image = Image.new("RGBA", input_image.size, "WHITE")
     image.paste(input_image, (0, 0), input_image)
     return(ImageTk.PhotoImage(image.convert('RGB')))
+
+
+def get_asset_choices(assetpack):
+    """gets a list of assets in a form that PyInquirer can  parse as options"""
+    asset_choices = ['Back', Separator("Components")] +\
+        list(map('Component: {}'.format,
+                 assetpack.components.keys())) +\
+        [Separator("Images")] +\
+        list(map('Image: {}'.format,
+                 assetpack.images.keys()))
+    return asset_choices

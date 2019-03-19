@@ -170,15 +170,19 @@ def init_component(assetpack, info):
     return ComponentAsset(data, assetpack.pack_id)
 
 
-def get_component_build_choices(assetpack):
-    """Get the choices of asset from an assetpack"""
-    asset_choices = ['Done', Separator("Components")] +\
-        list(map('Component: {}'.format,
-                 assetpack.components.keys())) +\
-        [Separator("Images")] +\
-        list(map('Image: {}'.format,
-                 assetpack.images.keys()))
-    return asset_choices
+def choose_asset(component, asset_choices, assetpack):
+    """The options for the inside of the Add component loop"""
+    explore = [{
+        'type': 'list',
+        'message': 'Which asset would you like to add?',
+        'name': 'explore',
+        'choices': asset_choices
+    }]
+    choice = prompt(explore, style=STYLE)
+    print("")
+    option_chosen = choice['explore']
+    if not option_chosen == 'Back':
+        add_component(option_chosen, component, assetpack)
 
 
 @main.command()
@@ -211,26 +215,23 @@ def create_new_component(path):
     info = prompt(component_info, style=STYLE)
     root = tk.Tk()
     root.title(info['component_id'])
-    asset_choices = get_component_build_choices(assetpack)
+    asset_choices = get_asset_choices(assetpack)
     component = init_component(assetpack, info)
     done = False
     old_canvas = None
-    while not done:
-        explore = [{
+    choice = ''
+    while not choice == 'Done':
+        choices = [{
             'type': 'list',
-            'message': 'Which asset would you like to add?',
-            'name': 'explore',
-            'choices': asset_choices
+            'message': 'What would you like to do?',
+            'name': 'choice',
+            'choices': ['Add an asset', 'Done', 'Undo']
         }]
-        choice = prompt(explore, style=STYLE)
-        print("")
-        option_chosen = choice['explore']
-        if option_chosen == 'Done':
-            component.reset_sub_parts()
-            print(component.get_json())
-            done = True
-        else:
-            add_component(option_chosen, component, assetpack)
+        choice = prompt(choices, style=STYLE)['choice']
+        if choice == 'Add an asset':
+            choose_asset(component, asset_choices, assetpack)
+        elif choice == 'Undo':
+            component.remove_last_part()
         image_location_list = assetpack.get_image_location_list(0, 0, component)
         renderer = Renderer(image_pixel_list=assetpack.projection
                             .get_image_pixel_list(0, 0, image_location_list))
@@ -248,6 +249,9 @@ def create_new_component(path):
         root.update_idletasks()
         root.update()
         print("")
+    component.reset_sub_parts()
+    print(component.get_json())
+    done = True
 
 
 @main.command()

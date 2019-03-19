@@ -1,6 +1,6 @@
 """Functions for the ddl_cli to use to explore an assetpack"""
 
-from PyInquirer import prompt, Separator
+from PyInquirer import prompt
 from ddl.projection import IsometricProjection
 from ddl.renderer import Renderer
 from ddl.asset import ImageAsset
@@ -26,17 +26,6 @@ def show_projection_info(assetpack):
         print("Type: Top Down")
     print(f"Grid height: {assetpack.projection.height} pixels.")
     print(f"Grid width: {assetpack.projection.width} pixels.")
-
-
-def get_asset_choices(assetpack):
-    """gets a list of assets in a form that PyInquirer can  parse as options"""
-    asset_choices = ['Back', Separator("Components")] +\
-        list(map('Component: {}'.format,
-                 assetpack.components.keys())) +\
-        [Separator("Images")] +\
-        list(map('Image: {}'.format,
-                 assetpack.images.keys()))
-    return asset_choices
 
 
 def explore_assets(assetpack):
