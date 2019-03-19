@@ -27,7 +27,29 @@ def add_iso_grid(canvas, grid_width, grid_height, x_offset, y_offset):
     canvas.create_line(x_mid, bottom, right, y_mid, width=2, fill="red")
 
 
-def show_directory(path):
+def add_topdown_grid(canvas, grid_width, grid_height, x_offset, y_offset):
+    """Will add an ISO grid to a canvas.
+    ###THIS FUNCTION IS HIGHLY MUTAGENIC - HANDLE WITH CARE###
+    """
+    left = x_offset
+    right = grid_width + x_offset
+    bottom = grid_height + y_offset
+    top = y_offset
+
+    canvas.create_line(right, top, left, top, width=2, fill="red")
+    canvas.create_line(right, bottom, left, bottom, width=2, fill="red")
+    canvas.create_line(right, top, right, bottom, width=2, fill="red")
+    canvas.create_line(left, top, left, bottom, width=2, fill="red")
+
+
+def get_rgb_image(filename):
+    image1 = Image.open(filename)
+    image = Image.new("RGBA", image1.size, "WHITE")
+    image.paste(image1, (0, 0), image1)
+    return(ImageTk.PhotoImage(image.convert('RGB')))
+
+
+def show_directory(path, grid_type, grid_height, grid_width):
     """Uses tkinter to iterate through a directory of images. Enter to move on."""
 
     root = tk.Tk()
@@ -37,36 +59,39 @@ def show_directory(path):
     all_image_data = []
     used_ids = []
     for filename in dirlist:
-        image1 = Image.open(filename)
-        image = Image.new("RGBA", image1.size, "WHITE")
-        image.paste(image1, (0, 0), image1)
-        tkpi = ImageTk.PhotoImage(image.convert('RGB'))
+        print(filename)
+        image = get_rgb_image(filename)
 
-        grid_width = 294
-        grid_height = 170
         next_action = ''
         offset_x = 0
         offset_y = 0
-        while next_action != 'Next':
+        while next_action not in ['Next', 'Quit now', 'Skip']:
             choices = [{
                 'type': 'list',
                 'message': 'What would you like to do?',
                 'name': 'next_action',
                 'choices': [
                     'Next',
+                    'Skip',
                     'Edit offset X',
-                    'Edit offset Y'
+                    'Edit offset Y',
+                    'Quit now'
                 ]
             }]
 
             canvas = tk.Canvas(width=grid_width*3, height=grid_height*3, bg='white')
 
-            canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=tkpi, anchor=tk.NW)
+
             # AAAAAAA MUTATION
-            add_iso_grid(canvas, grid_width, grid_height, grid_width*1.5, grid_height)
+            if grid_type == 'isometric':
+                canvas.create_image(grid_width*1.5-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
+                add_iso_grid(canvas, grid_width, grid_height, grid_width*1.5, grid_height)
+            else:
+                canvas.create_image(grid_width-offset_x, grid_height-offset_y, image=image, anchor=tk.NW)
+                add_topdown_grid(canvas, grid_width, grid_height, grid_width, grid_height)
 
             canvas.pack()
-            canvas.image = tkpi
+            canvas.image = image
 
             root.title(filename)
             if old_canvas is not None:
@@ -95,35 +120,36 @@ def show_directory(path):
                 ]
                 offset_x = int(prompt(coordinates_questions, style=STYLE)['x'])
             print("")
-
-        id_questions = [{
-                'type': 'input',
-                'message': f"Please give this image an ID",
-                'name': 'id',
-                'validate': lambda new_id: validate_image_id(new_id, used_ids)
-            },
-            {
-                'type': 'input',
-                'message': f"and a nice descriptive name.",
-                'name': 'name'
-            }
-        ]
-        results = prompt(id_questions, style=STYLE)
-        new_id = results['id']
-        new_name = results['id']
-        print(new_id in used_ids)
-        image_data = {
-            "name": new_name,
-            "id": new_id,
-            "image": filename,
-            "top_left": {
-                    "x": offset_x,
-                    "y": offset_y
+        if next_action == 'Quit now':
+            break
+        if not next_action == 'Skip':
+            id_questions = [{
+                    'type': 'input',
+                    'message': f"Please give this image an ID",
+                    'name': 'id',
+                    'validate': lambda new_id: validate_image_id(new_id, used_ids)
+                },
+                {
+                    'type': 'input',
+                    'message': f"and a nice descriptive name.",
+                    'name': 'name'
                 }
-            }
-        used_ids = used_ids + [new_id]
+            ]
+            results = prompt(id_questions, style=STYLE)
+            new_id = results['id']
+            new_name = results['id']
+            image_data = {
+                "name": new_name,
+                "id": new_id,
+                "image": filename.split('/')[-1],
+                "top_left": {
+                        "x": offset_x,
+                        "y": offset_y
+                    }
+                }
+            used_ids = used_ids + [new_id]
 
-        all_image_data = all_image_data+[image_data]
+            all_image_data = all_image_data+[image_data]
     print(dumps({"images": all_image_data}, indent=4))
 
 if __name__ == '__main__':

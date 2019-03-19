@@ -228,6 +228,12 @@ def create_new_component(path):
 
 @main.command()
 @click.argument('path')
-def create_new_images(path):
+@click.option('--type', type=click.Choice(['isometric', 'topdown']), prompt=True)
+@click.option('--width', prompt=True)
+@click.option('--height', prompt=True)
+def create_new_images(path, type, width, height):
     """Iterates through all .png images in a directory and lets you set the information for them."""
-    ddl.image_helper.show_directory(path)
+    check_integer(width)
+    check_integer(height)
+
+    ddl.image_helper.show_directory(path, type, int(height), int(width))
