@@ -45,7 +45,8 @@ class Projection:
         for component in components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
 
-    def get_image_offset(self, image, h_flip, v_flip):
+    @staticmethod
+    def get_image_offset(image, h_flip, v_flip):
         """Gets an image offset, bearing in mind flipping."""
         image_width, image_height = image.get_image_sizes()
         if not h_flip:
