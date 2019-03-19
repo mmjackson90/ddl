@@ -1,7 +1,6 @@
 """Tooling for interactively going through a directory of images and creating
 the json representation of an AssetPack"""
 
-import os
 from glob import glob
 from PIL import Image, ImageTk
 import tkinter as tk
@@ -42,11 +41,75 @@ def add_topdown_grid(canvas, grid_width, grid_height, x_offset, y_offset):
     canvas.create_line(left, top, left, bottom, width=2, fill="red")
 
 
-def get_rgb_image(filename):
-    image1 = Image.open(filename)
-    image = Image.new("RGBA", image1.size, "WHITE")
-    image.paste(image1, (0, 0), image1)
-    return(ImageTk.PhotoImage(image.convert('RGB')))
+def get_image_metadata(used_ids, filename, offset_x, offset_y):
+    """Pushes all the image metadata (new id and image data as it will be in
+    the .json) out"""
+    id_questions = [{
+            'type': 'input',
+            'message': f"Please give this image an ID",
+            'name': 'id',
+            'validate': lambda new_id: validate_image_id(new_id, used_ids)
+        },
+        {
+            'type': 'input',
+            'message': f"and a nice descriptive name.",
+            'name': 'name'
+        }
+    ]
+    results = prompt(id_questions, style=STYLE)
+    new_id = results['id']
+    new_name = results['name']
+    image_data = {
+        "name": new_name,
+        "id": new_id,
+        "image": filename.split('/')[-1],
+        "top_left": {
+                "x": offset_x,
+                "y": offset_y
+            }
+        }
+    return (new_id, image_data)
+
+
+def update_y_offset(offset_y):
+    """Will prompt the user for a new y offset and return it."""
+    coordinates_questions = [{
+            'type': 'input',
+            'message': f"Current y offset: {offset_y}",
+            'name': 'y',
+            'validate': check_integer
+        }
+    ]
+    return int(prompt(coordinates_questions, style=STYLE)['y'])
+
+
+def update_x_offset(offset_x):
+    """Will prompt the user for a new x offset and return it."""
+    coordinates_questions = [{
+            'type': 'input',
+            'message': f"Current x offset: {offset_x}",
+            'name': 'x',
+            'validate': check_integer
+        }
+    ]
+    return int(prompt(coordinates_questions, style=STYLE)['x'])
+
+
+def get_next_action():
+    """Gets the next option the user wants from a simple list"""
+    choices = [{
+        'type': 'list',
+        'message': 'What would you like to do?',
+        'name': 'next_action',
+        'choices': [
+            'Next',
+            'Skip',
+            'Edit offset X',
+            'Edit offset Y',
+            'Quit now'
+        ]
+    }]
+    return prompt(choices, style=STYLE)['next_action']
 
 
 def show_directory(path, grid_type, grid_height, grid_width):
@@ -59,28 +122,13 @@ def show_directory(path, grid_type, grid_height, grid_width):
     all_image_data = []
     used_ids = []
     for filename in dirlist:
-        print(filename)
-        image = get_rgb_image(filename)
+        image = get_rgb_image(Image.open(filename))
 
         next_action = ''
         offset_x = 0
         offset_y = 0
         while next_action not in ['Next', 'Quit now', 'Skip']:
-            choices = [{
-                'type': 'list',
-                'message': 'What would you like to do?',
-                'name': 'next_action',
-                'choices': [
-                    'Next',
-                    'Skip',
-                    'Edit offset X',
-                    'Edit offset Y',
-                    'Quit now'
-                ]
-            }]
-
             canvas = tk.Canvas(width=grid_width*3, height=grid_height*3, bg='white')
-
 
             # AAAAAAA MUTATION
             if grid_type == 'isometric':
@@ -99,58 +147,18 @@ def show_directory(path, grid_type, grid_height, grid_width):
             old_canvas = canvas
             root.update_idletasks()
             root.update()
-            next_action = prompt(choices, style=STYLE)['next_action']
+            next_action = get_next_action()
             print("")
             if next_action == 'Edit offset Y':
-                coordinates_questions = [{
-                        'type': 'input',
-                        'message': f"Current y offset: {offset_y}",
-                        'name': 'y',
-                        'validate': check_integer
-                    }
-                ]
-                offset_y = int(prompt(coordinates_questions, style=STYLE)['y'])
+                offset_y = update_y_offset(offset_y)
             elif next_action == 'Edit offset X':
-                coordinates_questions = [{
-                        'type': 'input',
-                        'message': f"Current x offset: {offset_x}",
-                        'name': 'x',
-                        'validate': check_integer
-                    }
-                ]
-                offset_x = int(prompt(coordinates_questions, style=STYLE)['x'])
+                offset_x = update_x_offset(offset_x)
             print("")
         if next_action == 'Quit now':
             break
         if not next_action == 'Skip':
-            id_questions = [{
-                    'type': 'input',
-                    'message': f"Please give this image an ID",
-                    'name': 'id',
-                    'validate': lambda new_id: validate_image_id(new_id, used_ids)
-                },
-                {
-                    'type': 'input',
-                    'message': f"and a nice descriptive name.",
-                    'name': 'name'
-                }
-            ]
-            results = prompt(id_questions, style=STYLE)
-            new_id = results['id']
-            new_name = results['id']
-            image_data = {
-                "name": new_name,
-                "id": new_id,
-                "image": filename.split('/')[-1],
-                "top_left": {
-                        "x": offset_x,
-                        "y": offset_y
-                    }
-                }
-            used_ids = used_ids + [new_id]
+            image_metadata = get_image_metadata(used_ids, filename, offset_x, offset_y)
+            used_ids = used_ids + [image_metadata[1]]
+            all_image_data = all_image_data+[image_metadata[1]]
 
-            all_image_data = all_image_data+[image_data]
     print(dumps({"images": all_image_data}, indent=4))
-
-if __name__ == '__main__':
-    show_directory('assetpacks/example_isometric/art')

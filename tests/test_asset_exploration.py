@@ -86,6 +86,8 @@ def test_show_pack_info(capsys, monkeypatch):
     """Tests pack info displays correctly"""
     # Mostly this is to test that capsys and monkeypatch work the way I expect.
     def faketags(tags):
+        """A fake tags function that does *something* with tags"""
+        tags = []
         pass
     monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
     ddl.asset_exploration.show_pack_info('assetpacks/example_isometric')
@@ -107,7 +109,7 @@ Grid width: 10 pixels.
 """
 
 
-def test_get_asset_choices(capsys):
+def test_get_asset_choices():
     """Tests asset choices are correctly pulled out"""
     assetpack = get_test_assetpack()
     choices = ddl.asset_exploration.get_asset_choices(assetpack)
@@ -139,7 +141,8 @@ Grid Top Left Corner pixel (y): 3
 def test_print_component_info(capsys, monkeypatch):
     """Tests component info prints"""
     def faketags(tags):
-        """A fake tags function to bind and monkeypatch"""
+        """A fake tags function that does *something* with tags"""
+        tags = []
         pass
     monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
 

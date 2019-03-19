@@ -1,5 +1,6 @@
 """Util functions and globals shared between many CLI modules"""
-from PyInquirer import style_from_dict, Token, prompt, Separator, ValidationError
+from PyInquirer import style_from_dict, Token, prompt, ValidationError
+from PIL import Image, ImageTk
 
 
 def print_tags(tags, prefix="Tags:"):
@@ -52,3 +53,14 @@ STYLE = style_from_dict({
     Token.Answer: '#f44336 bold',
     Token.Question: '',
 })
+
+
+def get_rgb_image(input_image):
+    """Takes a PNG image, sticks it on a white background while alpha still
+    works, then outputs with no alpha channel.
+    THIS IS TO WORK AROUND A BUG IN tkinter/Pillow/MacOSX
+    """
+
+    image = Image.new("RGBA", input_image.size, "WHITE")
+    image.paste(input_image, (0, 0), input_image)
+    return(ImageTk.PhotoImage(image.convert('RGB')))
