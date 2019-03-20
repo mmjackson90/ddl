@@ -79,7 +79,7 @@ def test_explore_pack_quit(monkeypatch):
 """
 
 
-def test_explore_pack_explore(monkeypatch):
+def test_explore_pack_info(monkeypatch):
     """Tests that pack info can be properly pulled out"""
     runner = CliRunner()
     global PROMPT_CALLS
@@ -102,6 +102,33 @@ Author: The Easy Dungeon Company
 Projection: isometric
 Tags:
     example
+
+
+
+"""
+
+
+def test_explore_projection_info(monkeypatch):
+    """Tests that pack info can be properly pulled out"""
+    runner = CliRunner()
+    global PROMPT_CALLS
+    PROMPT_CALLS = 0
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        global PROMPT_CALLS
+        choices = ['See projection information', 'Quit']
+        result = {'init': choices[PROMPT_CALLS]}
+        PROMPT_CALLS = PROMPT_CALLS+1
+        return result
+
+    monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
+    result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
+    assert result.exit_code == 0
+    assert result.output == """
+Type: Isometric
+Grid height: 170 pixels.
+Grid width: 294 pixels.
 
 
 
