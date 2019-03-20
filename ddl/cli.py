@@ -185,6 +185,25 @@ def choose_asset(component, asset_choices, assetpack):
         add_component(option_chosen, component, assetpack)
 
 
+def reset_component_window(component, assetpack, root, old_canvas):
+    image_location_list = assetpack.get_image_location_list(0, 0, component)
+    renderer = Renderer(image_pixel_list=assetpack.projection
+                        .get_image_pixel_list(0, 0, image_location_list))
+    orig_image = renderer.output('variable')
+    image = get_rgb_image(orig_image)
+    canvas = tk.Canvas(width=orig_image.width, height=orig_image.height, bg='white')
+    canvas.create_image(0, 0, image=image, anchor=tk.NW)
+    canvas.pack()
+    canvas.image = image
+
+    if old_canvas is not None:
+        old_canvas.destroy()
+
+    old_canvas = canvas
+    root.update_idletasks()
+    root.update()
+    return old_canvas
+
 @main.command()
 @click.argument('path')
 def create_new_component(path):
@@ -232,22 +251,7 @@ def create_new_component(path):
             choose_asset(component, asset_choices, assetpack)
         elif choice == 'Undo':
             component.remove_last_part()
-        image_location_list = assetpack.get_image_location_list(0, 0, component)
-        renderer = Renderer(image_pixel_list=assetpack.projection
-                            .get_image_pixel_list(0, 0, image_location_list))
-        orig_image = renderer.output('variable')
-        image = get_rgb_image(orig_image)
-        canvas = tk.Canvas(width=orig_image.width, height=orig_image.height, bg='white')
-        canvas.create_image(0, 0, image=image, anchor=tk.NW)
-        canvas.pack()
-        canvas.image = image
-
-        if old_canvas is not None:
-            old_canvas.destroy()
-
-        old_canvas = canvas
-        root.update_idletasks()
-        root.update()
+        old_canvas = reset_component_window(component, assetpack, root, old_canvas)
         print("")
     component.reset_sub_parts()
     print(component.get_json())
