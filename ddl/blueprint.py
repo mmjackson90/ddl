@@ -95,10 +95,7 @@ class Blueprint:
 
         layer = self.layers.setdefault(layer, {})
 
-        if (tile_x, tile_y) in layer:
-            layer[(tile_x, tile_y)] = layer[(tile_x, tile_y)] + constraints
-        else:
-            layer[(tile_x, tile_y)] = constraints
+        layer[(tile_x, tile_y)] = layer.setdefault((tile_x, tile_y), []) + constraints
 
     def add_range_constraint(self, min_x, min_y, layer, width, height, constraints):
         """Adds some constraints to a rectangle of tiles from
