@@ -50,7 +50,16 @@ class BlueprintFactory:
                 if not part['height']:
                     part['height'] = 1
 
-                logger.debug('Adding {} range constraints for ({}, {}) on layer "{}" with width {} and height {}: {}'.format(len(part['constraints']), part['x'], part['y'], part['layer'], part['width'], part['height'], ', '.join(part['constraints'])))
+                logger.debug('Adding {} range constraints for ({}, {}) on layer "{}" with width {} and height {}: {}'.
+                             format(len(part['constraints']),
+                                    part['x'],
+                                    part['y'],
+                                    part['layer'],
+                                    part['width'],
+                                    part['height'],
+                                    ', '.join(part['constraints'])
+                                    )
+                             )
 
                 blueprint.add_range_constraint(
                     x=part['x'],
@@ -73,22 +82,29 @@ class Blueprint:
         self.layers = {}
         self.logger = logging.getLogger('ddl')
 
-    def add_tile_constraint(self, x, y, layer, constraints):
-
-        self.logger.debug('Adding {} tile constraints to layer "{}" at ({}, {}): {}'.format(len(constraints), layer, x, y, ', '.join(constraints)))
+    def add_tile_constraint(self, tile_x, tile_y, layer, constraints):
+        """Adds constraints (as a list) to a blueprint tile"""
+        self.logger.debug('Adding {} tile constraints to layer "{}" at ({}, {}): {}'.
+                          format(len(constraints),
+                                 layer,
+                                 tile_x,
+                                 tile_y,
+                                 ', '.join(constraints)
+                                 )
+                          )
 
         layer = self.layers.setdefault(layer, {})
 
-        if (x, y) in layer:
-            layer[(x, y)] = layer[(x, y)] + constraints
-        else:
-            layer[(x, y)] = constraints
+        layer.setdefault((tile_x, tile_y), []).append(constraints)
 
-    def add_range_constraint(self, x, y, layer, width, height, constraints):
-        for final_x, final_y in ((x, y) for x in range(width) for y in range(height)):
-            self.add_tile_constraint(x + final_x, y + final_y, layer, constraints)
+    def add_range_constraint(self, min_x, min_y, layer, width, height, constraints):
+        """Adds some constraints to a rectangle of tiles from
+        min_x up to min_x+width and min_y to min_y + height"""
+        for final_x, final_y in ((min_x, min_y) for min_x in range(width) for y in range(height)):
+            self.add_tile_constraint(min_x + final_x, min_y + final_y, layer, constraints)
 
     def get_constraints_in_layer(self, layer):
+        """Gets all constraints in a layer, erroring if the layer isn't."""
         if layer not in self.layers:
             raise Exception("That layer doesn't exist")
 
