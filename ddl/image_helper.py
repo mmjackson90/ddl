@@ -112,8 +112,7 @@ def get_next_action():
     return prompt(choices, style=STYLE)['next_action']
 
 
-def positioning_loop(root, grid_type, grid_width, grid_height, image):
-    old_canvas = None
+def positioning_loop(root, grid_type, grid_width, grid_height, image, old_canvas):
     next_action = ''
     offset_x = 0
     offset_y = 0
@@ -143,7 +142,7 @@ def positioning_loop(root, grid_type, grid_width, grid_height, image):
         elif next_action == 'Edit offset X':
             offset_x = update_x_offset(offset_x)
         print("")
-    return (offset_x, offset_y, next_action)
+    return (offset_x, offset_y, next_action, old_canvas)
 
 
 def show_directory(path, grid_type, grid_height, grid_width):
@@ -151,14 +150,19 @@ def show_directory(path, grid_type, grid_height, grid_width):
 
     root = tk.Tk()
     dirlist = glob(path+'/*.png')
-
+    old_canvas = None
     print("LETS DO EET")
     all_image_data = []
     used_ids = []
     for filename in dirlist:
         root.title(filename)
         image = get_rgb_image(Image.open(filename))
-        offset_x, offset_y, next_action = positioning_loop(root, grid_type, grid_width, grid_height, image)
+        offset_x, offset_y, next_action, old_canvas = positioning_loop(root,
+                                                                       grid_type,
+                                                                       grid_width,
+                                                                       grid_height,
+                                                                       image,
+                                                                       old_canvas)
         if next_action == 'Quit now':
             break
         if not next_action == 'Skip':
