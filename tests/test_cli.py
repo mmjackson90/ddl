@@ -1,8 +1,10 @@
 """Tests the non-interactive functions of the CLI tool using click's runner"""
 
 import ddl.cli
-from ddl.cli import main, init_component
+from ddl.cli import main, init_component, validate_component_id
 
+from pytest import raises
+import PyInquirer
 from ddl.assetpack import Assetpack
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
@@ -145,6 +147,29 @@ Called explore_assets successfully
 
 
 """
+
+
+def test_validate_component_id():
+    assetpack = get_test_assetpack()
+    assert validate_component_id('brand_new', assetpack) is True
+
+
+def test_validate_id_too_short():
+    assetpack = get_test_assetpack()
+    with raises(PyInquirer.ValidationError):
+        assert validate_component_id('z', assetpack) is False
+
+
+def test_validate_component_exists():
+    assetpack = get_test_assetpack()
+    assetpack.add_component(ComponentAsset({
+        "name": 'thing',
+        "id": 'thing',
+        "parts": [],
+        "tags": []
+    }, assetpack.pack_id))
+    with raises(PyInquirer.ValidationError):
+        assert validate_component_id('thing', assetpack) is False
 
 
 def test_init_component():
