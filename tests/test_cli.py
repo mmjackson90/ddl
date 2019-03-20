@@ -3,6 +3,7 @@
 import ddl.cli
 from ddl.cli import main, init_component
 
+from ddl.assetpack import Assetpack
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
 from test_asset_exploration import get_test_assetpack
@@ -64,22 +65,7 @@ Additional properties are not allowed ('grid' was unexpected)
 """
 
 
-def test_explore_pack_quit(monkeypatch):
-    """Tests that pack info can be properly pulled out"""
-    runner = CliRunner()
-
-    def fakeprompt(choices, style):
-        """A fake prompt function that returns a response"""
-        return {'init': 'Quit'}
-    monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
-    result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
-    assert result.exit_code == 0
-    assert result.output == """
-
-"""
-
-
-def test_explore_pack_info(monkeypatch):
+def test_explore_projection_info(monkeypatch):
     """Tests that pack info can be properly pulled out"""
     runner = CliRunner()
     global PROMPT_CALLS
@@ -88,7 +74,7 @@ def test_explore_pack_info(monkeypatch):
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
         global PROMPT_CALLS
-        choices = ['See pack information', 'Quit']
+        choices = ['See pack information', 'See projection information', 'Quit']
         result = {'init': choices[PROMPT_CALLS]}
         PROMPT_CALLS = PROMPT_CALLS+1
         return result
@@ -104,31 +90,57 @@ Tags:
     example
 
 
+Type: Isometric
+Grid height: 170 pixels.
+Grid width: 294 pixels.
+
+
 
 """
 
 
-def test_explore_projection_info(monkeypatch):
+def test_explore_assetpack(monkeypatch):
     """Tests that pack info can be properly pulled out"""
     runner = CliRunner()
     global PROMPT_CALLS
     PROMPT_CALLS = 0
 
+    def fakeshow_pack_info(assetpack):
+        print("""Called show_pack_info successfully""")
+
+    def fakeshow_projection_info(assetpack):
+        print("""Called show_projection_info successfully""")
+
+    def fakeexplore_assets(assetpack):
+        print("""Called explore_assets successfully""")
+
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
         global PROMPT_CALLS
-        choices = ['See projection information', 'Quit']
+        choices = [
+            'See pack information',
+            'See projection information',
+            'Explore Assets',
+            'Quit'
+        ]
         result = {'init': choices[PROMPT_CALLS]}
         PROMPT_CALLS = PROMPT_CALLS+1
         return result
 
     monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
+    monkeypatch.setattr(ddl.cli, "show_projection_info", fakeshow_projection_info)
+    monkeypatch.setattr(ddl.cli, "show_pack_info", fakeshow_pack_info)
+    monkeypatch.setattr(ddl.cli, "explore_assets", fakeexplore_assets)
     result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
     assert result.exit_code == 0
     assert result.output == """
-Type: Isometric
-Grid height: 170 pixels.
-Grid width: 294 pixels.
+Called show_pack_info successfully
+
+
+Called show_projection_info successfully
+
+
+Called explore_assets successfully
 
 
 

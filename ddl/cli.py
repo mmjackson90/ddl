@@ -8,6 +8,7 @@ from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 from ddl.renderer import Renderer
 import ddl.asset_exploration
+from ddl.asset_exploration import explore_assets, show_pack_info, show_projection_info
 import ddl.image_helper
 from ddl.asset import ComponentAsset
 from ddl.cli_utils import *
@@ -110,11 +111,11 @@ def explore_assetpack(path):
         if option_chosen == 'Quit':
             exit_cli = True
         elif option_chosen == 'See pack information':
-            ddl.asset_exploration.show_pack_info(path)
+            show_pack_info(path)
         elif option_chosen == 'See projection information':
-            ddl.asset_exploration.show_projection_info(assetpack)
+            show_projection_info(assetpack)
         elif option_chosen == 'Explore Assets':
-            ddl.asset_exploration.explore_assets(assetpack)
+            explore_assets(assetpack)
         print("")
 
 
