@@ -3,7 +3,7 @@
 import click
 from PyInquirer import prompt, Separator
 import PyInquirer
-from jsonschema.exceptions import ValidationError
+import jsonschema
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 from ddl.renderer import Renderer
@@ -43,10 +43,12 @@ def validate_assetpack(path):
         print("Pack validated")
     except FileNotFoundError:
         print(error_header)
-        print(abs_path + '/pack.json was not found.')
-    except ValidationError as val:
+        print(path + '/pack.json was not found.')
+    except jsonschema.exceptions.ValidationError as val:
         print(error_header)
-        print(str(val))
+        print(val.message.split('/n')[0])
+    except Exception:
+        raise
 
     try:
         Validator.validate_file(abs_path + '/images.json', 'images')
@@ -54,10 +56,12 @@ def validate_assetpack(path):
         print("Images validated")
     except FileNotFoundError:
         print(error_header)
-        print(abs_path + '/images.json was not found.')
-    except ValidationError as val:
+        print(path + '/images.json was not found.')
+    except jsonschema.exceptions.ValidationError as val:
         print(error_header)
-        print(str(val))
+        print(val.message.split('/n')[0])
+    except Exception:
+        raise
 
     try:
         filepath = abs_path + '/components.json'
@@ -66,10 +70,12 @@ def validate_assetpack(path):
         print("Components validated")
     except FileNotFoundError:
         print(error_header)
-        print(abs_path + '/components.json was not found.')
-    except ValidationError as val:
+        print(path + '/components.json was not found.')
+    except jsonschema.exceptions.ValidationError as val:
         print(error_header)
-        print(str(val))
+        print(val.message.split('/n')[0])
+    except Exception:
+        raise
 
     if pack and images and components:
         print("Validation passed. "+path+" is a good assetpack.")
@@ -204,16 +210,8 @@ def reset_component_window(component, assetpack, root, old_canvas):
     root.update()
     return old_canvas
 
-@main.command()
-@click.argument('path')
-def create_new_component(path):
-    """
-    Lets a user interactively build a new component from an assetpack.
 
-    path: The path of the asset pack directory.
-    """
-    path = os.path.abspath(path)
-    assetpack = AssetpackFactory.load(path)
+def get_initial_component_info(assetpack):
     component_info = [{
             'type': 'input',
             'message': 'What would you like to call this component?',
@@ -231,7 +229,20 @@ def create_new_component(path):
             'name': 'component_tags'
         }
     ]
-    info = prompt(component_info, style=STYLE)
+    return prompt(component_info, style=STYLE)
+
+
+@main.command()
+@click.argument('path')
+def create_new_component(path):
+    """
+    Lets a user interactively build a new component from an assetpack.
+
+    path: The path of the asset pack directory.
+    """
+    path = os.path.abspath(path)
+    assetpack = AssetpackFactory.load(path)
+    info = get_initial_component_info(assetpack)
     root = tk.Tk()
     root.title(info['component_id'])
     asset_choices = get_asset_choices(assetpack)
