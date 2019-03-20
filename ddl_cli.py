@@ -13,7 +13,7 @@ from PyInquirer import style_from_dict, Token, prompt, Separator
 import PyInquirer
 from jsonschema.exceptions import ValidationError
 
-from ddl.assetpack import AssetpackFactory, Assetpack
+from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 import ddl.asset_exploration
 from ddl.asset import ComponentAsset
@@ -282,14 +282,15 @@ def build(context, blueprint_file, assetpack_file):
 
     logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
 
-    for (x,y), tile in blueprint.get_constraints_in_layer('floor').items():
-        logger.debug('Tile at ({}, {}) has constraints {}'.format(x, y, ', '.join(tile)))
+    for (tile_x, tile_y), tile in blueprint.get_constraints_in_layer('floor').items():
+        logger.debug('Tile at ({}, {}) has constraints {}'.format(tile_x, tile_y, ', '.join(tile)))
         valid_components = assetpack.taglist.get_components_that_match_tags(tile)
 
         if valid_components:
             logger.debug('Matching components are: {}'.format(', '.join(valid_components)))
         else:
             raise Exception('No matching components for given constraints.')
+
 
 if __name__ == "__main__":
     main()
