@@ -9,4 +9,5 @@ renderable Component.
 
 
 class Compositor:
+    """The class to compose things. Eventually"""
     pass

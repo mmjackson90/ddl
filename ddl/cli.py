@@ -3,7 +3,12 @@
 import click
 from PyInquirer import prompt
 import PyInquirer
+<<<<<<< HEAD:ddl/cli.py
 import jsonschema
+=======
+from jsonschema.exceptions import ValidationError
+
+>>>>>>> More tidies and gave blueprint test an assert to stop Codacy bitching..:ddl_cli.py
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 from ddl.renderer import Renderer
@@ -322,8 +327,8 @@ def build(context, blueprint_file, assetpack_file):
 
     logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
 
-    for (x, y), tile in blueprint.get_constraints_in_layer('floor').items():
-        logger.debug('Tile at ({}, {}) has constraints {}'.format(x, y, ', '.join(tile)))
+    for (tile_x, tile_y), tile in blueprint.get_constraints_in_layer('floor').items():
+        logger.debug('Tile at ({}, {}) has constraints {}'.format(tile_x, tile_y, ', '.join(tile)))
         valid_components = assetpack.taglist.get_components_that_match_tags(tile)
 
         if valid_components:

@@ -62,8 +62,8 @@ class BlueprintFactory:
                              )
 
                 blueprint.add_range_constraint(
-                    x=part['x'],
-                    y=part['y'],
+                    min_x=part['x'],
+                    min_y=part['y'],
                     width=part['width'],
                     height=part['height'],
                     layer=part['layer'],
@@ -100,7 +100,7 @@ class Blueprint:
     def add_range_constraint(self, min_x, min_y, layer, width, height, constraints):
         """Adds some constraints to a rectangle of tiles from
         min_x up to min_x+width and min_y to min_y + height"""
-        for final_x, final_y in ((min_x, min_y) for min_x in range(width) for y in range(height)):
+        for final_x, final_y in ((min_x, min_y) for min_x in range(width) for min_y in range(height)):
             self.add_tile_constraint(min_x + final_x, min_y + final_y, layer, constraints)
 
     def get_constraints_in_layer(self, layer):
