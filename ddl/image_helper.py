@@ -71,28 +71,16 @@ def get_image_metadata(used_ids, filename, offset_x, offset_y):
     return (new_id, image_data)
 
 
-def update_y_offset(offset_y):
-    """Will prompt the user for a new y offset and return it."""
+def update_offset(offset, dimension):
+    """Will prompt the user for a new offset and return it."""
     coordinates_questions = [{
             'type': 'input',
-            'message': f"Current y offset: {offset_y}",
-            'name': 'y',
+            'message': f"Current {dimension} offset: {offset}",
+            'name': f"{dimension}",
             'validate': check_integer
         }
     ]
-    return int(prompt(coordinates_questions, style=STYLE)['y'])
-
-
-def update_x_offset(offset_x):
-    """Will prompt the user for a new x offset and return it."""
-    coordinates_questions = [{
-            'type': 'input',
-            'message': f"Current x offset: {offset_x}",
-            'name': 'x',
-            'validate': check_integer
-        }
-    ]
-    return int(prompt(coordinates_questions, style=STYLE)['x'])
+    return int(prompt(coordinates_questions, style=STYLE)[dimension])
 
 
 def get_next_action():
@@ -138,9 +126,9 @@ def positioning_loop(root, grid_type, grid_width, grid_height, image, old_canvas
         next_action = get_next_action()
         print("")
         if next_action == 'Edit offset Y':
-            offset_y = update_y_offset(offset_y)
+            offset_y = update_offset(offset_y, 'y')
         elif next_action == 'Edit offset X':
-            offset_x = update_x_offset(offset_x)
+            offset_x = update_offset(offset_x, 'x')
         print("")
     return (offset_x, offset_y, next_action, old_canvas)
 
@@ -151,7 +139,6 @@ def show_directory(path, grid_type, grid_height, grid_width):
     root = tk.Tk()
     dirlist = glob(path+'/*.png')
     old_canvas = None
-    print("LETS DO EET")
     all_image_data = []
     used_ids = []
     for filename in dirlist:

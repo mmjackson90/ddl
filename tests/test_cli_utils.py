@@ -58,8 +58,6 @@ def test_get_asset_choices(monkeypatch):
                                             'Image: test.image2']
 
 
-
-
 def test_validate_image_id():
     """tests image ID's validate correctly"""
     used_ids = ['test']
