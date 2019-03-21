@@ -145,6 +145,7 @@ def show_directory(path, grid_type, grid_height, grid_width):
     old_canvas = None
     all_image_data = []
     used_ids = []
+    dirlist = sorted(dirlist)
     for filename in dirlist:
         root.title(filename)
         image = get_rgb_image(Image.open(filename))

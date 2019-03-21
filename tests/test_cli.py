@@ -300,7 +300,7 @@ def test_create_new_images_iso(monkeypatch):
         {
             "name": "Test name",
             "id": "test",
-            "image": "1x1_floor_fuzzy.png",
+            "image": "1_wall_exact.png",
             "top_left": {
                 "x": 152,
                 "y": 6
@@ -347,7 +347,7 @@ def test_create_new_images_topdown(monkeypatch):
         {
             "name": "Test name",
             "id": "test",
-            "image": "1x1_floor_fuzzy.png",
+            "image": "1_wall_exact.png",
             "top_left": {
                 "x": 152,
                 "y": 6
