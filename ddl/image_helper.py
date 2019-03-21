@@ -101,6 +101,10 @@ def get_next_action():
 
 
 def positioning_loop(root, grid_type, grid_width, grid_height, image, old_canvas):
+    """Contains the loop that redraws the image each time an update is made.
+    Could probably be made one hell of a lot neater by wrapping all these
+    parameters up in their own Class.
+    """
     next_action = ''
     offset_x = 0
     offset_y = 0

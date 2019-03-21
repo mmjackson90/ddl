@@ -5,9 +5,10 @@ from PIL import Image, ImageTk
 
 def print_tags(tags, prefix="Tags:"):
     """prints tag lists to screen"""
-    print(prefix)
-    for tag in tags:
-        print(f"    {tag}")
+    if not tags == []:
+        print(prefix)
+        for tag in tags:
+            print(f"    {tag}")
 
 
 def check_number(string):

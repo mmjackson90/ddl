@@ -74,18 +74,16 @@ def get_test_assetpack():
     return assetpack
 
 
-def test_show_pack_info_iso(capsys, monkeypatch):
+def test_show_pack_info(capsys):
     """Tests pack info displays correctly"""
     # Mostly this is to test that capsys and monkeypatch work the way I expect.
-    def faketags(tags):
-        """A fake tags function that does *something* with tags"""
-        tags = []
-    monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
     ddl.asset_exploration.show_pack_info('assetpacks/example_isometric')
     captured = capsys.readouterr()
     assert captured.out == """Name: Example Isometric Asset Pack
 Author: The Easy Dungeon Company
 Projection: isometric
+Tags:
+    example
 """
 
 
@@ -119,13 +117,8 @@ Grid Top Left Corner pixel (y): 3
 """
 
 
-def test_print_component_info(capsys, monkeypatch):
+def test_print_component_info(capsys):
     """Tests component info prints"""
-    def faketags(tags):
-        """A fake tags function that does *something* with tags"""
-        tags = []
-    monkeypatch.setattr(ddl.asset_exploration, "print_tags", faketags)
-
     component = ComponentAsset({"name": "test",
                                 "id": "test_id",
                                 "parts": [{"type": "image",
