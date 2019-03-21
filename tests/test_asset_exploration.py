@@ -74,7 +74,7 @@ def get_test_assetpack():
     return assetpack
 
 
-def test_show_pack_info(capsys, monkeypatch):
+def test_show_pack_info_iso(capsys, monkeypatch):
     """Tests pack info displays correctly"""
     # Mostly this is to test that capsys and monkeypatch work the way I expect.
     def faketags(tags):

@@ -3,7 +3,7 @@
 import ddl.cli
 import ddl.image_helper
 from ddl.cli import main, init_component, validate_component_id, add_component
-
+import os
 from pytest import raises
 import PyInquirer
 from ddl.assetpack import Assetpack
@@ -34,19 +34,12 @@ def test_assetpack_filefail():
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "does-not-exist"])
     assert result.exit_code == 0
-    assert result.output == """
-
-########ERROR########
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """########ERROR########
 does-not-exist/pack.json was not found.
-
-
 ########ERROR########
 does-not-exist/images.json was not found.
-
-
 ########ERROR########
-does-not-exist/components.json was not found.
-"""
+does-not-exist/components.json was not found."""
 
 
 def test_assetpack_invalid():
@@ -54,19 +47,12 @@ def test_assetpack_invalid():
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "assetpacks/example_json_fail"])
     assert result.exit_code == 0
-    assert result.output == """
-
-########ERROR########
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """########ERROR########
 'projection' is a required property
-
-
 ########ERROR########
 'name' is a required property
-
-
 ########ERROR########
-Additional properties are not allowed ('grid' was unexpected)
-"""
+Additional properties are not allowed ('grid' was unexpected)"""
 
 
 def test_explore_assetpack(monkeypatch):
@@ -92,30 +78,52 @@ def test_explore_assetpack(monkeypatch):
             'See pack information',
             'See projection information',
             'Explore Assets',
+            'Component: '
             'Quit'
         ]
         result = {'choices': choices[PROMPT_CALLS]}
         PROMPT_CALLS = PROMPT_CALLS+1
         return result
 
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        global PROMPT_CALLS
+        choices = [
+            {'choices': 'See pack information'},
+            {'choices': 'See projection information'},
+            {'choices': 'Explore Assets'},
+            {'choices': 'Component: easy-dungeon-ddl-example-iso.floor-1x1-exact'},
+            {'choices': 'Show both'},
+            {'choices': 'Image: easy-dungeon-ddl-example-iso.floor-1x1-exact'},
+            {'choices': 'Show both'},
+            {'choices': 'Back'},
+            {'choices': 'Quit'}
+        ]
+        result = choices[PROMPT_CALLS]
+        PROMPT_CALLS = PROMPT_CALLS+1
+        return result
+
     monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
-    monkeypatch.setattr(ddl.cli, "show_projection_info", fakeshow_projection_info)
-    monkeypatch.setattr(ddl.cli, "show_pack_info", fakeshow_pack_info)
-    monkeypatch.setattr(ddl.cli, "explore_assets", fakeexplore_assets)
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
     assert result.exit_code == 0
-    assert result.output == """
-Called show_pack_info successfully
-
-
-Called show_projection_info successfully
-
-
-Called explore_assets successfully
-
-
-
-"""
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """Name: Example Isometric Asset Pack
+Author: The Easy Dungeon Company
+Projection: isometric
+Tags:
+    example
+Type: Isometric
+Grid height: 170 pixels.
+Grid width: 294 pixels.
+Component name: 1x1 Floor Exact
+Component ID: floor-1x1-exact
+Tags:
+    example
+Number of parts: 1
+Image name: 1x1 Floor exact
+Image ID: floor-1x1-exact
+Grid Top Left Corner pixel (x): 147
+Grid Top Left Corner pixel (y): 0"""
 
 
 def test_add_component(monkeypatch):
@@ -223,6 +231,10 @@ def test_create_new_component(monkeypatch):
             {'choice': 'Add an asset'},
             {'explore': 'Component: easy-dungeon-ddl-example-iso.floor-1x1-exact'},
             {'x': 1, 'y': 2},
+            {'choice': 'Add an asset'},
+            {'explore': 'Component: easy-dungeon-ddl-example-iso.floor-1x1-exact'},
+            {'x': 3, 'y': 5},
+            {'choice': 'Undo'},
             {'choice': 'Done'}
         ]
         result = choices[PROMPT_CALLS]
@@ -232,10 +244,7 @@ def test_create_new_component(monkeypatch):
     monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
     result = runner.invoke(main, ["create-new-component", "assetpacks/example_isometric"])
     assert result.exit_code == 0
-    assert result.output == """
-
-
-{
+    assert result.output.strip() == """{
     "name": "Test name",
     "id": "test-id",
     "parts": [
@@ -251,8 +260,7 @@ def test_create_new_component(monkeypatch):
         "stuff",
         "nonsense"
     ]
-}
-"""
+}"""
 
 
 def test_create_new_images_iso(monkeypatch):
