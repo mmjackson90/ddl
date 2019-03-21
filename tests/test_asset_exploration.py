@@ -74,14 +74,6 @@ def get_test_assetpack():
     return assetpack
 
 
-def test_tag_printing(capsys):
-    """Tests tags print right"""
-    tags = ['a', 'b', 'c']
-    ddl.asset_exploration.print_tags(tags)
-    captured = capsys.readouterr()
-    assert captured.out == 'Tags:\n    a\n    b\n    c\n'
-
-
 def test_show_pack_info(capsys, monkeypatch):
     """Tests pack info displays correctly"""
     # Mostly this is to test that capsys and monkeypatch work the way I expect.

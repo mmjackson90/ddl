@@ -26,7 +26,7 @@ def check_integer(string):
         int(string)
         return True
     except ValueError:
-        message = 'Please input a number.'
+        message = 'Please input an integer.'
         raise ValidationError(message=message)
 
 
