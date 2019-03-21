@@ -35,12 +35,12 @@ def explore_assets(assetpack):
         explore = [{
             'type': 'list',
             'message': 'Which asset would you like to look at?',
-            'name': 'explore',
+            'name': 'choices',
             'choices': get_asset_choices(assetpack)
         }]
         choice = prompt(explore, style=STYLE)
         print("")
-        option_chosen = choice['explore']
+        option_chosen = choice['choices']
         if option_chosen == 'Back':
             back = True
         else:
@@ -91,14 +91,14 @@ def explore_asset(initial_option, assetpack):
     explore = [{
         'type': 'list',
         'message': 'What would you like to do?',
-        'name': 'asset',
+        'name': 'choices',
         'choices': ['Show metadata',
                     'Show image',
                     'Show both']
     }]
     choice = prompt(explore, style=STYLE)
     print("")
-    option_chosen = choice['asset']
+    option_chosen = choice['choices']
     if option_chosen == 'Show metadata':
         if (isinstance(asset, ImageAsset)):
             print_image_info(asset)

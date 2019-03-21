@@ -1,13 +1,14 @@
 """Tests the non-interactive functions of the CLI tool using click's runner"""
 
 import ddl.cli
-from ddl.cli import main, init_component, validate_component_id
+from ddl.cli import main, init_component, validate_component_id, add_component
 
 from pytest import raises
 import PyInquirer
 from ddl.assetpack import Assetpack
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
+import ddl.asset_exploration
 from test_asset_exploration import get_test_assetpack
 
 
@@ -67,42 +68,9 @@ Additional properties are not allowed ('grid' was unexpected)
 """
 
 
-def test_explore_projection_info(monkeypatch):
-    """Tests that pack info can be properly pulled out"""
-    runner = CliRunner()
-    global PROMPT_CALLS
-    PROMPT_CALLS = 0
-
-    def fakeprompt(choices, style):
-        """A fake prompt function that returns a response"""
-        global PROMPT_CALLS
-        choices = ['See pack information', 'See projection information', 'Quit']
-        result = {'init': choices[PROMPT_CALLS]}
-        PROMPT_CALLS = PROMPT_CALLS+1
-        return result
-
-    monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
-    result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
-    assert result.exit_code == 0
-    assert result.output == """
-Name: Example Isometric Asset Pack
-Author: The Easy Dungeon Company
-Projection: isometric
-Tags:
-    example
-
-
-Type: Isometric
-Grid height: 170 pixels.
-Grid width: 294 pixels.
-
-
-
-"""
-
-
 def test_explore_assetpack(monkeypatch):
-    """Tests that pack info can be properly pulled out"""
+    """Tests that pack info options function properly
+    Mostly a test of prompt monkeypatching, but improves unit testing some."""
     runner = CliRunner()
     global PROMPT_CALLS
     PROMPT_CALLS = 0
@@ -125,7 +93,7 @@ def test_explore_assetpack(monkeypatch):
             'Explore Assets',
             'Quit'
         ]
-        result = {'init': choices[PROMPT_CALLS]}
+        result = {'choices': choices[PROMPT_CALLS]}
         PROMPT_CALLS = PROMPT_CALLS+1
         return result
 
@@ -147,6 +115,39 @@ Called explore_assets successfully
 
 
 """
+
+
+def test_add_component(monkeypatch):
+    """Tests that components can be added OK."""
+    global PROMPT_CALLS
+    PROMPT_CALLS = 0
+
+    assetpack = get_test_assetpack()
+    data = {
+        "name": 'Test',
+        "id": 'test-part',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack.pack_id)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        global PROMPT_CALLS
+        if PROMPT_CALLS == 0:
+            result = {'x': 1, 'y': 2.1}
+        else:
+            result = {'x': 3.1, 'y': 5}
+        PROMPT_CALLS = PROMPT_CALLS + 1
+        return result
+
+    monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
+
+    add_component("Image: test.c", component, assetpack)
+    add_component("Component: test.a", component, assetpack)
+
+    assert component.parts == [{'type': 'image', 'image_id': 'c', 'asset_id': 'test.c', 'x': 1.0, 'y': 2.1},
+                               {'type': 'component', 'component_id': 'a', 'asset_id': 'test.a', 'x': 3.1, 'y': 5.0}]
 
 
 def test_validate_component_id():

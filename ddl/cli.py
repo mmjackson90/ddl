@@ -97,7 +97,7 @@ def explore_assetpack(path):
         init = [{
             'type': 'list',
             'message': 'What would you like to do?',
-            'name': 'init',
+            'name': 'choices',
             'choices': [
                 'See pack information',
                 'See projection information',
@@ -107,7 +107,7 @@ def explore_assetpack(path):
         }]
         choice = prompt(init, style=STYLE)
         print("")
-        option_chosen = choice['init']
+        option_chosen = choice['choices']
         if option_chosen == 'Quit':
             exit_cli = True
         elif option_chosen == 'See pack information':
