@@ -118,7 +118,7 @@ Called explore_assets successfully
 
 
 def test_add_component(monkeypatch):
-    """Tests that components can be added OK."""
+    """Tests that assets can be added to components OK."""
     global PROMPT_CALLS
     PROMPT_CALLS = 0
 
@@ -204,3 +204,51 @@ def test_initial_component_info(monkeypatch):
     assert ddl.cli.get_initial_component_info(assetpack) == {'component_name': 'test name',
                                                              'component_id': 'test-id',
                                                              'component_tags': ['tag']}
+
+
+def test_create_new_component(monkeypatch):
+    """FUNCTIONALTests that components can be created neatly"""
+    runner = CliRunner()
+    global PROMPT_CALLS
+    PROMPT_CALLS = 0
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        global PROMPT_CALLS
+        choices = [
+            {'component_name': 'Test name',
+             'component_id': 'test-id',
+             'component_tags': 'thing, stuff,nonsense'},
+            {'choice': 'Add an asset'},
+            {'explore': 'Component: easy-dungeon-ddl-example-iso.floor-1x1-exact'},
+            {'x': 1, 'y': 2},
+            {'choice': 'Done'}
+        ]
+        result = choices[PROMPT_CALLS]
+        PROMPT_CALLS = PROMPT_CALLS+1
+        return result
+
+    monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
+    result = runner.invoke(main, ["create-new-component", "assetpacks/example_isometric"])
+    assert result.exit_code == 0
+    assert result.output == """
+
+
+{
+    "name": "Test name",
+    "id": "test-id",
+    "parts": [
+        {
+            "type": "component",
+            "component_id": "floor-1x1-exact",
+            "x": 1.0,
+            "y": 2.0
+        }
+    ],
+    "tags": [
+        "thing",
+        "stuff",
+        "nonsense"
+    ]
+}
+"""
