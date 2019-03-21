@@ -5,21 +5,21 @@ from ddl.image_helper import *
 import ddl.image_helper
 from glob import glob
 from PIL import Image
-import tkinter as tk
 from json import dumps
 from PyInquirer import prompt
 
-global PROMPT_CALLS
 PROMPT_CALLS = 0
 
 
 def test_add_iso_grid():
     """Tests the add_iso_grid properly mutates a canvas object"""
     class FakeCanvas:
+        """A fake canvas class"""
         def __init__(self):
             self.results = []
 
         def create_line(self, p1_x, p1_y, p2_x, p2_y, width=0, fill='green'):
+            """Returns the coordinates fed to the line"""
             self.results.append((p1_x, p1_y, p2_x, p2_y, width, fill))
 
     canvas = FakeCanvas()
@@ -34,10 +34,12 @@ def test_add_iso_grid():
 def test_add_topdown_grid():
     """Tests the add_topdown_grid properly mutates a canvas object"""
     class FakeCanvas:
+        """A fake canvas class"""
         def __init__(self):
             self.results = []
 
         def create_line(self, p1_x, p1_y, p2_x, p2_y, width=0, fill='green'):
+            """Returns the coordinates fed to the line"""
             self.results.append((p1_x, p1_y, p2_x, p2_y, width, fill))
 
     canvas = FakeCanvas()
@@ -77,11 +79,13 @@ def test_create_new_component(monkeypatch):
 
 
 def test_update_offset(monkeypatch):
+    """Tests that a component offset updates correctly"""
     global PROMPT_CALLS
     PROMPT_CALLS = 0
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'x': 2},
