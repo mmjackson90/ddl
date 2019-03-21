@@ -11,8 +11,7 @@
 !/assetpacks/example_json_fail/
 !/assetpacks/example_json_fail/*
 !/assetpacks/example_json_fail/**/*
-!/htmlcov/*
-!/htmlcov/**/*
+/htmlcov/*
 *.pyc
 __pycache__
 .DS_Store
