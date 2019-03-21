@@ -6,7 +6,6 @@ from ddl.cli import main, init_component, validate_component_id, add_component
 import os
 from pytest import raises
 import PyInquirer
-from ddl.assetpack import Assetpack
 from ddl.asset import ComponentAsset
 from click.testing import CliRunner
 import ddl.asset_exploration
@@ -61,29 +60,6 @@ def test_explore_assetpack(monkeypatch):
     runner = CliRunner()
     global PROMPT_CALLS
     PROMPT_CALLS = 0
-
-    def fakeshow_pack_info(assetpack):
-        print("""Called show_pack_info successfully""")
-
-    def fakeshow_projection_info(assetpack):
-        print("""Called show_projection_info successfully""")
-
-    def fakeexplore_assets(assetpack):
-        print("""Called explore_assets successfully""")
-
-    def fakeprompt(choices, style):
-        """A fake prompt function that returns a response"""
-        global PROMPT_CALLS
-        choices = [
-            'See pack information',
-            'See projection information',
-            'Explore Assets',
-            'Component: '
-            'Quit'
-        ]
-        result = {'choices': choices[PROMPT_CALLS]}
-        PROMPT_CALLS = PROMPT_CALLS+1
-        return result
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
@@ -160,17 +136,20 @@ def test_add_component(monkeypatch):
 
 
 def test_validate_component_id():
+    """test a valid component ID is allowed through"""
     assetpack = get_test_assetpack()
     assert validate_component_id('brand_new', assetpack) is True
 
 
 def test_validate_id_too_short():
+    """test a short component ID is rejected"""
     assetpack = get_test_assetpack()
     with raises(PyInquirer.ValidationError):
         assert validate_component_id('z', assetpack) is False
 
 
 def test_validate_component_exists():
+    """Test an in use component ID is rejected"""
     assetpack = get_test_assetpack()
     assetpack.add_component(ComponentAsset({
         "name": 'thing',
@@ -203,6 +182,7 @@ def test_initial_component_info(monkeypatch):
 
     def fakeprompt(component_info, style):
         """A fake prompt function that does *something* with tags"""
+        assert style is not None
         choices = ['test name', 'test-id', ['tag']]
         result = {}
         for question, choice in zip(component_info, choices):
@@ -223,6 +203,7 @@ def test_create_new_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'component_name': 'Test name',
@@ -318,6 +299,7 @@ def test_create_new_images_topdown(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'next_action': 'Edit offset X'},

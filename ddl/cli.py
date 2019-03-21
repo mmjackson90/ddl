@@ -1,7 +1,7 @@
 """Contains most of the functions for the CLI. Put here for testing purposes."""
 
 import click
-from PyInquirer import prompt, Separator
+from PyInquirer import prompt
 import PyInquirer
 import jsonschema
 from ddl.assetpack import AssetpackFactory
@@ -193,6 +193,7 @@ def choose_asset(component, asset_choices, assetpack):
 
 
 def reset_component_window(component, assetpack, root, old_canvas):
+    """clears and redraws the component window"""
     image_location_list = assetpack.get_image_location_list(0, 0, component)
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
@@ -213,6 +214,7 @@ def reset_component_window(component, assetpack, root, old_canvas):
 
 
 def get_initial_component_info(assetpack):
+    """Gets new component info from user"""
     component_info = [{
             'type': 'input',
             'message': 'What would you like to call this component?',
@@ -248,7 +250,6 @@ def create_new_component(path):
     root.title(info['component_id'])
     asset_choices = get_asset_choices(assetpack)
     component = init_component(assetpack, info)
-    done = False
     old_canvas = None
     choice = ''
     while not choice == 'Done':
