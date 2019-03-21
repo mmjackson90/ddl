@@ -1,3 +1,5 @@
+"""Unit tests for CLI utils"""
+
 from ddl.cli_utils import *
 import ddl.cli_utils
 import PyInquirer
@@ -36,13 +38,17 @@ def test_get_rgb_image():
     root = tk.Tk()
     input_image = Image.open('assetpacks/example_isometric/art/1_wall_exact.png')
     assert isinstance(get_rgb_image(input_image), ImageTk.PhotoImage)
+    root.destroy()
 
 
 def test_get_asset_choices(monkeypatch):
-    def fake_separator(string):
-        return string
     """Tests that asset choices are correctly parsed from assetpack"""
+    def fake_separator(string):
+        """A faked up separator statement"""
+        return string
+
     class FakePack:
+        """A fake assetpack"""
         def __init__(self):
             self.images = {'test.image1': 1,
                            'test.image2': 2}
