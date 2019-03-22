@@ -58,7 +58,7 @@ def test_create_new_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
-        assert style is not none
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'id': 'test', 'name': 'test name'}

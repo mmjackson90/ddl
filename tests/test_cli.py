@@ -252,7 +252,7 @@ def test_create_new_images_iso(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
-        assert style is not none
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'next_action': 'Edit offset X'},
