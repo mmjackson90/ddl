@@ -87,12 +87,35 @@ Tags:
 """
 
 
-def test_show_projection_isometric(capsys):
+class VariableStore:
+    """Simple store for variables"""
+
+
+def test_show_projection_isometric(capsys, monkeypatch):
     """Tests projection info displays correctly"""
-    assetpack = get_test_assetpack()
+    assetpack = VariableStore()
+    assetpack.projection = VariableStore()
+    assetpack.projection.height = 20
+    assetpack.projection.width = 10
+    monkeypatch.setattr(ddl.asset_exploration, "IsometricProjection", VariableStore)
     ddl.asset_exploration.show_projection_info(assetpack)
     captured = capsys.readouterr()
     assert captured.out == """Type: Isometric
+Grid height: 20 pixels.
+Grid width: 10 pixels.
+"""
+
+
+def test_show_projection_topdown(capsys):
+    """Tests projection info displays correctly"""
+
+    assetpack = VariableStore()
+    assetpack.projection = VariableStore()
+    assetpack.projection.height = 20
+    assetpack.projection.width = 10
+    ddl.asset_exploration.show_projection_info(assetpack)
+    captured = capsys.readouterr()
+    assert captured.out == """Type: Top Down
 Grid height: 20 pixels.
 Grid width: 10 pixels.
 """
@@ -153,3 +176,175 @@ def test_get_asset_image():
     assetpack = get_test_assetpack()
     asset = ddl.asset_exploration.get_asset(assetpack, "Image: test.c")
     assert isinstance(asset, ImageAsset)
+
+
+PROMPT_CALLS = 0
+
+
+def test_explore_assets(monkeypatch):
+    """Tests the explore assets loop"""
+
+    global PROMPT_CALLS
+    PROMPT_CALLS = 0
+
+    class FakeAssetpack:
+        """A fake assetpack for storing results"""
+        def __init__(self):
+            self.option_chosen = ''
+            self.options = ['a', 'b', 'c']
+
+    def fake_get_choices(assetpack):
+        """gives some fake choices to choose from"""
+        return assetpack.options
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        assert style is not None
+        global PROMPT_CALLS
+        choices = [
+            {'choices': 'a'},
+            {'choices': 'Back'}
+        ]
+        result = choices[PROMPT_CALLS]
+        PROMPT_CALLS = PROMPT_CALLS+1
+        return result
+
+    def fake_explore_assets(option_chosen, assetpack):
+        assetpack.option_chosen = option_chosen
+
+    assetpack = FakeAssetpack()
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset_choices", fake_get_choices)
+    monkeypatch.setattr(ddl.asset_exploration, "explore_asset", fake_explore_assets)
+
+    ddl.asset_exploration.explore_assets(assetpack)
+    assert assetpack.option_chosen == 'a'
+
+
+class FakeAsset:
+    def __init__(self, name):
+        self.name = name
+
+    def show(self):
+        global ASSET_SHOWN
+        ASSET_SHOWN = True
+
+
+def fake_get_asset(assetpack, initial_option):
+    return FakeAsset(assetpack + initial_option)
+
+
+def fake_show_component(assetpack, asset):
+    assert assetpack is not None
+    assert asset is not None
+    global ASSET_SHOWN
+    ASSET_SHOWN = True
+
+
+def fake_print_info(asset):
+    assert asset is not None
+    global ASSET_PRINTED
+    ASSET_PRINTED = True
+
+
+ASSET_SHOWN = False
+ASSET_PRINTED = False
+
+
+def test_explore_show_image(monkeypatch):
+    """Tests that showing an image works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "ImageAsset", FakeAsset)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show image"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_SHOWN
+    ASSET_SHOWN = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_SHOWN
+
+
+def test_explore_show_component(monkeypatch):
+    """Tests that showing a component works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "show_component", fake_show_component)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show image"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_SHOWN
+    ASSET_SHOWN = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_SHOWN
+
+
+def test_explore_print_image(monkeypatch):
+    """Tests that printing image metadata works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "ImageAsset", FakeAsset)
+    monkeypatch.setattr(ddl.asset_exploration, "print_image_info", fake_print_info)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show metadata"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_PRINTED
+    ASSET_PRINTED = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_PRINTED
+
+
+def test_explore_print_component(monkeypatch):
+    """Tests that printing component metadata works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "print_component_info", fake_print_info)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show metadata"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_PRINTED
+    ASSET_PRINTED = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_PRINTED
+
+
+def test_explore_both_image(monkeypatch):
+    """Tests that doing both things works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "ImageAsset", FakeAsset)
+    monkeypatch.setattr(ddl.asset_exploration, "print_image_info", fake_print_info)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show both"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_PRINTED
+    ASSET_PRINTED = False
+    global ASSET_SHOWN
+    ASSET_SHOWN = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_PRINTED
+    assert ASSET_SHOWN
+
+
+def test_explore_both_component(monkeypatch):
+    """Tests that doing both things works"""
+    monkeypatch.setattr(ddl.asset_exploration, "get_asset", fake_get_asset)
+    monkeypatch.setattr(ddl.asset_exploration, "print_component_info", fake_print_info)
+    monkeypatch.setattr(ddl.asset_exploration, "show_component", fake_show_component)
+
+    def fakeprompt(choices, style):
+        """A fake prompt function that returns a response"""
+        return {"choices": "Show both"}
+    monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
+    global ASSET_PRINTED
+    ASSET_PRINTED = False
+    global ASSET_SHOWN
+    ASSET_SHOWN = False
+    ddl.asset_exploration.explore_asset('a', 'b')
+    assert ASSET_PRINTED
+    assert ASSET_SHOWN
