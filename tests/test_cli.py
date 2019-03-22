@@ -118,6 +118,7 @@ def test_add_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         global PROMPT_CALLS
         if PROMPT_CALLS == 0:
             result = {'x': 1, 'y': 2.1}
