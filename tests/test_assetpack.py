@@ -3,7 +3,7 @@ Tests Assetpacks
 """
 
 import os
-
+from pytest import raises
 from ddl.assetpack import AssetpackFactory, Assetpack
 from ddl.asset import ComponentAsset
 
@@ -145,3 +145,53 @@ def test_nested_image_location_list():
         raise AssertionError()
     if not ill[2][2] == 4:
         raise AssertionError()
+
+
+class FakeAssetpack:
+    """A fake asset pack to monkeypatch methods over."""
+    def __init__(self):
+        self.images = {"test.testimage": 1}
+        self.components = {"test.test": 1}
+
+    def add_component(self, new_component):
+        """This exists to be patched over"""
+        assert new_component
+        pass
+
+    def add_image(self, new_image):
+        """This exists to be patched over"""
+        assert new_image
+        pass
+
+
+def test_add_component_errors(monkeypatch):
+    """Tests an assetpack throws an error if you try add a component that already exists."""
+    class FakeComponent:
+        """A fake component"""
+        @staticmethod
+        def get_full_id():
+            return 'test.test'
+
+    monkeypatch.setattr(FakeAssetpack, "add_component", Assetpack.add_component)
+    assetpack = FakeAssetpack()
+
+    component = FakeComponent()
+    with raises(ValueError):
+        assert assetpack.add_component(component).message == "The key test.test is overloaded.\
+         Please ensure no components share IDs"
+
+
+def test_add_image_errors(monkeypatch):
+    """Tests an assetpack throws an error if you try add an image that already exists."""
+    class FakeImage:
+        """A fake image"""
+        @staticmethod
+        def get_full_id():
+            return 'test.testimage'
+    monkeypatch.setattr(FakeAssetpack, "add_image", Assetpack.add_image)
+    assetpack = FakeAssetpack()
+
+    image = FakeImage()
+    with raises(ValueError):
+        assert assetpack.add_image(image).message == "The key test.testimage\
+         Please ensure no images share IDs"
