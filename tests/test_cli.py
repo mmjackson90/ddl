@@ -63,6 +63,7 @@ def test_explore_assetpack(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         global PROMPT_CALLS
         choices = [
             {'choices': 'See pack information'},
