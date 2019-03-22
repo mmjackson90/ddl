@@ -1,7 +1,4 @@
 """Tests the renderer, just the renderer and nothing but the renderer"""
-import random
-import string
-
 from pytest import raises
 from PIL import Image
 from ddl.renderer import Renderer
@@ -12,6 +9,7 @@ def test_init_with_ipl(monkeypatch):
     fake_ipl = ['not', 'a', 'real', 'list']
 
     def fake_add_ipl(self, image_pixel_list):
+        """Adds a fake Image Pixel List to an object"""
         self.image_pixel_list = image_pixel_list
     monkeypatch.setattr(Renderer, "add_image_pixel_list", fake_add_ipl)
     renderer = Renderer(fake_ipl)
@@ -33,11 +31,12 @@ def test_add_ipl(monkeypatch):
     """tests addin an image pixel list"""
     fake_ipl = [('image', -5, 20), ('image', 12, 3)]
 
-    def fake_get_image_boundaries(self, sub_image, pixel_x, pixel_y):
+    def fake_get_image_boundaries(sub_image, pixel_x, pixel_y):
         """Just returns image boundaries as though the image were 10x10"""
         assert sub_image == 'image'
         return (pixel_x, pixel_y, pixel_x+10, pixel_y+10)
-    monkeypatch.setattr(Renderer, "get_image_pixel_boundaries", fake_get_image_boundaries)
+    monkeypatch.setattr(Renderer, "get_image_pixel_boundaries",
+                        staticmethod(fake_get_image_boundaries))
     renderer = Renderer()
     renderer.add_image_pixel_list(fake_ipl)
     assert renderer.min_x == -5
@@ -47,6 +46,7 @@ def test_add_ipl(monkeypatch):
 
 
 def test_add_to_image():
+    """Tests the add to image method"""
     class FakeImage:
         """A fake image class"""
         def __init__(self, top_left, image):
@@ -122,16 +122,19 @@ def test_assemble(monkeypatch):
 
 
 class OutputFakeImage:
+    """A fake image to store various output stats."""
     def __init__(self):
         self.shown = False
         self.save_filepath = ''
         self.image = 'image'
 
     def show(self):
+        """Sets the shown flag"""
         self.shown = True
 
-    def save(self, filepath, type):
-        assert type == 'PNG'
+    def save(self, filepath, type_of_image):
+        """quick assert and saves the filepath"""
+        assert type_of_image == 'PNG'
         self.save_filepath = filepath
 
 
