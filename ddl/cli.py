@@ -268,7 +268,6 @@ def create_new_component(path):
         print("")
     component.reset_sub_parts()
     print(component.get_json())
-    done = True
 
 
 @main.command()
