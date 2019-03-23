@@ -68,7 +68,7 @@ def get_test_assetpack():
              }
          ]
     for component in components:
-        new_component = ComponentAsset(component, assetpack_id='test')
+        new_component = ComponentAsset(component, assetpack)
         assetpack.taglist.add_component(new_component)
         assetpack.add_component(new_component)
     return assetpack
@@ -142,6 +142,7 @@ Grid Top Left Corner pixel (y): 3
 
 def test_print_component_info(capsys):
     """Tests component info prints"""
+    assetpack = get_test_assetpack()
     component = ComponentAsset({"name": "test",
                                 "id": "test_id",
                                 "parts": [{"type": "image",
@@ -149,7 +150,7 @@ def test_print_component_info(capsys):
                                           {"type": "component",
                                            "component_id": "component"}],
                                 "tags": []},
-                               "test")
+                               assetpack)
     ddl.asset_exploration.print_component_info(component)
     captured = capsys.readouterr()
     assert captured.out == """Component name: test

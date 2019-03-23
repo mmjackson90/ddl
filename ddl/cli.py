@@ -174,7 +174,7 @@ def init_component(assetpack, info):
         "parts": component_parts,
         "tags": component_tags
     }
-    return ComponentAsset(data, assetpack.pack_id)
+    return ComponentAsset(data, assetpack)
 
 
 def choose_asset(component, asset_choices, assetpack):
@@ -194,7 +194,8 @@ def choose_asset(component, asset_choices, assetpack):
 
 def reset_component_window(component, assetpack, root, old_canvas):
     """clears and redraws the component window"""
-    image_location_list = assetpack.get_image_location_list(0, 0, component)
+    component.instantiate_sub_parts()
+    image_location_list = component.get_image_location_list(0, 0)
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
     orig_image = renderer.output('variable')

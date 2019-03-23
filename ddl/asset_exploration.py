@@ -69,7 +69,7 @@ def print_component_info(component):
 
 def show_component(assetpack, component):
     """Shows a component in it's own little window"""
-    image_location_list = assetpack.get_image_location_list(0, 0, component)
+    image_location_list = component.get_image_location_list(0, 0)
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
     renderer.output('screen')

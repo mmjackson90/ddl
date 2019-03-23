@@ -29,7 +29,7 @@ def test_initialise_image():
 
 def test_add_ipl(monkeypatch):
     """tests addin an image pixel list"""
-    fake_ipl = [('image', -5, 20), ('image', 12, 3)]
+    fake_ipl = [('image', -5, 20, False, False), ('image', 12, 3, False, False)]
 
     def fake_get_image_boundaries(sub_image, pixel_x, pixel_y):
         """Just returns image boundaries as though the image were 10x10"""
@@ -49,43 +49,41 @@ def test_add_to_image():
     """Tests the add to image method"""
     class FakeImage:
         """A fake image class"""
-        def __init__(self, top_left, image):
+        def __init__(self, image):
             self.image = image
-            self.top_left = top_left
             self.paste_called = False
 
         def paste(self, image, coord, mask):
             """Hides asserts inside a fake class. I like this pattern"""
             assert image == 'image_to_paste'
-            assert coord == (2, 4)
+            assert coord == (3, 6)
             assert mask == 'image_to_paste'
             self.paste_called = True
 
+        def get_image(self, h_flip, v_flip):
+            return self.image
+
     renderer = Renderer()
-    image_1 = FakeImage({}, 'image')
-    image_2 = FakeImage({"x": 1, "y": 2}, 'image_to_paste')
+    image_1 = FakeImage('image')
+    image_2 = FakeImage('image_to_paste')
     renderer.image = image_1
-    renderer.add_to_image(image_2, 3, 6)
+    renderer.add_to_image(image_2, 3, 6, False, False)
     assert renderer.image.paste_called
 
 
 def test_get_image_pixel_boundaries():
     """Tests the image pixel boundaries are returned correctly"""
-    class VarStorage:
-        """ A fake class to store things"""
     class FakeImage:
         """A fake image class"""
-        def __init__(self):
-            self.top_left = {"x": 1, "y": 2}
-            self.image = VarStorage()
-            self.image.width = 10
-            self.image.height = 20
+        def get_image_sizes(self):
+            return (10, 20)
+
     image = FakeImage()
     min_x, min_y, max_x, max_y = Renderer.get_image_pixel_boundaries(image, 3, 5)
-    assert min_x == 2
-    assert min_y == 3
-    assert max_x == 12
-    assert max_y == 23
+    assert min_x == 3
+    assert min_y == 5
+    assert max_x == 13
+    assert max_y == 25
 
 
 def test_assemble(monkeypatch):
@@ -98,14 +96,18 @@ def test_assemble(monkeypatch):
         self.test_variables.sub_images = []
         self.test_variables.pixel_xs = []
         self.test_variables.pixel_ys = []
+        self.test_variables.h_flips = []
+        self.test_variables.v_flips = []
         assert width == 30
         assert height == 40
 
-    def fake_add_to_image(self, sub_image, pixel_x, pixel_y):
+    def fake_add_to_image(self, sub_image, pixel_x, pixel_y, h_flip, v_flip):
         """Monkeypatch out the add to image function"""
         self.test_variables.sub_images.append(sub_image)
         self.test_variables.pixel_xs.append(pixel_x)
         self.test_variables.pixel_ys.append(pixel_y)
+        self.test_variables.h_flips.append(h_flip)
+        self.test_variables.v_flips.append(v_flip)
 
     monkeypatch.setattr(Renderer, "initialise_image", fake_initialise)
     monkeypatch.setattr(Renderer, "add_to_image", fake_add_to_image)
@@ -114,11 +116,13 @@ def test_assemble(monkeypatch):
     renderer.min_x = 50
     renderer.max_y = 60
     renderer.min_y = 40
-    renderer.image_pixel_list = [('image1', 1, 2), ('image2', 3, 5)]
+    renderer.image_pixel_list = [('image1', 1, 2, False, False), ('image2', 3, 5, True, True)]
     renderer.assemble()
     assert renderer.test_variables.sub_images == ['image1', 'image2']
     assert renderer.test_variables.pixel_xs == [-39, -37]
     assert renderer.test_variables.pixel_ys == [-28, -25]
+    assert renderer.test_variables.h_flips == [False, True]
+    assert renderer.test_variables.v_flips == [False, True]
 
 
 class OutputFakeImage:
@@ -181,26 +185,3 @@ def test_output_fail(monkeypatch):
     renderer = Renderer()
     with raises(ValueError):
         assert renderer.output('flail').message == "Invalid output destination 'flail'"
-
-#     def output(self, destination, filename=None):
-#         """Actually put the image somewhere"""
-#
-#         self.assemble()
-#
-#         if destination == 'screen':
-#             self.image.show()
-#         elif destination == 'file':
-#             if not filename:
-#                 filename = ''.join([random.SystemRandom()
-#                                    .choice(string.ascii_lowercase)
-#                                    for n in range(8)])
-#             self.image.save('output/' + filename + ".png", "PNG")
-#         elif destination == 'variable':
-#             return self.image
-#         elif destination == 'dryrun':
-#             # This doesn't actually do anything, but is handy for testing there
-#             # are no material errors.
-#             return
-#         else:
-#             raise ValueError("Invalid output destination '{}'"
-#                              .format(destination))

@@ -99,7 +99,7 @@ Tags:
 Number of parts: 1
 Image name: 1x1 Floor exact
 Image ID: floor-1x1-exact
-Grid Top Left Corner pixel (x): 147
+Grid Top Left Corner pixel (x): 148
 Grid Top Left Corner pixel (y): 0"""
 
 
@@ -115,7 +115,7 @@ def test_add_component(monkeypatch):
         "parts": [],
         "tags": []
     }
-    component = ComponentAsset(data, assetpack.pack_id)
+    component = ComponentAsset(data, assetpack)
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
@@ -159,7 +159,7 @@ def test_validate_component_exists():
         "id": 'thing',
         "parts": [],
         "tags": []
-    }, assetpack.pack_id))
+    }, assetpack))
     with raises(PyInquirer.ValidationError):
         assert validate_component_id('thing', assetpack) is False
 
