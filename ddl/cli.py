@@ -3,12 +3,8 @@
 import click
 from PyInquirer import prompt
 import PyInquirer
-<<<<<<< HEAD:ddl/cli.py
 import jsonschema
-=======
 from jsonschema.exceptions import ValidationError
-
->>>>>>> More tidies and gave blueprint test an assert to stop Codacy bitching..:ddl_cli.py
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 from ddl.renderer import Renderer

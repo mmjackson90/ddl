@@ -21,7 +21,8 @@ def test_validate_assetpack():
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "assetpacks/example_isometric"])
     assert result.exit_code == 0
-    assert result.output == """Pack validated
+    assert result.output == """DDL CLI
+Pack validated
 Images validated
 Components validated
 Validation passed. assetpacks/example_isometric is a good assetpack.
@@ -33,7 +34,8 @@ def test_assetpack_filefail():
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "does-not-exist"])
     assert result.exit_code == 0
-    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """########ERROR########
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+########ERROR########
 does-not-exist/pack.json was not found.
 ########ERROR########
 does-not-exist/images.json was not found.
@@ -46,7 +48,8 @@ def test_assetpack_invalid():
     runner = CliRunner()
     result = runner.invoke(main, ["validate-assetpack", "assetpacks/example_json_fail"])
     assert result.exit_code == 0
-    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """########ERROR########
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+########ERROR########
 'projection' is a required property
 ########ERROR########
 'name' is a required property
@@ -84,7 +87,8 @@ def test_explore_assetpack(monkeypatch):
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     result = runner.invoke(main, ["explore-assetpack", "assetpacks/example_isometric"])
     assert result.exit_code == 0
-    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """Name: Example Isometric Asset Pack
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+Name: Example Isometric Asset Pack
 Author: The Easy Dungeon Company
 Projection: isometric
 Tags:
@@ -96,6 +100,7 @@ Component name: 1x1 Floor Exact
 Component ID: floor-1x1-exact
 Tags:
     example
+    floor
 Number of parts: 1
 Image name: 1x1 Floor exact
 Image ID: floor-1x1-exact
@@ -228,7 +233,8 @@ def test_create_new_component(monkeypatch):
     monkeypatch.setattr(ddl.cli, "prompt", fakeprompt)
     result = runner.invoke(main, ["create-new-component", "assetpacks/example_isometric"])
     assert result.exit_code == 0
-    assert result.output.strip() == """{
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+{
     "name": "Test name",
     "id": "test-id",
     "parts": [
@@ -280,7 +286,8 @@ def test_create_new_images_iso(monkeypatch):
                                   "--height", "170",
                                   "assetpacks/example_isometric/art"])
     assert result.exit_code == 0
-    assert result.output.strip() == """{
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+{
     "images": [
         {
             "name": "Test name",
@@ -328,7 +335,8 @@ def test_create_new_images_topdown(monkeypatch):
                                   "--height", "170",
                                   "assetpacks/example_isometric/art"])
     assert result.exit_code == 0
-    assert result.output.strip() == """{
+    assert os.linesep.join([s for s in result.output.splitlines() if s]) == """DDL CLI
+{
     "images": [
         {
             "name": "Test name",
