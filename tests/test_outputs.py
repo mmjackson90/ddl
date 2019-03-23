@@ -2,7 +2,6 @@
  Coverage unknown, no unit tests yet. Prints pretty pictures though."""
 
 from ddl.assetpack import AssetpackFactory
-from ddl.helper_classes import ComponentFactory
 from ddl.renderer import Renderer
 from ddl.asset import ComponentAsset
 

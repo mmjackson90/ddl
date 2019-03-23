@@ -64,13 +64,13 @@ class ComponentAsset(Asset):
         for sub_part in self.parts:
             if sub_part['type'] == "image":
                 sub_image = self.assetpack.images[sub_part['asset_id']]
-                sub_part['asset'] = (sub_image, sub_part["x"], sub_part["y"])
+                sub_part['asset'] = sub_image
             else:
                 sub_component = self.assetpack.components[sub_part['asset_id']]
-                sub_part['asset'] = (sub_component, sub_part["x"], sub_part["y"])
+                sub_part['asset'] = sub_component
         self.parts_instantiated = True
 
-    def get_image_location_list(self, offset_x, offset_y, h_flip=False, v_flip=False):
+    def get_image_location_list(self, offset_x, offset_y):
         """
         For a given component, recurses down it's tree of parts until we end
         up with nothing but a list of images and their absolute (by grid)
@@ -85,13 +85,13 @@ class ComponentAsset(Asset):
             part_offset_y = part["y"]+offset_y
             if isinstance(part["asset"], ComponentAsset):
                 image_location_list = image_location_list + part["asset"].\
-                    get_image_location_list(part_offset_x, part_offset_y, h_flip, v_flip)
+                    get_image_location_list(part_offset_x, part_offset_y)
             else:
                 image_location_list = image_location_list + [(part["asset"],
                                                               part_offset_x,
                                                               part_offset_y,
-                                                              h_flip,
-                                                              v_flip)]
+                                                              part.get("flip_horizontally", False),
+                                                              part.get("flip_vertically", False))]
         return image_location_list
 
     def get_part_full_id(self, sub_part):

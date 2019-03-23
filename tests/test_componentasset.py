@@ -88,33 +88,6 @@ def test_rescale_component():
         raise AssertionError()
 
 
-<<<<<<< HEAD
-=======
-def test_get_part_list():
-    """Tests that components get their parts list correctly when asked"""
-    component = get_test_component()
-    parts = component.get_part_list(2, 3)
-    asset_type, name, offset_x, offset_y = parts[0][:4]
-    if not asset_type == "image":
-        raise AssertionError()
-    if not name == "test_assetpack_name.floor-1x1-exact":
-        raise AssertionError()
-    if not offset_x == 2:
-        raise AssertionError()
-    if not offset_y == 3:
-        raise AssertionError()
-    asset_type, name, offset_x, offset_y = parts[1][:4]
-    if not asset_type == "component":
-        raise AssertionError()
-    if not name == "test_assetpack_name.test-component-thing":
-        raise AssertionError()
-    if not offset_x == 4:
-        raise AssertionError()
-    if not offset_y == 6:
-        raise AssertionError()
-
-
->>>>>>> CQ
 def test_get_add_image():
     """tests that images add to the component correctly"""
     component = get_test_component()
@@ -255,11 +228,14 @@ def test_nested_image_location_list():
 
 def test_flipped_part_list():
     """Tests getting a list of flipped parts gives the right flags"""
-    data = get_test_data()
-    data["parts"][1]["flip_horizontally"] = True
-    data["parts"][1]["flip_vertically"] = True
-    component = ComponentAsset(data, 'test_assetpack_name')
-    parts = component.get_part_list(2, 3)
-    h_flip, v_flip = parts[1][4:6]
-    assert h_flip
-    assert v_flip
+    assetpack = AssetpackFactory.load('assetpacks/example_top_down')
+    data = {
+        "name": '',
+        "id": 'floor-1x2-exact',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack)
+    component.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0, True, True)
+    parts = component.get_image_location_list(2, 3)
+    assert parts[0][3:5] == (True, True)

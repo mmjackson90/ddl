@@ -2,8 +2,8 @@
  Coverage unknown, no unit tests yet. Prints pretty pictures though."""
 
 from ddl.assetpack import AssetpackFactory
-from ddl.helper_classes import ComponentFactory
 from ddl.renderer import Renderer
+from ddl.asset import ComponentAsset
 
 
 def test_smoke_render_component():
@@ -14,7 +14,7 @@ def test_smoke_render_component():
 
     assetpack = AssetpackFactory.load('assetpacks/example_top_down')
     floor1 = assetpack.components['easy-dungeon-ddl-example-td.floor-2x2-exact']
-    image_location_list = assetpack.get_image_location_list(0, 0, floor1)
+    image_location_list = floor1.get_image_location_list(0, 0)
 
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
@@ -26,13 +26,17 @@ def test_smoke_design_component():
     Smoke test creating a new component and then passing it to a renderer.
     """
     assetpack = AssetpackFactory.load('assetpacks/example_top_down')
-    component_factory = ComponentFactory(assetpack, "topdown")
-    component_factory.new_component('floor-1x2-exact')
-    component_factory.add_image("floor-1x1-exact", 0, 0)
-    component_factory.add_image("floor-1x1-exact", 0, 1)
-    floor4 = component_factory.pull_component()
+    data = {
+        "name": '',
+        "id": 'floor-1x2-exact',
+        "parts": [],
+        "tags": []
+    }
+    floor4 = ComponentAsset(data, assetpack)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 1)
 
-    image_location_list2 = assetpack.get_image_location_list(0, 0, floor4)
+    image_location_list2 = floor4.get_image_location_list(0, 0)
     image_pixel_list2 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list2)
     renderer2 = Renderer(image_pixel_list=image_pixel_list2)
@@ -46,32 +50,40 @@ def test_smoke_twiddly_fuzzy():
     clear component functionality and finally rendering out some fuzzy tiles.
     """
     assetpack = AssetpackFactory.load('assetpacks/example_top_down')
-    component_factory = ComponentFactory(assetpack, "topdown")
-    component_factory.new_component('twiddle_1')
-    component_factory.add_component("floor-2x2-exact", 0, 0)
-    component_factory.add_image("floor-1x1-exact", 2, 1)
-    component_factory.add_image("floor-1x1-exact", 2, 2)
-    component_factory.add_image("floor-1x1-exact", 2, 3)
-    component_factory.add_component("floor-2x2-exact", 3, 3)
-    component_factory.add_image("floor-1x1-fuzzy", 4, 4)
-    component_factory.remove_last_part()
-    component_factory.output_component()
-    component_factory.clear_component()
 
-    component_factory.new_component('fuzzy')
-    component_factory.add_image("floor-1x1-exact", 0, 0)
-    component_factory.add_image("floor-1x1-fuzzy", 0, 1)
-    component_factory.add_image("floor-1x1-fuzzy", 1, 0)
-    component_factory.add_image("floor-1x1-exact", 1, 1)
+    data = {
+        "name": '',
+        "id": 'twiddle_1',
+        "parts": [],
+        "tags": []
+    }
+    floor4 = ComponentAsset(data, assetpack)
+    floor4.add_component(assetpack.components["easy-dungeon-ddl-example-td.floor-2x2-exact"], 0, 0)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 2, 1)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 2, 2)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 2, 3)
+    floor4.add_component(assetpack.components["easy-dungeon-ddl-example-td.floor-2x2-exact"], 3, 3)
+    floor4.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-fuzzy"], 4, 4)
+    floor4.remove_last_part()
+    renderer4_1 = Renderer(image_pixel_list=assetpack.projection.
+                           get_image_pixel_list(0, 0, floor4.get_image_location_list(0, 0)))
+    renderer4_1.output('screen')
 
-    fuzzy = component_factory.pull_component()
+    data = {
+        "name": '',
+        "id": 'fuzzy',
+        "parts": [],
+        "tags": []
+    }
+    fuzzy = ComponentAsset(data, assetpack)
+    fuzzy.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0)
+    fuzzy.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-fuzzy"], 0, 1)
+    fuzzy.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-fuzzy"], 1, 0)
+    fuzzy.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 1, 1)
 
-    renderer4 = Renderer(image_pixel_list=assetpack.projection.
-                         get_image_pixel_list(0, 0, assetpack.
-                                              get_image_location_list(0, 0,
-                                                                      fuzzy
-                                                                      )))
-    renderer4.output('screen')
+    renderer4_2 = Renderer(image_pixel_list=assetpack.projection.
+                           get_image_pixel_list(0, 0, fuzzy.get_image_location_list(0, 0)))
+    renderer4_2.output('screen')
 
 
 def test_smoke_wall():
@@ -81,7 +93,8 @@ def test_smoke_wall():
     assetpack = AssetpackFactory.load('assetpacks/example_top_down')
     asset_id = 'easy-dungeon-ddl-example-td.double-floor-wall-exact'
     floor_wall = assetpack.components[asset_id]
-    ill = assetpack.get_image_location_list(0, 0, floor_wall)
+    ill = floor_wall.get_image_location_list(0, 0)
+    assert ill[1][1:5] == (1, 1, True, False)
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
                          get_image_pixel_list(0, 0, ill))
 
@@ -93,15 +106,13 @@ def test_non_scaled_rendering():
     a floor pack of a different one."""
     assetpack = AssetpackFactory.load('assetpacks/example_top_down')
     floor_1x1 = assetpack.components['easy-dungeon-ddl-example-td.floor-1x1-exact']
-    image_location_list7_3 = assetpack.get_image_location_list(0, 0,
-                                                               floor_1x1)
+    image_location_list7_3 = floor_1x1.get_image_location_list(0, 0)
     image_pixel_list7_3 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_3)
 
     prop_assetpack = AssetpackFactory.load('assetpacks/example_top_down_props')
     boxes = prop_assetpack.components['easy-dungeon-ddl-example-props-td.many-boxes']
-    image_location_list7_2 = prop_assetpack.get_image_location_list(0, 0,
-                                                                    boxes)
+    image_location_list7_2 = boxes.get_image_location_list(0, 0)
     # Needs relocating to match the larger grid.
     image_pixel_list7_2 = prop_assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_2)
@@ -119,14 +130,17 @@ def test_scaled_rendering():
     prop_assetpack2.rescale_components(assetpack.projection)
     assetpack.append_assetpack(prop_assetpack2)
 
-    component_factory = ComponentFactory(assetpack, "topdown")
-    component_factory.new_component('boxes_on_floor')
-    component_factory.add_image('floor-1x1-exact', 0, 0)
-    component_factory.add_component('many-boxes', 0, 0,
-                                    assetpack_id='easy-dungeon-ddl-example-props-td')
-    boxes_on_floor = component_factory.pull_component()
-    image_location_list7_1 = assetpack.\
-        get_image_location_list(0, 0, boxes_on_floor)
+    data = {
+        "name": '',
+        "id": 'fuzzy',
+        "parts": [],
+        "tags": []
+    }
+    boxes_on_floor = ComponentAsset(data, assetpack)
+    boxes_on_floor.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0)
+    boxes_on_floor.add_component(assetpack.components["easy-dungeon-ddl-example-props-td.many-boxes"], 0, 0)
+    image_location_list7_1 = boxes_on_floor.\
+        get_image_location_list(0, 0)
 
     image_pixel_list7_1 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list7_1)
