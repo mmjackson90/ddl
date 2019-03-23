@@ -1,33 +1,16 @@
 """Functions for the ddl_cli to use to explore an assetpack"""
 
-from PyInquirer import style_from_dict, Token, prompt, Separator
+from PyInquirer import prompt
 from ddl.projection import IsometricProjection
 from ddl.renderer import Renderer
 from ddl.asset import ImageAsset
-
+from ddl.cli_utils import *
 import json
 
-STYLE = style_from_dict({
-    Token.Separator: '#cc5454',
-    Token.QuestionMark: '#673ab7 bold',
-    Token.Selected: '#cc5454',  # default
-    Token.Pointer: '#673ab7 bold',
-    Token.Instruction: '',  # default
-    Token.Answer: '#f44336 bold',
-    Token.Question: '',
-})
 
-
-def print_tags(tags):
-    """prints tag lists to screen"""
-    print("Tags:")
-    for tag in tags:
-        print(f"    {tag}")
-
-
-def show_pack_info(name):
+def show_pack_info(path):
     """Prints pack info to screen"""
-    with open('assetpacks/' + name + '/pack.json') as pack_file:
+    with open(path + '/pack.json') as pack_file:
         pack = json.load(pack_file)
         print(f"Name: {pack['name']}")
         print(f"Author: {pack['author']}")
@@ -47,23 +30,17 @@ def show_projection_info(assetpack):
 
 def explore_assets(assetpack):
     """Lets the user interactively choose which components to look at next"""
-    asset_choices = ['Back', Separator("Components")] +\
-        list(map('Component: {}'.format,
-                 assetpack.components.keys())) +\
-        [Separator("Images")] +\
-        list(map('Image: {}'.format,
-                 assetpack.images.keys()))
     back = False
     while not back:
         explore = [{
             'type': 'list',
             'message': 'Which asset would you like to look at?',
-            'name': 'explore',
-            'choices': asset_choices
+            'name': 'choices',
+            'choices': get_asset_choices(assetpack)
         }]
         choice = prompt(explore, style=STYLE)
         print("")
-        option_chosen = choice['explore']
+        option_chosen = choice['choices']
         if option_chosen == 'Back':
             back = True
         else:
@@ -92,30 +69,36 @@ def print_component_info(component):
 
 def show_component(assetpack, component):
     """Shows a component in it's own little window"""
-    image_location_list = assetpack.get_image_location_list(0, 0, component)
+    image_location_list = component.get_image_location_list(0, 0)
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
     renderer.output('screen')
 
 
-def explore_asset(initial_option, assetpack):
-    """Lets a user choose what they want to see about an asset"""
+def get_asset(assetpack, initial_option):
+    """Gets an asset from a choice made in a menu"""
     asset_type, asset_key = initial_option.split(': ')
     if asset_type == 'Image':
         asset = assetpack.images[asset_key]
     else:
         asset = assetpack.components[asset_key]
+    return asset
+
+
+def explore_asset(initial_option, assetpack):
+    """Lets a user choose what they want to see about an asset"""
+    asset = get_asset(assetpack, initial_option)
     explore = [{
         'type': 'list',
         'message': 'What would you like to do?',
-        'name': 'asset',
+        'name': 'choices',
         'choices': ['Show metadata',
                     'Show image',
                     'Show both']
     }]
     choice = prompt(explore, style=STYLE)
     print("")
-    option_chosen = choice['asset']
+    option_chosen = choice['choices']
     if option_chosen == 'Show metadata':
         if (isinstance(asset, ImageAsset)):
             print_image_info(asset)

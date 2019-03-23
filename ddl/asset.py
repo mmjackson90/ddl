@@ -149,6 +149,8 @@ class ComponentAsset(Asset):
         parts = deepcopy(self.parts)
         for part in parts:
             part.pop('asset_id', None)
+            if self.parts_instantiated:
+                part.pop('asset', None)
         return {
             "name": self.name,
             "id": self.asset_id,
