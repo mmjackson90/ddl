@@ -266,6 +266,7 @@ def test_explore_show_image(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show image"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_SHOWN
@@ -281,6 +282,7 @@ def test_explore_show_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show image"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_SHOWN
@@ -297,6 +299,7 @@ def test_explore_print_image(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show metadata"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_PRINTED
@@ -312,6 +315,7 @@ def test_explore_print_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show metadata"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_PRINTED
@@ -328,6 +332,7 @@ def test_explore_both_image(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show both"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_PRINTED
