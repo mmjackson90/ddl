@@ -61,6 +61,9 @@ def test_add_to_image():
             self.paste_called = True
 
         def get_image(self, h_flip, v_flip):
+            """Gets a fake image"""
+            self.h_flip = h_flip
+            self.v_flip = v_flip
             return self.image
 
     renderer = Renderer()
@@ -75,8 +78,12 @@ def test_get_image_pixel_boundaries():
     """Tests the image pixel boundaries are returned correctly"""
     class FakeImage:
         """A fake image class"""
+        def __init__(self):
+            self.sizes = (10, 20)
+
         def get_image_sizes(self):
-            return (10, 20)
+            """Gets fake image sizes"""
+            return self.sizes
 
     image = FakeImage()
     min_x, min_y, max_x, max_y = Renderer.get_image_pixel_boundaries(image, 3, 5)

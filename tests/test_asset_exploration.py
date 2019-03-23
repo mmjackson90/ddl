@@ -230,6 +230,7 @@ class FakeAsset:
 
     def show(self):
         """Sets a flag"""
+        self.shown = True
         global ASSET_SHOWN
         ASSET_SHOWN = True
 
@@ -346,6 +347,7 @@ def test_explore_both_component(monkeypatch):
 
     def fakeprompt(choices, style):
         """A fake prompt function that returns a response"""
+        assert style is not None
         return {"choices": "Show both"}
     monkeypatch.setattr(ddl.asset_exploration, "prompt", fakeprompt)
     global ASSET_PRINTED

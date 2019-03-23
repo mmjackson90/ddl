@@ -112,14 +112,14 @@ class FakeAssetpack:
         self.images = {"test.testimage": 1}
         self.components = {"test.test": 1}
 
-    @staticmethod
     def add_component(self, new_component):
         """This exists to be patched over"""
+        self.component_added = True
         assert new_component
 
-    @staticmethod
     def add_image(self, new_image):
         """This exists to be patched over"""
+        self.image_added = True
         assert new_image
 
 
