@@ -45,6 +45,20 @@ class Projection:
         for component in components.values():
             component.rescale(scale_ratio_x, scale_ratio_y)
 
+    @staticmethod
+    def get_image_offset(image, h_flip, v_flip):
+        """Gets an image offset, bearing in mind flipping."""
+        image_width, image_height = image.get_image_sizes()
+        if not h_flip:
+            image_offset_x = -image.top_left["x"]
+        else:
+            image_offset_x = -image_width+image.top_left["x"]
+        if not v_flip:
+            image_offset_y = -image.top_left["y"]
+        else:
+            image_offset_y = -image_height+image.top_left["y"]
+        return (image_offset_x, image_offset_y)
+
     def get_image_pixel_list(self,
                              grid_offset_x,
                              grid_offset_y,
@@ -56,12 +70,19 @@ class Projection:
                                                     grid_offset_y)
         pixel_offset_x, pixel_offset_y = pixel_offsets
         image_pixel_list = []
-        for image, x_coordinate, y_coordinate in image_location_list:
+        for info in image_location_list:
+            image, x_coordinate, y_coordinate, h_flip, v_flip = info
             pixel_x, pixel_y = self.get_location_in_pixels(x_coordinate,
                                                            y_coordinate)
-            pixel_x = pixel_x+pixel_offset_x
-            pixel_y = pixel_y+pixel_offset_y
-            image_pixel_list = image_pixel_list+[(image, pixel_x, pixel_y)]
+
+            image_offset_x, image_offset_y = self.get_image_offset(image,
+                                                                   h_flip,
+                                                                   v_flip)
+            pixel_x = pixel_x+pixel_offset_x+image_offset_x
+            pixel_y = pixel_y+pixel_offset_y+image_offset_y
+
+            next_ipl = [(image, pixel_x, pixel_y, h_flip, v_flip)]
+            image_pixel_list = image_pixel_list+next_ipl
         return image_pixel_list
 
 

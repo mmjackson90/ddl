@@ -81,14 +81,14 @@
                 {
                     "type": "image",
                     "image_id": "floor-1x1-exact",
-                    "x": 0,
+                    "x": 1,
                     "y": 1,
                     "flip_horizontally": true
                 },
                 {
                     "type": "image",
                     "image_id": "exact-wall-1",
-                    "x": 0,
+                    "x": 1,
                     "y": 0,
                     "flip_horizontally": true
                 },

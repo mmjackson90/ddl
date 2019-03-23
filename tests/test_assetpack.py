@@ -69,7 +69,7 @@ def test_change_assetpack_name():
     assetpack.change_assetpack_id('new_name')
     if len(assetpack.images) != 4:
         raise AssertionError()
-    if len(assetpack.components) != 4:
+    if len(assetpack.components) != 5:
         raise AssertionError()
 
     for key in assetpack.images.keys():
@@ -102,48 +102,7 @@ def test_append_assetpacks():
     assetpack.append_assetpack(assetpack2)
     if len(assetpack.images) != 8:
         raise AssertionError('%s != 14' % len(assetpack.images))
-    if len(assetpack.components) != 8:
-        raise AssertionError()
-
-
-def test_simple_image_location_list():
-    """Tests an assetpack will return an imagelocationlist for a simple
-    component if asked. No Nesting."""
-    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    component = assetpack.components['easy-dungeon-ddl-example-iso.floor-wall-exact']
-    ill = assetpack.get_image_location_list(2, 3, component)
-    if len(ill) != 2:
-        raise AssertionError()
-    # Required to check things are ending up in the right places in the list
-    if not ill[0][0].asset_id == "floor-1x1-exact":
-        raise AssertionError(ill[0][0].asset_id)
-    if not ill[1][0].asset_id == "exact-wall-1":
-        raise AssertionError()
-
-
-def test_nested_image_location_list():
-    """Tests an assetpack will return an imagelocationlist for a complex
-    component if asked. Nesting involved."""
-    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
-    component = assetpack.components['easy-dungeon-ddl-example-iso.nested-component-test']
-    ill = assetpack.get_image_location_list(2, 3, component)
-    if len(ill) != 3:
-        raise AssertionError()
-    # Required to check things are ending up in the right places in the list
-    if not ill[0][0].asset_id == "floor-1x1-exact":
-        raise AssertionError(ill[0][0].asset_id)
-    if not ill[1][0].asset_id == "exact-wall-1":
-        raise AssertionError()
-    if not ill[2][0].asset_id == "floor-1x1-fuzzy":
-        raise AssertionError()
-    # Required to check recursive offsets are being correctly propagated
-    if not ill[0][1] == 2:
-        raise AssertionError(ill[0][2])
-    if not ill[0][2] == 3:
-        raise AssertionError()
-    if not ill[2][1] == 5:
-        raise AssertionError()
-    if not ill[2][2] == 4:
+    if len(assetpack.components) != 10:
         raise AssertionError()
 
 

@@ -5,6 +5,7 @@ Tests Components
 from ddl.asset import ComponentAsset
 import json
 from jsonschema import validate
+from ddl.assetpack import AssetpackFactory
 
 
 class FakeImageAsset():
@@ -25,6 +26,12 @@ class FakeComponentAsset():
     def get_full_id(self):
         """returns a fake ID string"""
         return("test."+self.asset_id)
+
+
+class FakeAssetpack():
+    """The fakest assetpack around"""
+    def __init__(self):
+        self.pack_id = 'test_assetpack_name'
 
 
 def get_test_data():
@@ -55,7 +62,7 @@ def get_test_data():
 def get_test_component():
     "Sets up a new component with some test data."
     data = get_test_data()
-    return(ComponentAsset(data, 'test_assetpack_name'))
+    return(ComponentAsset(data, FakeAssetpack()))
 
 
 def test_component_init():
@@ -78,30 +85,6 @@ def test_rescale_component():
     if not component.data["parts"][1]["x"] == 1:
         raise AssertionError()
     if not component.data["parts"][1]["y"] == 1:
-        raise AssertionError()
-
-
-def test_get_part_list():
-    """Tests that components get their parts list correctly when asked"""
-    component = get_test_component()
-    parts = component.get_part_list(2, 3)
-    asset_type, name, offset_x, offset_y = parts[0]
-    if not asset_type == "image":
-        raise AssertionError()
-    if not name == "test_assetpack_name.floor-1x1-exact":
-        raise AssertionError()
-    if not offset_x == 2:
-        raise AssertionError()
-    if not offset_y == 3:
-        raise AssertionError()
-    asset_type, name, offset_x, offset_y = parts[1]
-    if not asset_type == "component":
-        raise AssertionError()
-    if not name == "test_assetpack_name.test-component-thing":
-        raise AssertionError()
-    if not offset_x == 4:
-        raise AssertionError()
-    if not offset_y == 6:
         raise AssertionError()
 
 
@@ -201,3 +184,58 @@ def test_json_validity():
     with open('schemas/components.json') as schema_file:
         schema_json = json.load(schema_file)
         validate(output_json, schema_json)
+
+
+def test_simple_image_location_list():
+    """Tests an assetpack will return an imagelocationlist for a simple
+    component if asked. No Nesting."""
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    component = assetpack.components['easy-dungeon-ddl-example-iso.floor-wall-exact']
+    ill = component.get_image_location_list(2, 3)
+    if len(ill) != 2:
+        raise AssertionError()
+    # Required to check things are ending up in the right places in the list
+    if not ill[0][0].asset_id == "floor-1x1-exact":
+        raise AssertionError(ill[0][0].asset_id)
+    if not ill[1][0].asset_id == "exact-wall-1":
+        raise AssertionError()
+
+
+def test_nested_image_location_list():
+    """Tests an assetpack will return an imagelocationlist for a complex
+    component if asked. Nesting involved."""
+    assetpack = AssetpackFactory.load('assetpacks/example_isometric')
+    component = assetpack.components['easy-dungeon-ddl-example-iso.nested-component-test']
+    ill = component.get_image_location_list(2, 3)
+    if len(ill) != 3:
+        raise AssertionError()
+    # Required to check things are ending up in the right places in the list
+    if not ill[0][0].asset_id == "floor-1x1-exact":
+        raise AssertionError(ill[0][0].asset_id)
+    if not ill[1][0].asset_id == "exact-wall-1":
+        raise AssertionError()
+    if not ill[2][0].asset_id == "floor-1x1-fuzzy":
+        raise AssertionError()
+    # Required to check recursive offsets are being correctly propagated
+    assert ill[0][1] == 2
+    if not ill[0][2] == 3:
+        raise AssertionError()
+    if not ill[2][1] == 5:
+        raise AssertionError()
+    if not ill[2][2] == 4:
+        raise AssertionError()
+
+
+def test_flipped_part_list():
+    """Tests getting a list of flipped parts gives the right flags"""
+    assetpack = AssetpackFactory.load('assetpacks/example_top_down')
+    data = {
+        "name": '',
+        "id": 'floor-1x2-exact',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack)
+    component.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0, True, True)
+    parts = component.get_image_location_list(2, 3)
+    assert parts[0][3:5] == (True, True)

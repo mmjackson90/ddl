@@ -1,0 +1,13 @@
+{
+    "name": "Example top down Props Pack",
+    "author": "The DDL Team",
+    "projection": "topdown",
+    "tags": [
+        "example"
+    ],
+    "grid":{
+        "height":10,
+        "width":10
+    },
+    "id": "easy-dungeon-ddl-example-props-td"
+}

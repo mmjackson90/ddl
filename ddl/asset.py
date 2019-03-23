@@ -40,10 +40,13 @@ class ComponentAsset(Asset):
     """This is a space saving measure that records
      multiple image_assets and components (collectively known as assets)
      and their respective positions within the Asset Pack's grid."""
-    def __init__(self, data, assetpack_id):
-        super().__init__(data, assetpack_id)
+    def __init__(self, data, assetpack):
+        super().__init__(data, assetpack.pack_id)
+        self.assetpack = assetpack
         if "parts" in data.keys():
             self.parts = data["parts"]
+
+            self.parts_instantiated = False
             self.reset_sub_parts()
         else:
             raise Exception('Component {} has no parts.',
@@ -55,20 +58,41 @@ class ComponentAsset(Asset):
         for sub_part in self.parts:
             sub_part["asset_id"] = self.get_part_full_id(sub_part)
 
-    def get_part_list(self, offset_x, offset_y):
-        """Moves down a component and returns its list of parts
-        given some coordinate grid offset."""
-        part_list = []
+    def instantiate_sub_parts(self):
+        """Instantiates the sub part list. This should only be a temporary measure
+        until we start passing components in directly"""
+        for sub_part in self.parts:
+            if sub_part['type'] == "image":
+                sub_image = self.assetpack.images[sub_part['asset_id']]
+                sub_part['asset'] = sub_image
+            else:
+                sub_component = self.assetpack.components[sub_part['asset_id']]
+                sub_part['asset'] = sub_component
+        self.parts_instantiated = True
+
+    def get_image_location_list(self, offset_x, offset_y):
+        """
+        For a given component, recurses down it's tree of parts until we end
+        up with nothing but a list of images and their absolute (by grid)
+        offsets
+        """
+        if not self.parts_instantiated:
+            self.instantiate_sub_parts()
+
+        image_location_list = []
         for part in self.parts:
             part_offset_x = part["x"]+offset_x
             part_offset_y = part["y"]+offset_y
-            part_list = part_list+[(
-                part["type"],
-                part["asset_id"],
-                part_offset_x,
-                part_offset_y
-            )]
-        return part_list
+            if isinstance(part["asset"], ComponentAsset):
+                image_location_list = image_location_list + part["asset"].\
+                    get_image_location_list(part_offset_x, part_offset_y)
+            else:
+                image_location_list = image_location_list + [(part["asset"],
+                                                              part_offset_x,
+                                                              part_offset_y,
+                                                              part.get("flip_horizontally", False),
+                                                              part.get("flip_vertically", False))]
+        return image_location_list
 
     def get_part_full_id(self, sub_part):
         """Gives the correct part id, given the assetpack."""
@@ -91,7 +115,8 @@ class ComponentAsset(Asset):
             sub_asset["x"] = sub_asset["x"] / scale_ratio_x
             sub_asset["y"] = sub_asset["y"] / scale_ratio_y
 
-    def add_image(self, image, x_coordinate, y_coordinate):
+    def add_image(self, image, x_coordinate, y_coordinate,
+                  h_flip=False, v_flip=False):
         """Adds a specific image asset to the component at grid co-ordinates
          x and y."""
         sub_asset = {"type": "image",
@@ -99,6 +124,10 @@ class ComponentAsset(Asset):
                      "x": x_coordinate,
                      "y": y_coordinate,
                      "asset_id": image.get_full_id()}
+        if h_flip:
+            sub_asset['flip_horizontally'] = True
+        if v_flip:
+            sub_asset['flip_vertically'] = True
         self.parts = self.parts+[sub_asset]
 
     def add_component(self, component, x_coordinate, y_coordinate):
@@ -144,6 +173,8 @@ class ImageAsset(Asset):
 
         self.image = Image.open(assetpack_path + '/art/' +
                                 data["image"])
+        if self.image.mode != 'RGBA':
+            self.image = self.image.convert('RGBA')
 
     def resize(self, size_ratio_x, size_ratio_y):
         """Alters the image and it's top_left pixel offsets by some x and y
@@ -153,6 +184,22 @@ class ImageAsset(Asset):
         self.image = self.image.resize((final_image_width, final_image_height))
         self.top_left['x'] = round(self.top_left['x']*size_ratio_x)
         self.top_left['y'] = round(self.top_left['y']*size_ratio_y)
+
+    def get_image_sizes(self):
+        """Returns the width and height of the image"""
+        return (self.image.width, self.image.height)
+
+    def get_image(self, h_flip=False, v_flip=False):
+        """
+        Gets the image, takign into account flipping (and probably scaling
+        once we move to more efficient storage)
+        """
+        if h_flip:
+            return(self.image.transpose(Image.FLIP_LEFT_RIGHT))
+        elif v_flip:
+            return(self.image.transpose(Image.FLIP_TOP_BOTTOM))
+        else:
+            return(self.image)
 
     def show(self):
         """Show the image."""
