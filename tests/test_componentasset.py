@@ -224,3 +224,18 @@ def test_nested_image_location_list():
         raise AssertionError()
     if not ill[2][2] == 4:
         raise AssertionError()
+
+
+def test_flipped_part_list():
+    """Tests getting a list of flipped parts gives the right flags"""
+    assetpack = AssetpackFactory.load('assetpacks/example_top_down')
+    data = {
+        "name": '',
+        "id": 'floor-1x2-exact',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack)
+    component.add_image(assetpack.images["easy-dungeon-ddl-example-td.floor-1x1-exact"], 0, 0, True, True)
+    parts = component.get_image_location_list(2, 3)
+    assert parts[0][3:5] == (True, True)
