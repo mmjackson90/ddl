@@ -210,6 +210,7 @@ def test_explore_assets(monkeypatch):
         return result
 
     def fake_explore_assets(option_chosen, assetpack):
+        """Not a real function"""
         assetpack.option_chosen = option_chosen
 
     assetpack = FakeAssetpack()
@@ -222,19 +223,23 @@ def test_explore_assets(monkeypatch):
 
 
 class FakeAsset:
+    """Not a real asset"""
     def __init__(self, name):
         self.name = name
 
     def show(self):
+        """Sets a flag"""
         global ASSET_SHOWN
         ASSET_SHOWN = True
 
 
 def fake_get_asset(assetpack, initial_option):
+    """Returns a fake asset"""
     return FakeAsset(assetpack + initial_option)
 
 
 def fake_show_component(assetpack, asset):
+    """Sets a flag"""
     assert assetpack is not None
     assert asset is not None
     global ASSET_SHOWN
@@ -242,6 +247,7 @@ def fake_show_component(assetpack, asset):
 
 
 def fake_print_info(asset):
+    """Sets a flag"""
     assert asset is not None
     global ASSET_PRINTED
     ASSET_PRINTED = True

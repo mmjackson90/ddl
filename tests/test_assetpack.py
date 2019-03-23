@@ -153,15 +153,15 @@ class FakeAssetpack:
         self.images = {"test.testimage": 1}
         self.components = {"test.test": 1}
 
+    @staticmethod
     def add_component(self, new_component):
         """This exists to be patched over"""
         assert new_component
-        pass
 
+    @staticmethod
     def add_image(self, new_image):
         """This exists to be patched over"""
         assert new_image
-        pass
 
 
 def test_add_component_errors(monkeypatch):
@@ -170,6 +170,7 @@ def test_add_component_errors(monkeypatch):
         """A fake component"""
         @staticmethod
         def get_full_id():
+            """Return a test ID"""
             return 'test.test'
 
     monkeypatch.setattr(FakeAssetpack, "add_component", Assetpack.add_component)
@@ -187,6 +188,7 @@ def test_add_image_errors(monkeypatch):
         """A fake image"""
         @staticmethod
         def get_full_id():
+            """Return a test ID"""
             return 'test.testimage'
     monkeypatch.setattr(FakeAssetpack, "add_image", Assetpack.add_image)
     assetpack = FakeAssetpack()
