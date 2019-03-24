@@ -18,6 +18,8 @@ import logging
 from ddl.blueprint import BlueprintFactory
 import tkinter as tk
 from PIL import Image, ImageTk
+import random
+
 
 
 @click.group()
@@ -323,11 +325,27 @@ def build(context, blueprint_file, assetpack_file):
 
     logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
 
+    data = {
+        "name": '',
+        "id": 'build',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack)
+
     for (tile_x, tile_y), tile in blueprint.get_constraints_in_layer('floor').items():
         logger.debug('Tile at ({}, {}) has constraints {}'.format(tile_x, tile_y, ', '.join(tile)))
         valid_components = assetpack.taglist.get_components_that_match_tags(tile)
 
         if valid_components:
             logger.debug('Matching components are: {}'.format(', '.join(valid_components)))
+            choice = random.sample(valid_components, 1)[0]
+            component.add_component(assetpack.components[choice], tile_x, tile_y)
         else:
             raise Exception('No matching components for given constraints.')
+
+    image_location_list = component.get_image_location_list(0, 0)
+    image_pixel_list = assetpack.projection.\
+        get_image_pixel_list(0, 0, image_location_list)
+    renderer = Renderer(image_pixel_list=image_pixel_list)
+    renderer.output('screen')
