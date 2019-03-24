@@ -44,11 +44,9 @@ class BlueprintFactory:
                 #     "floor"
                 # ]
 
-                if not part['width']:
-                    part['width'] = 1
+                part.setdefault('width', 1)
 
-                if not part['height']:
-                    part['height'] = 1
+                part.setdefault('height', 1)
 
                 logger.debug('Adding {} range constraints for ({}, {}) on layer "{}" with width {} and height {}: {}'.
                              format(len(part['constraints']),

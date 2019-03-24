@@ -19,7 +19,7 @@ from ddl.blueprint import BlueprintFactory
 import tkinter as tk
 from PIL import Image, ImageTk
 import random
-
+from ddl.donjon_parser import DonjonParser
 
 
 @click.group()
@@ -349,3 +349,17 @@ def build(context, blueprint_file, assetpack_file):
         get_image_pixel_list(0, 0, image_location_list)
     renderer = Renderer(image_pixel_list=image_pixel_list)
     renderer.output('screen')
+
+
+@main.command()
+@click.argument('input_file', type=click.Path(exists=True))
+@click.argument('output_file')
+@click.argument('blueprint_name')
+@click.argument('blueprint_id')
+@click.pass_context
+def convert_donjon(context, input_file, output_file, blueprint_name, blueprint_id):
+    logger = context.obj['LOGGER']
+    parser = DonjonParser()
+    logger.info('Converting {} to blueprint'.format(input_file))
+    parser.load_parts(input_file)
+    parser.save_parts(output_file, blueprint_name, blueprint_id)
