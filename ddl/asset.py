@@ -146,11 +146,14 @@ class ComponentAsset(Asset):
 
     def get_data(self):
         """Creates the original component data to either return or print."""
+        if self.parts_instantiated:
+            for part in self.parts:
+                part.pop('asset', None)
+            self.parts_instantiated = False
         parts = deepcopy(self.parts)
         for part in parts:
             part.pop('asset_id', None)
-            if self.parts_instantiated:
-                part.pop('asset', None)
+
         return {
             "name": self.name,
             "id": self.asset_id,
