@@ -332,7 +332,7 @@ def build(context, blueprint_file, assetpack_file):
         "tags": []
     }
     component = ComponentAsset(data, assetpack)
-
+    logger.info('Finding appropriate tiles and adding to component')
     for (tile_x, tile_y), tile in blueprint.get_constraints_in_layer('floor').items():
         logger.debug('Tile at ({}, {}) has constraints {}'.format(tile_x, tile_y, ', '.join(tile)))
         valid_components = assetpack.taglist.get_components_that_match_tags(tile)
@@ -344,11 +344,15 @@ def build(context, blueprint_file, assetpack_file):
         else:
             raise Exception('No matching components for given constraints.')
 
+    logger.info('Getting image/pixel list')
     image_location_list = component.get_image_location_list(0, 0)
     image_pixel_list = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list)
+    logger.info('Preparing render')
     renderer = Renderer(image_pixel_list=image_pixel_list)
+    logger.info('Rendering')
     renderer.output('screen')
+    logger.info('Done')
 
 
 @main.command()
@@ -363,3 +367,4 @@ def convert_donjon(context, input_file, output_file, blueprint_name, blueprint_i
     logger.info('Converting {} to blueprint'.format(input_file))
     parser.load_parts(input_file)
     parser.save_parts(output_file, blueprint_name, blueprint_id)
+    logger.info('Output finished blueprint to {}'.format(output_file))
