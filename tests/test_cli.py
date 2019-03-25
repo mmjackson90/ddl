@@ -351,7 +351,7 @@ def test_create_new_images_topdown(monkeypatch):
 }"""
 
 
-def test_convert_donjon_iso():
+def test_convert_donjon():
     """Tests that the donjon converter does it's job"""
     runner = CliRunner()
     result = runner.invoke(main, ["convert-donjon", "donjon_tsvs/Dark_Halls_Of_Madness.txt",
@@ -367,3 +367,33 @@ Output finished blueprint to blueprints/examples/Dark_Halls_Of_Madness.json
         data = output_blueprint.read()
         md5 = hashlib.md5(data).hexdigest()
     assert md5 == 'e47087914de09eda957f878280f52dc9'
+
+
+def test_build_iso():
+    """Tests that the renderer can spit out an isometric version of a complex floorplan"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json", "assetpacks/example_isometric"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Building Blueprint
+Finding appropriate tiles and adding to component
+Getting image/pixel list
+Preparing render
+Rendering
+Done
+"""
+
+
+def test_build_topdown():
+    """Tests that the renderer can spit out a topdown version of a complex floorplan"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json", "assetpacks/example_top_down"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Building Blueprint
+Finding appropriate tiles and adding to component
+Getting image/pixel list
+Preparing render
+Rendering
+Done
+"""
