@@ -372,7 +372,9 @@ Output finished blueprint to blueprints/examples/Dark_Halls_Of_Madness.json
 def test_build_iso():
     """Tests that the renderer can spit out an isometric version of a complex floorplan"""
     runner = CliRunner()
-    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json", "assetpacks/example_isometric"])
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json",
+                                  "assetpacks/example_isometric",
+                                  "--filename", "tests/test_outputs/Keep_of_Truth_iso.png"])
     assert result.exit_code == 0
     assert result.output == """DDL CLI
 Building Blueprint
@@ -382,12 +384,18 @@ Preparing render
 Rendering
 Done
 """
+    with open("tests/test_outputs/Keep_of_Truth_iso.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == 'b38ab11fec42498c32c2c7bb763dbf44'
 
 
 def test_build_topdown():
     """Tests that the renderer can spit out a topdown version of a complex floorplan"""
     runner = CliRunner()
-    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json", "assetpacks/example_top_down"])
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json",
+                                  "assetpacks/example_top_down",
+                                  "--filename", "tests/test_outputs/Keep_of_Truth_td.png"])
     assert result.exit_code == 0
     assert result.output == """DDL CLI
 Building Blueprint
@@ -397,3 +405,7 @@ Preparing render
 Rendering
 Done
 """
+    with open("tests/test_outputs/Keep_of_Truth_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '67fa158f2ff853c52bac0999c816b085'

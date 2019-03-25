@@ -72,7 +72,7 @@ class Renderer:
                               h_flip,
                               v_flip)
 
-    def output(self, destination, filename=None):
+    def output(self, destination, filepath=None):
         """Actually put the image somewhere"""
 
         self.assemble()
@@ -80,11 +80,11 @@ class Renderer:
         if destination == 'screen':
             self.image.show()
         elif destination == 'file':
-            if not filename:
-                filename = ''.join([random.SystemRandom()
-                                   .choice(string.ascii_lowercase)
-                                   for n in range(8)])
-            self.image.save('output/' + filename + ".png", "PNG")
+            if not filepath:
+                filepath = 'output/' + ''.join([random.SystemRandom()
+                                                .choice(string.ascii_lowercase)
+                                                for n in range(8)]) + ".png"
+            self.image.save(filepath, "PNG")
         elif destination == 'variable':
             return self.image
         elif destination == 'dryrun':
