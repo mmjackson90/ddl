@@ -362,6 +362,7 @@ def build(context, blueprint_file, assetpack_file):
 @click.argument('blueprint_id')
 @click.pass_context
 def convert_donjon(context, input_file, output_file, blueprint_name, blueprint_id):
+    """Converts, with no muss or fuss, a donjon file to a floorplan-only blueprint."""
     logger = context.obj['LOGGER']
     parser = DonjonParser()
     logger.info('Converting {} to blueprint'.format(input_file))

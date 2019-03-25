@@ -10,7 +10,7 @@ from ddl.asset import ComponentAsset
 from click.testing import CliRunner
 import ddl.asset_exploration
 from test_asset_exploration import get_test_assetpack
-
+import hashlib
 
 # Yes, it's a global in a test suite. No, I don't feel bad about using it.
 PROMPT_CALLS = 0
@@ -349,3 +349,21 @@ def test_create_new_images_topdown(monkeypatch):
         }
     ]
 }"""
+
+
+def test_convert_donjon_iso():
+    """Tests that the donjon converter does it's job"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["convert-donjon", "donjon_tsvs/Dark_Halls_Of_Madness.txt",
+                                  "blueprints/examples/Dark_Halls_Of_Madness.json",
+                                  "Test dungeon 2",
+                                  "test-dungeon-2"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Converting donjon_tsvs/Dark_Halls_Of_Madness.txt to blueprint
+Output finished blueprint to blueprints/examples/Dark_Halls_Of_Madness.json
+"""
+    with open("blueprints/examples/Dark_Halls_Of_Madness.json", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == 'e47087914de09eda957f878280f52dc9'
