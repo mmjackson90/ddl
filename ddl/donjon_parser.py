@@ -18,7 +18,7 @@ class DonjonParser:
                     square = line[x_coord]
                     logger.debug('Tile at {},{} is: {}'.format(x_coord, y_coord, square))
 
-                    if square != '':
+                    if square not in ['', '\n']:
                         parts = parts + [{"x": x_coord,
                                           "y": y_coord,
                                           "layer": "floor",
