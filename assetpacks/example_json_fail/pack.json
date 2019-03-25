@@ -1,0 +1,9 @@
+{
+    "name": "Example Failure pack",
+    "id": "easy-dungeon-ddl-example-fail",
+    "author": "The Easy Dungeon Company",
+    "This things": "Should fail hard.",
+    "tags": [
+        "Utterly bork."
+    ]
+}

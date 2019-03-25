@@ -1,0 +1,27 @@
+{
+    "images": [
+        {
+            "name": "1x1 Floor exact",
+            "id": "floor-1x1-exact",
+            "image": "floor-1x1-exact.png"
+        },
+        {
+            "name": "1x1 Floor fuzzy",
+            "id": "floor-1x1-fuzzy",
+            "image": "floor-1x1-fuzzy.png",
+            "top_left": {
+                "x": 4,
+                "y": 4
+            }
+        },
+        {
+            "name": "1 long wall exact",
+            "id": "exact-wall-1",
+            "image": "1-wall-exact.png",
+            "top_left": {
+                "x": 16,
+                "y": 0
+            }
+        }
+    ]
+}

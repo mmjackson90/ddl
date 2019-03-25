@@ -1,0 +1,13 @@
+{
+    "name": "Example Isometric Asset Pack",
+    "id": "easy-dungeon-ddl-example-iso",
+    "author": "The Easy Dungeon Company",
+    "projection": "isometric",
+    "tags": [
+        "example"
+    ],
+    "grid": {
+        "height": 170,
+        "width": 294
+    }
+}

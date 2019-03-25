@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# script/test: Run test suite for application.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+[ -z "$DEBUG" ] || set -x
+
+echo "==> Running test suite…"
+
+if [ -n "$1" ]; then
+  python -m pytest "$1"
+else
+  python -m pytest
+fi

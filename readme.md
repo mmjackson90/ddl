@@ -1,12 +1,17 @@
-**Dungeon Definition Language
+# Dungeon Description Language
 
-DDL is a suite of tools and definitions designed to make designing and illustrating full on D&D encounter maps much simpler. It consists of four rough parts:
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6e911672868c426abbda73af06e63266)](https://www.codacy.com?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=mmjackson90/ddl&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/52f1cae986674b50914345f6691295a5)](https://www.codacy.com/app/easy-dungeon-company/ddl?utm_source=github.com&utm_medium=referral&utm_content=easy-dungeon-company/ddl&utm_campaign=Badge_Coverage)
 
-1: The dungeon definition: This is only the bits the GM cares about. Important rooms etc. It can be used to create the spatial definition.
+DDL is a suite of tools and definitions designed to make designing and illustrating full on D&D encounter maps much simpler. It is built of several parts which can either function independently, or as a full stack:
 
-2: The spatial definition: This is computed from the above and describes the exact layout of the dungeon. It can be used to create the asset definition, given suitable assets.
+## The Dungeon Definition
 
-3: The asset definition: This is made up of multiple assets, which may be made of assets, which are themselves images. This organises the spatial definition into a series of layers and images that can be pulled out into actual pretty pictures.
+A standard for declaring the layout of a dungeon in terms of things the Dungeon Master actually cares about.
 
-*Implementation
-The tooling will be written (initially) in python. The definitions themselves will be json (see json-schema). Image handling done using pillow.
+## The Architect
+
+The architect takes a dungeon definition, and can convert it into a geometrically valid layout.
+
+## The Artist
+
+Takes a layout, decides which pieces of artwork to use to render it either top-down or isometrically, and then outputs the result.

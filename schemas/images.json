@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/images.json",
+    "type": "object",
+    "properties": {
+        "images": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9-]+$"
+                    },
+                    "image": {
+                        "oneOf": [
+                            {
+                                "type": "string"
+                            },
+                            {
+                                "type": "array",
+                                "items": {
+                                    "anyOf": [
+                                        {
+                                            "type": "string"
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "location": {
+                                                    "type": "string"
+                                                },
+                                                "frequency": {
+                                                    "type": "integer",
+                                                    "minimum": 0
+                                                },
+                                                "flip_horizontal": {
+                                                    "type": "boolean"
+                                                },
+                                                "flip_vertical": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "location"
+                                            ],
+                                            "additionalProperties": false
+                                        }
+                                    ]
+                                }
+                            }
+                        ]
+                    },
+                    "top_left": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "type": "integer"
+                            },
+                            "y": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "name",
+                    "id",
+                    "image"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": [
+        "images"
+    ],
+    "additionalProperties": false
+}

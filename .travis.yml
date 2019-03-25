@@ -1,0 +1,19 @@
+language: python
+python:
+  - '3.6'
+
+addons:
+  apt:
+    packages:
+       - xvfb
+
+install:
+  - script/bootstrap
+  - pip install codacy-coverage
+
+script:
+  - xvfb-run script/test --cov=ddl
+
+after_success:
+  - coverage xml
+  - python-codacy-coverage -r coverage.xml

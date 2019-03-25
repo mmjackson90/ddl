@@ -1,0 +1,21 @@
+#!/bin/sh
+
+# script/test: Run test suite for application.
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+[ -z "$DEBUG" ] || set -x
+
+echo "==> Running test suite…"
+
+if [ -n "$1" ]; then
+  coverage run --source=ddl -m pytest "$1"
+  coverage html
+  coverage report
+else
+  coverage run --source=ddl -m pytest
+  coverage html
+  coverage report
+fi

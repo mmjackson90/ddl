@@ -1,0 +1,13 @@
+{
+    "name": "Example Props Pack",
+    "id": "easy-dungeon-ddl-example-props",
+    "author": "The Easy Dungeon Company",
+    "projection": "isometric",
+    "tags": [
+        "example"
+    ],
+    "grid": {
+        "height": 17,
+        "width": 29
+    }
+}

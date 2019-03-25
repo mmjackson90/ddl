@@ -1,0 +1,13 @@
+{
+    "name": "Example top down Asset Pack",
+    "author": "The DDL Team",
+    "projection": "topdown",
+    "tags": [
+        "example"
+    ],
+    "grid":{
+        "height":100,
+        "width":100
+    },
+    "id": "easy-dungeon-ddl-example-td"
+}

@@ -1,0 +1,13 @@
+{
+    "images": [
+        {
+            "FAIL": "Little box",
+            "FLAIL": "little-box",
+            "MASH": "little_box.png",
+            "GNARF": {
+                "x": 14,
+                "y": 15
+            }
+        }
+    ]
+}
