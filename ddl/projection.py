@@ -91,8 +91,8 @@ class IsometricProjection(Projection):
      and get operations are treated."""
     def get_location_in_pixels(self, x_coordinate, y_coordinate):
         """Changes grid co-ordinates to pixels for an isometric grid"""
-        pixel_x = (y_coordinate*math.ceil(self.width/2)) -\
-                  (x_coordinate * math.floor(self.width/2))
+        pixel_x = (x_coordinate*math.ceil(self.width/2)) -\
+                  (y_coordinate * math.floor(self.width/2))
         pixel_y = (x_coordinate*math.ceil(self.height/2)) +\
                   (y_coordinate*math.floor(self.height/2))
         return (round(pixel_x), round(pixel_y))
