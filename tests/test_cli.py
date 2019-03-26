@@ -15,6 +15,12 @@ import hashlib
 # Yes, it's a global in a test suite. No, I don't feel bad about using it.
 PROMPT_CALLS = 0
 
+def setup_module(module):
+    """Makes sure there's somewhere to dump the output tests"""
+    if not os.path.exists('blueprints/examples'):
+        os.makedirs('blueprints/examples')
+    if not os.path.exists('tests/test_outputs'):
+        os.makedirs('tests/test_outputs')
 
 def test_validate_assetpack():
     """Tests that an assetpack validates correctly"""
