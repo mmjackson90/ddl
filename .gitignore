@@ -17,7 +17,12 @@
 !/assetpacks/example_json_fail/
 !/assetpacks/example_json_fail/*
 !/assetpacks/example_json_fail/**/*
+/tests/test_outputs/*
 /htmlcov/*
+/blueprints/*
+!/blueprints/examples/
+!/blueprints/examples/*
+!/blueprints/examples/**/*
 *.pyc
 __pycache__
 .DS_Store

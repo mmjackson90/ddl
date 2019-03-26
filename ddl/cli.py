@@ -4,6 +4,7 @@ import click
 from PyInquirer import prompt
 import PyInquirer
 import jsonschema
+from jsonschema.exceptions import ValidationError
 from ddl.assetpack import AssetpackFactory
 from ddl.validator import Validator
 from ddl.renderer import Renderer
@@ -13,16 +14,37 @@ import ddl.image_helper
 from ddl.asset import ComponentAsset
 from ddl.cli_utils import *
 import os
-
+import logging
+from ddl.blueprint import BlueprintFactory
 import tkinter as tk
 from PIL import Image, ImageTk
+import random
+from ddl.donjon_parser import DonjonParser
 
 
 @click.group()
-def main():
+@click.option('-v', '--verbose', count=True)
+@click.pass_context
+def main(context, verbose):
     """A CLI tool for validating and examining assetpacks, and in the future
     designing components, tweaking assetpacks and generally everything."""
-    pass
+
+    context.ensure_object(dict)
+
+    levels = {
+        1: logging.ERROR,
+        2: logging.WARNING,
+        3: logging.INFO,
+        4: logging.DEBUG
+    }
+
+    logger = logging.getLogger('ddl')
+    logger.setLevel(levels.get(verbose, logging.INFO))
+    logger.addHandler(logging.StreamHandler())
+
+    logger.info('DDL CLI')
+
+    context.obj['LOGGER'] = logger
 
 
 @main.command()
@@ -282,3 +304,73 @@ def create_new_images(path, gridtype, width, height):
     check_integer(height)
 
     ddl.image_helper.show_directory(path, gridtype, int(height), int(width))
+
+
+@main.command()
+@click.argument('blueprint_file', type=click.Path(exists=True))
+@click.argument('assetpack_file', type=click.Path(exists=True))
+@click.option('--filename', default='')
+@click.pass_context
+def build(context, blueprint_file, assetpack_file, filename):
+    """ Build a blueprint file, and output an image. """
+
+    logger = context.obj['LOGGER']
+
+    logger.info('Building Blueprint')
+
+    blueprint = BlueprintFactory.load(click.format_filename(blueprint_file))
+
+    logger.debug('Loaded blueprint from {}'.format(click.format_filename(blueprint_file)))
+
+    assetpack = AssetpackFactory.load(click.format_filename(assetpack_file))
+
+    logger.debug('Loaded single asset pack from {}'.format(click.format_filename(blueprint_file)))
+
+    data = {
+        "name": '',
+        "id": 'build',
+        "parts": [],
+        "tags": []
+    }
+    component = ComponentAsset(data, assetpack)
+    logger.info('Finding appropriate tiles and adding to component')
+    for (tile_x, tile_y), tile in blueprint.get_constraints_in_layer('floor').items():
+        logger.debug('Tile at ({}, {}) has constraints {}'.format(tile_x, tile_y, ', '.join(tile)))
+        valid_components = assetpack.taglist.get_components_that_match_tags(tile)
+
+        if valid_components:
+            logger.debug('Matching components are: {}'.format(', '.join(valid_components)))
+            choice = random.sample(valid_components, 1)[0]
+            component.add_component(assetpack.components[choice], tile_x, tile_y)
+        else:
+            raise Exception('No matching components for given constraints.')
+
+    logger.info('Getting image/pixel list')
+    image_location_list = component.get_image_location_list(0, 0)
+    image_pixel_list = assetpack.projection.\
+        get_image_pixel_list(0, 0, image_location_list)
+    logger.info('Preparing render')
+    renderer = Renderer(image_pixel_list=image_pixel_list)
+    logger.info('Rendering')
+    if filename == '':
+        renderer.output('screen')
+    else:
+        renderer.output('file', filepath=filename)
+
+    logger.info('Done')
+
+
+@main.command()
+@click.argument('input_file', type=click.Path(exists=True))
+@click.argument('output_file')
+@click.argument('blueprint_name')
+@click.argument('blueprint_id')
+@click.pass_context
+def convert_donjon(context, input_file, output_file, blueprint_name, blueprint_id):
+    """Converts, with no muss or fuss, a donjon file to a floorplan-only blueprint."""
+    logger = context.obj['LOGGER']
+    parser = DonjonParser()
+    logger.info('Converting {} to blueprint'.format(input_file))
+    parser.load_parts(input_file)
+    parser.save_parts(output_file, blueprint_name, blueprint_id)
+    logger.info('Output finished blueprint to {}'.format(output_file))

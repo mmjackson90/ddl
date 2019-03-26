@@ -1,0 +1,72 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://easy-dungeon-company.github.io/ddl/schemas/blueprint.json",
+    "title": "DDL Blueprint",
+    "description": "A description of how a dungeon is laid out.",
+    "type": "object",
+    "properties": {
+        "name": {
+            "type": "string",
+            "description": "A friendly name for this blueprint."
+        },
+        "id": {
+            "type": "string",
+            "description": "A unique identifier for this blueprint.",
+            "pattern": "^[a-z0-9-]+$"
+        },
+        "parts": {
+            "type": "array",
+            "description": "The individual parts which make up the blueprint.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "integer",
+                        "description": "The X coordinate this part starts at",
+                        "minimum": 0
+                    },
+                    "y": {
+                        "type": "integer",
+                        "description": "The Y coordinate this part starts at",
+                        "minimum": 0
+                    },
+                    "height": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "width": {
+                        "type": "integer",
+                        "minimum": 1
+                    },
+                    "layer" : {
+                        "type": "string",
+                        "enum": [
+                            "floor",
+                            "wall",
+                            "prop"
+                        ]
+                    },
+                    "constraints": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "required": [
+                    "x",
+                    "y",
+                    "layer",
+                    "constraints"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": [
+        "name",
+        "id",
+        "parts"
+    ],
+    "additionalProperties": false
+}

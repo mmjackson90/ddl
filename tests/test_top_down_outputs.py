@@ -4,6 +4,7 @@
 from ddl.assetpack import AssetpackFactory
 from ddl.renderer import Renderer
 from ddl.asset import ComponentAsset
+import hashlib
 
 
 def test_smoke_render_component():
@@ -18,7 +19,11 @@ def test_smoke_render_component():
 
     renderer = Renderer(image_pixel_list=assetpack.projection
                         .get_image_pixel_list(0, 0, image_location_list))
-    renderer.output('screen')
+    renderer.output('file', filepath='tests/test_outputs/floor1_td.png')
+    with open("tests/test_outputs/floor1_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == 'bdf186aafd307763633ff0d082762126'
 
 
 def test_smoke_design_component():
@@ -40,10 +45,14 @@ def test_smoke_design_component():
     image_pixel_list2 = assetpack.projection.\
         get_image_pixel_list(0, 0, image_location_list2)
     renderer2 = Renderer(image_pixel_list=image_pixel_list2)
-    renderer2.output('screen')
+    renderer2.output('file', filepath='tests/test_outputs/floor4_td.png')
+    with open("tests/test_outputs/floor4_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '66add2fc4e1f7858e6452f8edaa9f52b'
 
 
-def test_smoke_twiddly_fuzzy():
+def test_smoke_twiddly():
     """
     Smoke test creating a new component, removing a bit, and then using the
     component factory's built in output method to render it, before testing the
@@ -67,7 +76,20 @@ def test_smoke_twiddly_fuzzy():
     floor4.remove_last_part()
     renderer4_1 = Renderer(image_pixel_list=assetpack.projection.
                            get_image_pixel_list(0, 0, floor4.get_image_location_list(0, 0)))
-    renderer4_1.output('screen')
+    renderer4_1.output('file', filepath='tests/test_outputs/twiddly_td.png')
+    with open("tests/test_outputs/twiddly_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '7489ed37fe74fef3cf8ba10c2fae390b'
+
+
+def test_smoke_fuzzy():
+    """
+    Smoke test creating a new component, removing a bit, and then using the
+    component factory's built in output method to render it, before testing the
+    clear component functionality and finally rendering out some fuzzy tiles.
+    """
+    assetpack = AssetpackFactory.load('assetpacks/example_top_down')
 
     data = {
         "name": '',
@@ -83,7 +105,11 @@ def test_smoke_twiddly_fuzzy():
 
     renderer4_2 = Renderer(image_pixel_list=assetpack.projection.
                            get_image_pixel_list(0, 0, fuzzy.get_image_location_list(0, 0)))
-    renderer4_2.output('screen')
+    renderer4_2.output('file', filepath='tests/test_outputs/fuzzy_td.png')
+    with open("tests/test_outputs/fuzzy_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '855c82a18da23146df083e9dae5e1315'
 
 
 def test_smoke_wall():
@@ -98,7 +124,11 @@ def test_smoke_wall():
     renderer5 = Renderer(image_pixel_list=assetpack.projection.
                          get_image_pixel_list(0, 0, ill))
 
-    renderer5.output('screen')
+    renderer5.output('file', filepath='tests/test_outputs/wall_td.png')
+    with open("tests/test_outputs/wall_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '008c60783924e6bfc1c7d7df61d2f69b'
 
 
 def test_non_scaled_rendering():
@@ -119,7 +149,11 @@ def test_non_scaled_rendering():
 
     renderer7 = Renderer(image_pixel_list=image_pixel_list7_2)
     renderer7.add_image_pixel_list(image_pixel_list=image_pixel_list7_3)
-    renderer7.output('screen')
+    renderer7.output('file', filepath='tests/test_outputs/nonscaled_td.png')
+    with open("tests/test_outputs/nonscaled_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '69af4842e8237eef44518eb85b8dbe9d'
 
 
 def test_scaled_rendering():
@@ -146,4 +180,8 @@ def test_scaled_rendering():
         get_image_pixel_list(0, 0, image_location_list7_1)
 
     renderer8 = Renderer(image_pixel_list=image_pixel_list7_1)
-    renderer8.output('screen')
+    renderer8.output('file', filepath='tests/test_outputs/scaled_td.png')
+    with open("tests/test_outputs/scaled_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '69af4842e8237eef44518eb85b8dbe9d'

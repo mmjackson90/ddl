@@ -1,5 +1,7 @@
 """Adds a class to store and retrieve names of components, given their tags"""
 
+import copy
+
 
 class TagList:
     """
@@ -35,6 +37,9 @@ class TagList:
         that match all tags. Returns an empty set if one of the tags is missing
         or if no component matches all tags.
         """
+
+        tags = copy.copy(tags)
+
         for tag in tags:
             if tag not in self.tag_components.keys():
                 return(set())
