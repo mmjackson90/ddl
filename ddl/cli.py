@@ -309,8 +309,9 @@ def create_new_images(path, gridtype, width, height):
 @main.command()
 @click.argument('blueprint_file', type=click.Path(exists=True))
 @click.argument('assetpack_file', type=click.Path(exists=True))
+@click.option('--filename', default='')
 @click.pass_context
-def build(context, blueprint_file, assetpack_file):
+def build(context, blueprint_file, assetpack_file, filename):
     """ Build a blueprint file, and output an image. """
 
     logger = context.obj['LOGGER']
@@ -351,7 +352,11 @@ def build(context, blueprint_file, assetpack_file):
     logger.info('Preparing render')
     renderer = Renderer(image_pixel_list=image_pixel_list)
     logger.info('Rendering')
-    renderer.output('screen')
+    if filename == '':
+        renderer.output('screen')
+    else:
+        renderer.output('file', filepath=filename)
+
     logger.info('Done')
 
 
@@ -362,6 +367,7 @@ def build(context, blueprint_file, assetpack_file):
 @click.argument('blueprint_id')
 @click.pass_context
 def convert_donjon(context, input_file, output_file, blueprint_name, blueprint_id):
+    """Converts, with no muss or fuss, a donjon file to a floorplan-only blueprint."""
     logger = context.obj['LOGGER']
     parser = DonjonParser()
     logger.info('Converting {} to blueprint'.format(input_file))

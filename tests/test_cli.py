@@ -10,11 +10,17 @@ from ddl.asset import ComponentAsset
 from click.testing import CliRunner
 import ddl.asset_exploration
 from test_asset_exploration import get_test_assetpack
-
+import hashlib
 
 # Yes, it's a global in a test suite. No, I don't feel bad about using it.
 PROMPT_CALLS = 0
 
+def setup_module(module):
+    """Makes sure there's somewhere to dump the output tests"""
+    if not os.path.exists('blueprints/examples'):
+        os.makedirs('blueprints/examples')
+    if not os.path.exists('tests/test_outputs'):
+        os.makedirs('tests/test_outputs')
 
 def test_validate_assetpack():
     """Tests that an assetpack validates correctly"""
@@ -349,3 +355,63 @@ def test_create_new_images_topdown(monkeypatch):
         }
     ]
 }"""
+
+
+def test_convert_donjon():
+    """Tests that the donjon converter does it's job"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["convert-donjon", "donjon_tsvs/Dark_Halls_of_Madness.txt",
+                                  "blueprints/examples/Dark_Halls_of_Madness.json",
+                                  "Test dungeon 2",
+                                  "test-dungeon-2"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Converting donjon_tsvs/Dark_Halls_of_Madness.txt to blueprint
+Output finished blueprint to blueprints/examples/Dark_Halls_of_Madness.json
+"""
+    with open("blueprints/examples/Dark_Halls_of_Madness.json", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == 'e47087914de09eda957f878280f52dc9'
+
+
+def test_build_iso():
+    """Tests that the renderer can spit out an isometric version of a complex floorplan"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_Truth.json",
+                                  "assetpacks/example_isometric",
+                                  "--filename", "tests/test_outputs/Keep_of_Truth_iso.png"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Building Blueprint
+Finding appropriate tiles and adding to component
+Getting image/pixel list
+Preparing render
+Rendering
+Done
+"""
+    with open("tests/test_outputs/Keep_of_Truth_iso.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == 'b38ab11fec42498c32c2c7bb763dbf44'
+
+
+def test_build_topdown():
+    """Tests that the renderer can spit out a topdown version of a complex floorplan"""
+    runner = CliRunner()
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_Truth.json",
+                                  "assetpacks/example_top_down",
+                                  "--filename", "tests/test_outputs/Keep_of_Truth_td.png"])
+    assert result.exit_code == 0
+    assert result.output == """DDL CLI
+Building Blueprint
+Finding appropriate tiles and adding to component
+Getting image/pixel list
+Preparing render
+Rendering
+Done
+"""
+    with open("tests/test_outputs/Keep_of_Truth_td.png", "rb") as output_blueprint:
+        data = output_blueprint.read()
+        md5 = hashlib.md5(data).hexdigest()
+    assert md5 == '67fa158f2ff853c52bac0999c816b085'
