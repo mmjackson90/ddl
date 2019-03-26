@@ -360,16 +360,16 @@ def test_create_new_images_topdown(monkeypatch):
 def test_convert_donjon():
     """Tests that the donjon converter does it's job"""
     runner = CliRunner()
-    result = runner.invoke(main, ["convert-donjon", "donjon_tsvs/Dark_Halls_Of_Madness.txt",
-                                  "blueprints/examples/Dark_Halls_Of_Madness.json",
+    result = runner.invoke(main, ["convert-donjon", "donjon_tsvs/Dark_Halls_of_Madness.txt",
+                                  "blueprints/examples/Dark_Halls_of_Madness.json",
                                   "Test dungeon 2",
                                   "test-dungeon-2"])
     assert result.exit_code == 0
     assert result.output == """DDL CLI
-Converting donjon_tsvs/Dark_Halls_Of_Madness.txt to blueprint
-Output finished blueprint to blueprints/examples/Dark_Halls_Of_Madness.json
+Converting donjon_tsvs/Dark_Halls_of_Madness.txt to blueprint
+Output finished blueprint to blueprints/examples/Dark_Halls_of_Madness.json
 """
-    with open("blueprints/examples/Dark_Halls_Of_Madness.json", "rb") as output_blueprint:
+    with open("blueprints/examples/Dark_Halls_of_Madness.json", "rb") as output_blueprint:
         data = output_blueprint.read()
         md5 = hashlib.md5(data).hexdigest()
     assert md5 == 'e47087914de09eda957f878280f52dc9'
@@ -378,7 +378,7 @@ Output finished blueprint to blueprints/examples/Dark_Halls_Of_Madness.json
 def test_build_iso():
     """Tests that the renderer can spit out an isometric version of a complex floorplan"""
     runner = CliRunner()
-    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json",
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_Truth.json",
                                   "assetpacks/example_isometric",
                                   "--filename", "tests/test_outputs/Keep_of_Truth_iso.png"])
     assert result.exit_code == 0
@@ -399,7 +399,7 @@ Done
 def test_build_topdown():
     """Tests that the renderer can spit out a topdown version of a complex floorplan"""
     runner = CliRunner()
-    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_truth.json",
+    result = runner.invoke(main, ["build", "blueprints/examples/Keep_of_Truth.json",
                                   "assetpacks/example_top_down",
                                   "--filename", "tests/test_outputs/Keep_of_Truth_td.png"])
     assert result.exit_code == 0
